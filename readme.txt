@@ -19,8 +19,6 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 1. Search for the plugin in WordPress under "Plugins -> Add New".
 2. Click the “Install Now” button, followed by "Activate".
 
-That's it! For more information on getting started with headless WordPress, see [Getting Started with Faust](https://faustjs.org/docs/tutorial/dev-env-setup).
-
 == Frequently Asked Questions ==
 
 == Screenshots ==

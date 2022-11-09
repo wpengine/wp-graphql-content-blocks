@@ -1,6 +1,6 @@
 <?php
 /**
- * Various utility functions used through the Faust plugin.
+ * Various utility functions used through the plugin.
  *
  * @package WPGraphQLContentBlocks
  */
