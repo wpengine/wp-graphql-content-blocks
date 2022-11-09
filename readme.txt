@@ -1,6 +1,6 @@
 === WPGraphQL Content Blocks ===
 Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, thdespou, wpengine
-Tags: faustjs, faust, headless, decoupled
+Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.1
 Stable tag: 0.8.0
