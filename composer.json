@@ -2,6 +2,32 @@
   "name": "wpengine/wp-graphql-content-blocks",
   "description": "Plugin that extends WPGraphQL to support querying (Gutenberg) Blocks as data.",
   "type": "project",
-  "minimum-stability": "stable",
-  "require-dev": {}
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "require-dev": {
+    "wpengine/wpengine-coding-standards": "dev-develop",
+    "php-parallel-lint/php-parallel-lint": "^1.3"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/wpengine/wpengine-coding-standards.git"
+    }
+  ],
+  "scripts": {
+    "lint": "parallel-lint -e php --no-colors --exclude vendor .",
+    "phpcs": "phpcs",
+    "phpcs:fix": "phpcbf",
+    "suite": [
+        "@lint",
+        "@phpcs",
+        "@test"
+    ],
+    "test": "phpunit"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
 }

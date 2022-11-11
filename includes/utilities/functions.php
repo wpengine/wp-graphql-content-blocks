@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function camelcase( $str, $preserved_chars = array() ) {
 	/* Convert non-alpha and non-numeric characters to spaces. */
 	$str = preg_replace( '/[^a-z0-9' . implode( '', $preserved_chars ) . ']+/i', ' ', $str );
-	$str = trim( $str );
+	$str = trim( $str ?? '' );
 
 	/* Uppercase the first character of each word. */
 	$str = ucwords( $str );

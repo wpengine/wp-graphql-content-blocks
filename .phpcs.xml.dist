@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Coding Standards based custom ruleset for your plugin">
+	<description>Generally-applicable sniffs for WordPress plugins.</description>
+
+	<file>.</file>
+
+	<!-- Exclude composer vendor directory -->
+	<exclude-pattern>/vendor/</exclude-pattern>
+	<exclude-pattern>/node_modules/</exclude-pattern>
+
+	<!-- How to scan -->
+	<!-- Usage instructions: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage -->
+	<!-- Annotated ruleset: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
+	<arg value="sp" />
+	<arg name="basepath" value="./" />
+	<arg name="colors" />
+	<arg name="extensions" value="php" />
+	<arg name="parallel" value="8" />
+
+	<!-- Rules: Check PHP version compatibility -->
+	<!-- https://github.com/PHPCompatibility/PHPCompatibility#sniffing-your-code-for-compatibility-with-specific-php-versions -->
+	<config name="testVersion" value="7.2-" />
+
+	<!-- https://github.com/wpengine/wpengine-coding-standards -->
+	<rule ref="WP-Engine-Strict"/>
+
+	<!-- https://github.com/PHPCompatibility/PHPCompatibilityWP -->
+	<rule ref="PHPCompatibilityWP" />
+
+	<!-- Rules: WordPress Coding Standards -->
+	<!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards -->
+	<!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties -->
+	<config name="minimum_supported_wp_version" value="5.3" />
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="wpgraphql_content_blocks" />
+				<element value="WPGRAPHQL_CONTENT_BLOCKS" />
+				<element value="WPGraphQLContentBlocks" />
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="wp-graphql-content-blocks" />
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
+		<properties>
+			<property name="blank_line_check" value="true" />
+		</properties>
+	</rule>
+
+	<!-- Exclude rules that break PHP Unit test conventions or result in redundant comments. -->
+	<!-- Test functions and properties are self-describing. -->
+	<rule ref="Generic.Commenting.DocComment.MissingShort">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Test file names are self-describing. -->
+	<rule ref="Squiz.Commenting.FileComment">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Test class names are self-describing. -->
+	<rule ref="Squiz.Commenting.ClassComment.Missing">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Test function names are self-describing. -->
+	<rule ref="Squiz.Commenting.FunctionComment">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Test variables should be self-describing. -->
+	<rule ref="Squiz.Commenting.VariableComment.Missing">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Test functions are not public so do not require @throws docblock annotations. -->
+	<rule ref="Squiz.Commenting.FunctionCommentThrowTag.Missing">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Multiple assignments are used as part of test setup. -->
+	<rule ref="Squiz.PHP.DisallowMultipleAssignments.Found">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- We follow the Codeception class name convention instead of the WordPress one. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Test globals don't require prefixes. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- `json_encode()` is fine for tests. -->
+	<rule ref="WordPress.WP.AlternativeFunctions.json_encode_json_encode">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Allow queries, DROP and general database manipulation in tests. -->
+	<rule ref="WordPress.DB">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Suppress warnings about the _before() test methods used in Codeception tests. -->
+	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+</ruleset>
