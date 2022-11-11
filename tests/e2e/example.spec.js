@@ -1,8 +1,6 @@
 import { loginUser, visitAdminPage } from '@wordpress/e2e-test-utils'
 
-/**
- * {@link https://www.wpgraphql.com/2022/02/17/adding-end-2-end-tests-to-wordpress-plugins-using-wp-env-and-wp-scripts Using wp-env and wp-scripts for WordPress plugin testing}
- */
+// https://www.wpgraphql.com/2022/02/17/adding-end-2-end-tests-to-wordpress-plugins-using-wp-env-and-wp-scripts
 describe( 'example test', () => {
 
     it ( 'works', () => {
