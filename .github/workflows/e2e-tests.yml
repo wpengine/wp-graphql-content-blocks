@@ -1,0 +1,37 @@
+name: End-to-End Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  admin:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['16']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup environment to use the desired version of NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Installing NPM dependencies
+        run: |
+          npm install
+
+      - name: Starting the WordPress Environment
+        run: |
+          npm run wp-env start
+
+      - name: Running the tests
+        run: |
+          npm run test-e2e
