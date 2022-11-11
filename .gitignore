@@ -5,3 +5,6 @@ node_modules
 # text editor
 .vscode
 .idea
+
+# e2e tests
+artifacts
