@@ -16,7 +16,7 @@ jobs:
         node: ['16']
 
     steps:
-      - uses: actions/checkout@3
+      - uses: actions/checkout@v3
 
       - name: Setup environment to use the desired version of NodeJS
         uses: actions/setup-node@v3
