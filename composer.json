@@ -6,7 +6,8 @@
   "minimum-stability": "dev",
   "require-dev": {
     "wpengine/wpengine-coding-standards": "dev-develop",
-    "php-parallel-lint/php-parallel-lint": "^1.3"
+    "php-parallel-lint/php-parallel-lint": "^1.3",
+    "phpunit/phpunit": "^9.5"
   },
   "repositories": [
     {
