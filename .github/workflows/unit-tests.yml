@@ -26,5 +26,8 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
 
+    - name: test
+      run: pwd && ls
+
     - name: Run test suite
       run: php vendor/codeception/codeception/codecept run
