@@ -114,4 +114,19 @@
 	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
+
+	<!-- Suppress warnings about class test method names used in Codeception tests. -->
+	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Suppress warnings about class test method names used in Codeception tests. -->
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<!-- Suppress warnings about typed properties test methods used in Codeception tests. -->
+	<rule ref="PHPCompatibility.Classes.NewTypedProperties.Found">
+		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
 </ruleset>
