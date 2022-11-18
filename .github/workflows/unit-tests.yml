@@ -11,24 +11,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php: [7.4, 8.0]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: $
+          php-version: ${{ matrix.php }}
           extensions: curl, mbstring, openssl, pdo, pdo_sqlite
           ini-values: memory_limit=-1, date.timezone='UTC'
           coverage: xdebug
           tools: composer:v2
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
 
-    - name: Run tests
-      run: php vendor/bin/codecept run
+      - name: Run test suite
+        run: php vendor/bin/codecept run
