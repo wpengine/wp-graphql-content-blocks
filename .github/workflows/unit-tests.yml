@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [7.4, 8.0]
+        php: [7.4, 8.0, 8.1]
 
     steps:
     - name: Checkout code
@@ -26,8 +26,5 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
 
-    - name: test
-      run: pwd && ls vendor && ls vendor/bin
-
     - name: Run test suite
-      run: php ./vendor/bin/codecept run
+      run: php vendor/bin/codecept run
