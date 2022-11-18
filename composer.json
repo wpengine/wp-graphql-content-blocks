@@ -7,7 +7,8 @@
   "require-dev": {
     "wpengine/wpengine-coding-standards": "dev-develop",
     "php-parallel-lint/php-parallel-lint": "^1.3",
-    "phpunit/phpunit": "^9.5"
+    "codeception/codeception": "^5.0",
+    "codeception/module-asserts": "^3.0"
   },
   "repositories": [
     {
@@ -24,7 +25,7 @@
         "@phpcs",
         "@test"
     ],
-    "test": "phpunit"
+    "test": "vendor/bin/codecept run"
   },
   "config": {
     "allow-plugins": {
