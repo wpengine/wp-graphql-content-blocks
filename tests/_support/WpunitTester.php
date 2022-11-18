@@ -1,12 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Tests\Support;
 
 /**
  * Inherited Methods
- *
  * @method void wantToTest($text)
  * @method void wantTo($text)
  * @method void execute($callable)
@@ -16,15 +12,15 @@ namespace Tests\Support;
  * @method void am($role)
  * @method void lookForwardTo($achieveValue)
  * @method void comment($description)
- * @method void pause($vars = [])
+ * @method void pause()
  *
  * @SuppressWarnings(PHPMD)
- */
-class UnitTester extends \Codeception\Actor {
+*/
+class WpunitTester extends \Codeception\Actor
+{
+    use _generated\WpunitTesterActions;
 
-	use _generated\UnitTesterActions;
-
-	/**
-	 * Define custom actions here
-	 */
+    /**
+     * Define custom actions here
+     */
 }
