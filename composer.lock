@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ddf29666461ec7c6229109d33084365",
+    "content-hash": "450fc4498ac40bf1663977967f4fc7ac",
     "packages": [],
     "packages-dev": [
         {
@@ -9738,6 +9738,12 @@
                 "url": "https://github.com/wpengine/wpengine-coding-standards.git",
                 "reference": "65309cd239651fa05c717f8225a4c2b1957a6c43"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wpengine/wpengine-coding-standards/zipball/65309cd239651fa05c717f8225a4c2b1957a6c43",
+                "reference": "65309cd239651fa05c717f8225a4c2b1957a6c43",
+                "shasum": ""
+            },
             "require": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
                 "php": ">=5.4",
@@ -9750,23 +9756,7 @@
                 "bin/wpecbf"
             ],
             "type": "phpcodesniffer-standard",
-            "scripts": {
-                "check-cs": [
-                    "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs"
-                ],
-                "fix-cs": [
-                    "@php ./vendor/squizlabs/php_codesniffer/bin/phpcbf"
-                ],
-                "install-codestandards": [
-                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
-                ],
-                "check-complete": [
-                    "@php ./vendor/phpcsstandards/phpcsdevtools/bin/phpcs-check-feature-completeness -q ./WP-Engine"
-                ],
-                "check-complete-strict": [
-                    "@php ./vendor/phpcsstandards/phpcsdevtools/bin/phpcs-check-feature-completeness ./WP-Engine"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -9778,10 +9768,10 @@
             ],
             "description": "PHP_CodeSniffer rules (sniffs) to enforce WP Engine coding conventions",
             "keywords": [
-                "WP-Engine",
-                "WordPress",
                 "phpcs",
                 "standards",
+                "wordpress",
+                "wp-engine",
                 "wpecs"
             ],
             "support": {

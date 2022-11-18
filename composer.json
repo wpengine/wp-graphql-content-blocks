@@ -17,12 +17,6 @@
     "codeception/module-webdriver": "^1.0",
     "codeception/util-universalframework": "^1.0"
   },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/wpengine/wpengine-coding-standards.git"
-    }
-  ],
   "scripts": {
     "lint": "parallel-lint -e php --no-colors --exclude vendor .",
     "phpcs": "phpcs",
