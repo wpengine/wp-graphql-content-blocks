@@ -24,7 +24,7 @@ jobs:
         run: docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp plugin install wp-graphql --activate --allow-root
       - name: Install Dependencies
         working-directory: ./
-        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) composer install
+        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) composer install --prefer-dist
       - name: Run unit tests
         working-directory: ./
         run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) composer test
