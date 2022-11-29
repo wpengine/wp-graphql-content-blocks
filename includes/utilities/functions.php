@@ -19,9 +19,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @credit http://www.mendoweb.be/blog/php-convert-string-to-camelcase-string/
  *
- * @return string camelCase'd string
+ * @return string|null camelCase'd string
  */
 function camelcase( $str, $preserved_chars = array() ) {
+	if ( ! is_string( $str ) ) {
+		return null;
+	}
+
 	/* Convert non-alpha and non-numeric characters to spaces. */
 	$str = preg_replace( '/[^a-z0-9' . implode( '', $preserved_chars ) . ']+/i', ' ', $str );
 	$str = trim( $str ?? '' );
