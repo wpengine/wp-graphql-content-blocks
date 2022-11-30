@@ -5,7 +5,7 @@
  * @package WPGraphQLContentBlocks
  */
 
-namespace WPGraphQLContentBlocks\Utilities;
+namespace WPGraphQL\ContentBlocks\Utilities;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

@@ -23,7 +23,7 @@ require_once $_tests_dir . '/includes/functions.php';
 
 tests_add_filter( 'wp_loaded', '_output_wp_version' );
 function _output_wp_version() {
-	echo "Running on WordPress " . get_bloginfo('version') . "...\n";
+	echo 'Running on WordPress ' . esc_html( get_bloginfo( 'version' ) ) . "...\n";
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

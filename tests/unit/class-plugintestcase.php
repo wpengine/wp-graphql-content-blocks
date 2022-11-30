@@ -1,6 +1,6 @@
 <?php
 
-namespace WPGraphQLContentBlocks\Unit;
+namespace WPGraphQL\ContentBlocks\Unit;
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Brain\Monkey;
