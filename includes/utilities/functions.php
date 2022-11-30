@@ -2,7 +2,7 @@
 /**
  * Various utility functions used through the plugin.
  *
- * @package WPGraphQLContentBlocks
+ * @package WPGraphQL\ContentBlocks
  */
 
 namespace WPGraphQL\ContentBlocks\Utilities;

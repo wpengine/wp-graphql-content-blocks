@@ -2,7 +2,7 @@
 /**
  * WordPress unit tests bootstrap file.
  *
- * @package FaustWP
+ * @package WPGraphQL\ContentBlocks
  */
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
