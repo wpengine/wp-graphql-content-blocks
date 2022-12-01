@@ -68,11 +68,17 @@ final class Registry implements OnInit
 	 */
 	public function pass_blocks_to_context()
 	{
+		add_filter('graphql_app_context_config', array($this, 'load_registered_editor_blocks'));
+	}
 
-		add_filter('graphql_app_context_config', function ($config) {
-			$config['registered_editor_blocks'] = $this->registered_blocks;
-			return $config;
-		});
+	/**
+	 * Loads registered_blocks into the app context config
+	 *
+	 * @return object
+	 */
+	public function load_registered_editor_blocks($config) {
+		$config['registered_editor_blocks'] = $this->registered_blocks;
+		return $config;
 	}
 
 	/**
