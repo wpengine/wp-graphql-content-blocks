@@ -35,6 +35,18 @@ final class RegistryTests extends PluginTestCase
     }
 
     /**
+     * @covers Registry->get_supported_post_types
+     */
+    public function test_get_supported_post_types()
+    {
+        $this->instance->OnInit();
+        $expected_post_types = [
+            "Post", "Page"
+        ];
+        $this->assertEquals($this->instance->get_supported_post_types(), $expected_post_types);
+    }
+
+    /**
      * This test ensures that the `add_block_fields_to_schema()` method
      * works as expected.
      *
@@ -53,9 +65,9 @@ final class RegistryTests extends PluginTestCase
 			}
 		}
 		';
-        
+
         $this->instance->OnInit();
-        
+
         // Verify the response contains what we put in cache
         $response = graphql(['query' => $query, 'variables' => [
             'name' => $post,
@@ -64,8 +76,8 @@ final class RegistryTests extends PluginTestCase
             'name' => "NodeWithContentBlocks",
             'description' => "Node that has content blocks associated with it"
         ];
-        $this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
-        $this->assertNotEmpty( $response['data']['__type']['interfaces'] );
+        $this->assertArrayHasKey('data', $response, json_encode($response));
+        $this->assertNotEmpty($response['data']['__type']['interfaces']);
         $this->assertTrue(in_array($contains_interface, $response['data']['__type']['interfaces']));
     }
 }

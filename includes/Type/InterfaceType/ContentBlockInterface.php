@@ -2,7 +2,7 @@
 
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
@@ -18,7 +18,7 @@ use WPGraphQL\Utils\Utils;
  *
  * @package WPGraphQL\ContentBlocks
  */
-class ContentBlockInterface
+final class ContentBlockInterface
 {
 
 	/**

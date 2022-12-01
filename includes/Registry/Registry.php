@@ -2,7 +2,7 @@
 
 namespace WPGraphQL\ContentBlocks\Registry;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
@@ -76,7 +76,8 @@ final class Registry implements OnInit
 	 *
 	 * @return object
 	 */
-	public function load_registered_editor_blocks($config) {
+	public function load_registered_editor_blocks($config)
+	{
 		$config['registered_editor_blocks'] = $this->registered_blocks;
 		return $config;
 	}
@@ -134,12 +135,27 @@ final class Registry implements OnInit
 	 */
 	public function add_block_fields_to_schema()
 	{
+		$supported_post_types = $this->get_supported_post_types();
+		// If there are no supported post types, early return
+		if (empty($supported_post_types)) {
+			return;
+		}
 
+		// Register the `NodeWithContentBlocks` Interface to the supported post types
+		register_graphql_interfaces_to_types(['NodeWithContentBlocks'], $supported_post_types);
+	}
+
+	/**
+	 * Gets Block Editor supported post types
+	 *
+	 * @return array<string>
+	 */
+	public function get_supported_post_types()
+	{
+		$supported_post_types = [];
 		// Get Post Types that are set to Show in GraphQL and Show in REST
 		// If it doesn't show in REST, it's not block-editor enabled
 		$block_editor_post_types = get_post_types(['show_in_graphql' => true, 'show_in_rest' => true], 'objects');
-
-		$supported_post_types = [];
 
 		if (empty($block_editor_post_types) || !is_array($block_editor_post_types)) {
 			return;
@@ -160,12 +176,6 @@ final class Registry implements OnInit
 			$supported_post_types[] = Utils::format_type_name($block_editor_post_type->graphql_single_name);
 		}
 
-		// If there are no supported post types, early return
-		if (empty($supported_post_types)) {
-			return;
-		}
-
-		// Register the `NodeWithContentBlocks` Interface to the supported post types
-		register_graphql_interfaces_to_types(['NodeWithContentBlocks'], $supported_post_types);
+		return $supported_post_types;
 	}
 }
