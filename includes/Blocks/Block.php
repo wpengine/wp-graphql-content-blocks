@@ -83,13 +83,13 @@ class Block {
 
 			$block_attribute_type_name = $this->type_name . 'Attributes';
 			register_graphql_object_type( $block_attribute_type_name, [
-				'description' => __( 'Attributes of the %s Block Type', 'wp-graphql-block-editor' ),
+				'description' => __( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 				'fields' => $block_attribute_fields,
 			]);
 
 			register_graphql_field( $this->type_name, 'attributes', [
 				'type' => $block_attribute_type_name,
-				'description' => __( 'Attributes of the %s Block Type', 'wp-graphql-block-editor' ),
+				'description' => __( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 				'resolve' => function( $block ) {
 					return $block;
 				}
@@ -117,7 +117,6 @@ class Block {
 					case 'boolean':
 						$graphql_type = 'Boolean';
 						break;
-
 				}
 
 
@@ -206,7 +205,7 @@ class Block {
 		 */
 		register_graphql_object_type( $this->type_name, [
 			'description' => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-			'interfaces'  => [ 'EditorBlock' ],
+			'interfaces'  => [ 'ContentBlock' ],
 			'eagerlyLoadType' => true,
 			'fields'      => [
 				'name' => [

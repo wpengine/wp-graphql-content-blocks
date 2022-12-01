@@ -1,19 +1,29 @@
 <?php
+/**
+ * Setup WPGraphQLContentBlocks
+ *
+ * @package WPGraphQL\ContentBlocks
+ * @since   0.0.1
+ */
 // Global. - namespace WPGraphQL\ContentBlocks
 
-class WPGraphQLBlockEditor {
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+final class WPGraphQLContentBlocks {
 
 	private static $instance;
 
 	/**
-	 * The instance of the WPGraphQLBlockEditor object
+	 * The instance of the WPGraphQLContentBlocks object
 	 *
-	 * @return object|WPGraphQLBlockEditor - The one true WPGraphQL
+	 * @return object|WPGraphQLContentBlocks
 	 * @since  0.0.1
 	 */
 	public static function instance() {
-		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof WPGraphQLBlockEditor ) ) {
-			self::$instance = new WPGraphQLBlockEditor();
+		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof WPGraphQLContentBlocks ) ) {
+			self::$instance = new WPGraphQLContentBlocks();
 			self::$instance->setup_constants();
 			if ( self::$instance->includes() ) {
 				self::$instance->actions();
@@ -38,7 +48,7 @@ class WPGraphQLBlockEditor {
 	public function __clone() {
 
 		// Cloning instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'The WPGraphQLBlockEditor class should not be cloned.', 'wp-graphql' ), '0.0.1' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'The WPGraphQLContentBlocks class should not be cloned.', 'wp-graphql' ), '0.0.1' );
 
 	}
 
@@ -51,7 +61,7 @@ class WPGraphQLBlockEditor {
 	public function __wakeup() {
 
 		// De-serializing instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the WPGraphQLBlockEditor class is not allowed', 'wp-graphql' ), '0.0.1' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the WPGraphQLContentBlocks class is not allowed', 'wp-graphql' ), '0.0.1' );
 
 	}
 
@@ -62,35 +72,19 @@ class WPGraphQLBlockEditor {
 	 * @return void
 	 */
 	private function setup_constants() {
-
 		// Set main file path.
 		$main_file_path = dirname( __DIR__ ) . '/wp-graphql.php';
 
 		// Plugin version.
-		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION' ) ) {
-			define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '0.0.1' );
-		}
-
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '0.0.1' );
 		// Plugin Folder Path.
-		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR' ) ) {
-			define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR', plugin_dir_path( $main_file_path ) );
-		}
-
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR', plugin_dir_path( $main_file_path ) );
 		// Plugin Root File.
-		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE' ) ) {
-			define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE', $main_file_path );
-		}
-
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE', $main_file_path );
 		// Whether to autoload the files or not.
-		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD' ) ) {
-			define( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD', true );
-		}
-
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD', true );
 		// The minimum version of PHP this plugin requires to work properly
-		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION' ) ) {
-			define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', '7.1' );
-		}
-
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', '7.1' );
 	}
 
 	/**
@@ -108,8 +102,6 @@ class WPGraphQLBlockEditor {
 		 * may bootstrap their dependencies in a global autoloader that will autoload files
 		 * before we get to this point, and requiring the autoloader again can trigger fatal errors.
 		 *
-		 * The codeception tests are an example of an environment where adding the autoloader again causes issues
-		 * so this is set to false for tests.
 		 */
 		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD' ) && true === WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD ) {
 
@@ -133,7 +125,7 @@ class WPGraphQLBlockEditor {
 						}
 
 						echo sprintf(
-							'<div class="notice notice-error">' .
+							'<div class="notice notice-error is-dismissible">' .
 							'<p>%s</p>' .
 							'</div>',
 							__( 'WPGraphQL Content Blocks will not work without WPGraphQL installed and active.', 'wp-graphql' )
@@ -149,18 +141,37 @@ class WPGraphQLBlockEditor {
 
 	}
 
+	/**
+	 * Load required actions.
+	 *
+	 * @since 0.0.1
+	 */
 	public function actions() {
-
-		add_action( 'graphql_register_types', function( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
-			
-			$block_editor_registry = new \WPGraphQL\ContentBlocks\Registry\Registry( $type_registry );
-			$block_editor_registry->init();
-
-		} );
+		add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
 	}
 
 	public function filters() {
 
+	}
+
+	public function init_block_editor_registry(\WPGraphQL\Registry\TypeRegistry $type_registry) {
+		$block_editor_registry = new \WPGraphQL\ContentBlocks\Registry\Registry( $type_registry, \WP_Block_Type_Registry::get_instance() );
+		$block_editor_registry->onInit();
+	}
+
+	/**
+	 * Define constant if not already set.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param string      $name  Constant name.
+	 * @param string|bool $value Constant value.
+	 */
+	private function define( $name, $value ) {
+		if ( ! defined( $name ) ) {
+			// phpcs:ignore
+			define( $name, $value );
+		}
 	}
 
 

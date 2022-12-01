@@ -4,7 +4,8 @@ namespace WPGraphQL\ContentBlocks\Registry;
 use Exception;
 use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
-use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
+use WPGraphQL\ContentBlocks\Interfaces\OnInit;
+use WPGraphQL\ContentBlocks\Type\InterfaceType\ContentBlockInterface;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
 
@@ -13,12 +14,17 @@ use WPGraphQL\Utils\Utils;
  *
  * @package WPGraphQL\ContentBlocks\Registry
  */
-class Registry {
+final class Registry implements OnInit {
 
 	/**
 	 * @var TypeRegistry
 	 */
 	public $type_registry;
+
+	/**
+	 * @var WP_Block_Type_Registry
+	 */
+	public $block_type_registry;
 
 	/**
 	 * @var array
@@ -29,16 +35,19 @@ class Registry {
 	 * Registry constructor.
 	 *
 	 * @param TypeRegistry $type_registry
+	 * @param WP_Block_Type_Registry $block_type_registry
 	 */
-	public function __construct( TypeRegistry $type_registry ) {
+	public function __construct( TypeRegistry $type_registry, $block_type_registry ) {
 		$this->type_registry = $type_registry;
+		$this->block_type_registry = $block_type_registry;
 	}
 
 	/**
+	 * Registry init procedure.
 	 * @throws Exception
 	 */
-	public function init() {
-		EditorBlockInterface::register_type( $this->type_registry );
+	public function OnInit() {
+		ContentBlockInterface::register_type( $this->type_registry );
 		$this->pass_blocks_to_context();
 		$this->register_block_types();
 		$this->add_block_fields_to_schema();
@@ -65,9 +74,7 @@ class Registry {
 	 * @return void
 	 */
 	protected function register_block_types() {
-		
-		$block_registry = \WP_Block_Type_Registry::get_instance();
-		$this->registered_blocks = $block_registry->get_all_registered();
+		$this->registered_blocks = $this->block_type_registry->get_all_registered();
 
 		if ( empty( $this->registered_blocks ) || ! is_array( $this->registered_blocks ) ) {
 			return;
@@ -92,7 +99,7 @@ class Registry {
 		$type_name = Utils::format_type_name( $type_name );
 
 		$class_name = Utils::format_type_name( $type_name );
-		$class_name = '\\WPGraphQL\\EditorBlocks\\Blocks\\' . $class_name;
+		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $class_name;
 
 		/**
 		 * This allows 3rd party extensions to hook and and provide
@@ -146,10 +153,8 @@ class Registry {
 			return;
 		}
 
-		// Register the `WithBlockEditor` Interface to the supported post types
-	
-		 register_graphql_interfaces_to_types( [ 'NodeWithEditorBlocks' ], $supported_post_types );
-
+		// Register the `NodeWithContentBlocks` Interface to the supported post types
+		 register_graphql_interfaces_to_types( [ 'NodeWithContentBlocks' ], $supported_post_types );
 	}
 
 }

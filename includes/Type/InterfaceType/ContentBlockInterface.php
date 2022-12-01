@@ -10,11 +10,11 @@ use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
 
 /**
- * Class EditorBlockInterface
+ * Class ContentBlockInterface
  *
  * @package WPGraphQL\ContentBlocks
  */
-class EditorBlockInterface {
+class ContentBlockInterface {
 
 	/**
 	 * @param array      $block   The block being resolved
@@ -43,20 +43,20 @@ class EditorBlockInterface {
 	 */
 	public static function register_type( TypeRegistry $type_registry ) {
 
-		register_graphql_interface_type( 'NodeWithEditorBlocks', [
-			'description' => __( 'Node that has editor blocks associated with it', 'wp-graphql-content-blocks' ),
+		register_graphql_interface_type( 'NodeWithContentBlocks', [
+			'description' => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
 			'eagerlyLoadType' => true,
 			'fields'      => [
-				'editorBlocks' => [
+				'contentBlocks' => [
 					'type'        => [
-						'list_of' => 'EditorBlock',
+						'list_of' => 'ContentBlock',
 					],
 					'args' => [
 						'flat' => [
 						  'type' => 'Boolean',
 						],
 					  ],
-					'description' => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
+					'description' => __( 'List of content blocks', 'wp-graphql-content-blocks' ),
 					'resolve'     => function( $node, $args ) {
 
 						$content = null;
@@ -99,8 +99,8 @@ class EditorBlockInterface {
 			],
 		] );
 
-		// Register the EditorBlock Interface
-		register_graphql_interface_type( 'EditorBlock', [
+		// Register the ContentBlock Interface
+		register_graphql_interface_type( 'ContentBlock', [
 			'eagerlyLoadType' => true,
 			'description' => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
 			'fields'      => [
@@ -145,27 +145,11 @@ class EditorBlockInterface {
 				],
 				'innerBlocks' => [
 					'type'=>[
-						'list_of' => 'EditorBlock',
+						'list_of' => 'ContentBlock',
 					],
 					'description' => __( 'The inner blocks of the Block', 'wp-graphql-content-blocks' ),
 					'resolve'     => function( $block ) {
 						return isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ? $block['innerBlocks'] : [];
-					},
-				],
-				'blockVisibility' => [
-					'type'        => [ 'list_of' => 'String' ],
-					'description' => __( 'The inner blocks of the Block', 'wp-graphql-content-blocks' ),
-					'resolve'     => function( $block ) {
-						return isset( $block['blockVisibility'] ) && is_array( $block['blockVisibility'] ) ? $block['blockVisibility'] : [];
-					},
-				],
-				'innerBlocksList' => [
-					'type'=>[
-						'list_of' => 'EditorBlock',
-					],
-					'description' => __( 'The inner blocks of the Block as a flat list', 'wp-graphql-content-blocks' ),
-					'resolve'     => function( $block ) 	{
-						return collectBlocks($block);
 					},
 				],
 				'cssClassNames'           => [
@@ -200,26 +184,4 @@ class EditorBlockInterface {
 			}
 		] );
 	}
-}
-
-function collectBlocks($block)
-{
-    $result = array();
-	$block['nodeId'] = isset( $block['nodeId'] ) ? $block['nodeId'] : uniqid();
-	array_push($result, $block);
-    foreach ($block['innerBlocks'] as $child) {
-		$child['parentId'] = $block['nodeId'];
-        $result = array_merge($result, collectBlocks($child));
-		
-    }
-    return $result;
-}
-
-function collectBlocks_iter($blocks)
-{	
-    $result = array();
-	foreach ($blocks as $block) {
-		$result = array_merge($result, collectBlocks($block));
-	}
-	return $result;
 }

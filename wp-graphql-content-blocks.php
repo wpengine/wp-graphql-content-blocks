@@ -19,22 +19,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WPGraphQLBlockEditor' ) ) {
-	require_once __DIR__ . '/includes/WPGraphQLBlockEditor.php';
+define( 'WPGRAPHQL_CONTENT_BLOCKS_DIR', dirname( __FILE__ ) );
+
+if ( ! class_exists( 'WPGraphQLContentBlocks' ) ) {
+	require_once __DIR__ . '/includes/WPGraphQLContentBlocks.php';
 }
 
-if ( ! function_exists( 'graphql_block_editor_init' ) ) {
+
+if ( ! function_exists( 'graphql_content_blocks_init' ) ) {
 	/**
-	 * Function that instantiates the plugins main class
+	 * The main function that returns the WPGraphQLContentBlocks class
 	 *
-	 * @return object
+	 * @since 1.0.0
+	 * @return object|WPGraphQLContentBlocks
 	 */
-	function graphql_block_editor_init() {
+	function graphql_content_blocks_init() {
 		/**
 		 * Return an instance of the action
 		 */
-		return \WPGraphQLBlockEditor::instance();
+		return \WPGraphQLContentBlocks::instance();
 	}
 }
 
-add_action( 'plugins_loaded', 'graphql_block_editor_init', 15 );
+// Get the plugin running.
+add_action( 'plugins_loaded', 'graphql_content_blocks_init', 15 );
+require WPGRAPHQL_CONTENT_BLOCKS_DIR . '/includes/utilities/functions.php';
