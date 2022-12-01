@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OnInit interface
  *
@@ -8,14 +9,15 @@
 
 namespace WPGraphQL\ContentBlocks\Interfaces;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 /**
  * OnInit interface.
  *
  * @since 0.0.1
  */
-interface OnInit {
+interface OnInit
+{
     public function onInit();
 }
