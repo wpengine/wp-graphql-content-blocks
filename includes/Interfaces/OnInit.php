@@ -9,9 +9,6 @@
 
 namespace WPGraphQL\ContentBlocks\Interfaces;
 
-if (!defined('ABSPATH')) {
-    exit;
-}
 /**
  * OnInit interface.
  *

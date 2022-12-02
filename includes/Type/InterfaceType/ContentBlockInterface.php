@@ -2,10 +2,6 @@
 
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
-if (!defined('ABSPATH')) {
-	exit;
-}
-
 use Exception;
 use GraphQL\Type\Definition\ResolveInfo;
 use WPGraphQL\AppContext;

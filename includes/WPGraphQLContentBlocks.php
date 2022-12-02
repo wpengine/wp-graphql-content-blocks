@@ -8,10 +8,6 @@
  */
 // Global. - namespace WPGraphQL\ContentBlocks
 
-if (!defined('ABSPATH')) {
-	exit;
-}
-
 final class WPGraphQLContentBlocks
 {
 

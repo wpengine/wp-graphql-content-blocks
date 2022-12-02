@@ -2,10 +2,6 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
-if (!defined('ABSPATH')) {
-	exit;
-}
-
 use DiDom\Document;
 use GraphQL\Type\Definition\ResolveInfo;
 use WP_Block_Type;

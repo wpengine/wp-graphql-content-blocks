@@ -2,10 +2,6 @@
 
 namespace WPGraphQL\ContentBlocks\Registry;
 
-if (!defined('ABSPATH')) {
-	exit;
-}
-
 use Exception;
 use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;

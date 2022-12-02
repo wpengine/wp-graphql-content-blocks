@@ -64,7 +64,7 @@ final class ContentBlockInterfaceTest extends PluginTestCase
           }
 		';
 
-        // Verify the response contains what we put in cache
+        // Verify NodeWithContentBlocks fields registration
         $response = graphql(['query' => $queryNodeWithContentBlocksMeta, 'variables' => [
             'name' => 'NodeWithContentBlocks',
         ]]);
@@ -88,7 +88,7 @@ final class ContentBlockInterfaceTest extends PluginTestCase
           }
 		';
 
-        // Verify the response contains what we put in cache
+        // Verify ContentBlock fields registration
         $response = graphql(['query' => $queryContentBlockMeta, 'variables' => [
             'name' => 'ContentBlock',
         ]]);
