@@ -3,9 +3,8 @@
 namespace WPGraphQL\ContentBlocks\Unit;
 
 use \WPGraphQL\ContentBlocks\Registry\Registry;
-use \WPGraphQL\Registry\TypeRegistry;
 
-final class RegistryTests extends PluginTestCase
+final class RegistryTest extends PluginTestCase
 {
     public $instance;
 
@@ -17,8 +16,7 @@ final class RegistryTests extends PluginTestCase
         $settings['public_introspection_enabled'] = 'on';
         update_option('graphql_general_settings', $settings);
 
-        $type_registry = new TypeRegistry();
-        $type_registry->init();
+        $type_registry = \WPGraphQL::get_type_registry();
         $this->instance = new Registry($type_registry, \WP_Block_Type_Registry::get_instance());
     }
 
@@ -27,7 +25,6 @@ final class RegistryTests extends PluginTestCase
      */
     public function test_load_registered_editor_blocks_callback()
     {
-        $this->instance->OnInit();
         global $wp_filter;
         $this->assertTrue(isset($wp_filter['graphql_register_types']->callbacks));
         $config = $this->instance->load_registered_editor_blocks(array());
@@ -39,7 +36,6 @@ final class RegistryTests extends PluginTestCase
      */
     public function test_get_supported_post_types()
     {
-        $this->instance->OnInit();
         $expected_post_types = [
             "Post", "Page"
         ];
@@ -65,9 +61,9 @@ final class RegistryTests extends PluginTestCase
 			}
 		}
 		';
-
+        
         $this->instance->OnInit();
-
+        
         // Verify the response contains what we put in cache
         $response = graphql(['query' => $query, 'variables' => [
             'name' => $post,

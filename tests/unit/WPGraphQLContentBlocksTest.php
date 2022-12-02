@@ -2,7 +2,7 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-class WPGraphQLContentBlocksTestCase extends PluginTestCase
+final class WPGraphQLContentBlocksTest extends PluginTestCase
 {
 
 	public $instance;
