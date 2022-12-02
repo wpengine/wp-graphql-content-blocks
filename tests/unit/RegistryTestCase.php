@@ -4,54 +4,50 @@ namespace WPGraphQL\ContentBlocks\Unit;
 
 use \WPGraphQL\ContentBlocks\Registry\Registry;
 
-final class RegistryTest extends PluginTestCase
-{
-    public $instance;
+final class RegistryTest extends PluginTestCase {
 
-    public function setUp(): void
-    {
-        parent::setUp();
+	public $instance;
 
-        $settings                                 = get_option('graphql_general_settings');
-        $settings['public_introspection_enabled'] = 'on';
-        update_option('graphql_general_settings', $settings);
+	public function setUp(): void {
+		parent::setUp();
 
-        $type_registry = \WPGraphQL::get_type_registry();
-        $this->instance = new Registry($type_registry, \WP_Block_Type_Registry::get_instance());
-    }
+		$settings                                 = get_option( 'graphql_general_settings' );
+		$settings['public_introspection_enabled'] = 'on';
+		update_option( 'graphql_general_settings', $settings );
 
-    /**
-     * @covers Registry->load_registered_editor_blocks
-     */
-    public function test_load_registered_editor_blocks_callback()
-    {
-        global $wp_filter;
-        $this->assertTrue(isset($wp_filter['graphql_register_types']->callbacks));
-        $config = $this->instance->load_registered_editor_blocks(array());
-        $this->assertEquals($config['registered_editor_blocks'], $this->instance->registered_blocks);
-    }
+		$type_registry  = \WPGraphQL::get_type_registry();
+		$this->instance = new Registry( $type_registry, \WP_Block_Type_Registry::get_instance() );
+	}
 
-    /**
-     * @covers Registry->get_supported_post_types
-     */
-    public function test_get_supported_post_types()
-    {
-        $expected_post_types = [
-            "Post", "Page"
-        ];
-        $this->assertEquals($this->instance->get_supported_post_types(), $expected_post_types);
-    }
+	/**
+	 * @covers Registry->load_registered_editor_blocks
+	 */
+	public function test_load_registered_editor_blocks_callback() {
+		global $wp_filter;
+		$this->assertTrue( isset( $wp_filter['graphql_register_types']->callbacks ) );
+		$config = $this->instance->load_registered_editor_blocks( array() );
+		$this->assertEquals( $config['registered_editor_blocks'], $this->instance->registered_blocks );
+	}
 
-    /**
-     * This test ensures that the `add_block_fields_to_schema()` method
-     * works as expected.
-     *
-     */
-    public function test_add_block_fields_to_schema()
-    {
-        $post = 'Post';
+	/**
+	 * @covers Registry->get_supported_post_types
+	 */
+	public function test_get_supported_post_types() {
+		$expected_post_types = array(
+			'Post',
+			'Page',
+		);
+		$this->assertEquals( $this->instance->get_supported_post_types(), $expected_post_types );
+	}
 
-        $query = '
+	/**
+	 * This test ensures that the `add_block_fields_to_schema()` method
+	 * works as expected.
+	 */
+	public function test_add_block_fields_to_schema() {
+		$post = 'Post';
+
+		$query = '
 		query GetType($name:String!) {
 			__type(name: $name) {
 				interfaces {
@@ -61,19 +57,24 @@ final class RegistryTest extends PluginTestCase
 			}
 		}
 		';
-        
-        $this->instance->OnInit();
-        
-        // Verify the response contains what we put in cache
-        $response = graphql(['query' => $query, 'variables' => [
-            'name' => $post,
-        ]]);
-        $contains_interface =  [
-            'name' => "NodeWithContentBlocks",
-            'description' => "Node that has content blocks associated with it"
-        ];
-        $this->assertArrayHasKey('data', $response, json_encode($response));
-        $this->assertNotEmpty($response['data']['__type']['interfaces']);
-        $this->assertTrue(in_array($contains_interface, $response['data']['__type']['interfaces']));
-    }
+
+		$this->instance->OnInit();
+
+		// Verify the response contains what we put in cache
+		$response           = graphql(
+			array(
+				'query'     => $query,
+				'variables' => array(
+					'name' => $post,
+				),
+			)
+		);
+		$contains_interface = array(
+			'name'        => 'NodeWithContentBlocks',
+			'description' => 'Node that has content blocks associated with it',
+		);
+		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
+		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
+		$this->assertTrue( in_array( $contains_interface, $response['data']['__type']['interfaces'] ) );
+	}
 }

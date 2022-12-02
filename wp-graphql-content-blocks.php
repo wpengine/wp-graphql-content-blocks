@@ -26,14 +26,14 @@ if ( ! class_exists( 'WPGraphQLContentBlocks' ) ) {
 }
 
 
-if ( ! function_exists( 'graphql_content_blocks_init' ) ) {
+if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
 	/**
 	 * The main function that returns the WPGraphQLContentBlocks class
 	 *
 	 * @since 1.0.0
 	 * @return object|WPGraphQLContentBlocks
 	 */
-	function graphql_content_blocks_init() {
+	function wpgraphql_content_blocks_init() {
 		/**
 		 * Return an instance of the action
 		 */
@@ -42,5 +42,5 @@ if ( ! function_exists( 'graphql_content_blocks_init' ) ) {
 }
 
 // Get the plugin running.
-add_action( 'plugins_loaded', 'graphql_content_blocks_init', 15 );
+add_action( 'plugins_loaded', 'wpgraphql_content_blocks_init', 15 );
 require WPGRAPHQL_CONTENT_BLOCKS_DIR . '/includes/utilities/functions.php';

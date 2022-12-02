@@ -10,7 +10,8 @@
     "phpunit/phpunit": "^9.5",
     "wpengine/wpengine-coding-standards": "dev-develop",
     "yoast/phpunit-polyfills": "^1.0",
-    "imangazaliev/didom": "^2.0"
+    "imangazaliev/didom": "^2.0",
+    "squizlabs/php_codesniffer": "^3.7"
   },
   "scripts": {
     "lint": "parallel-lint -e php --no-colors --exclude vendor .",

@@ -14,7 +14,7 @@ namespace WPGraphQL\ContentBlocks\Interfaces;
  *
  * @since 0.0.1
  */
-interface OnInit
-{
-    public function onInit();
+interface OnInit {
+
+	public function onInit();
 }

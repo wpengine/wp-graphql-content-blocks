@@ -14,8 +14,8 @@ use WPGraphQL\Utils\Utils;
  *
  * @package WPGraphQL\ContentBlocks
  */
-final class ContentBlockInterface
-{
+final class ContentBlockInterface {
+
 
 	/**
 	 * @param array      $block   The block being resolved
@@ -23,19 +23,18 @@ final class ContentBlockInterface
 	 *
 	 * @return mixed WP_Block_Type|null
 	 */
-	public static function get_block(array $block, AppContext $context)
-	{
+	public static function get_block( array $block, AppContext $context ) {
 		$registered_blocks = $context->config['registered_editor_blocks'];
 
-		if (!isset($block['blockName'])) {
+		if ( ! isset( $block['blockName'] ) ) {
 			return null;
 		}
 
-		if (!isset($registered_blocks[$block['blockName']]) || !$registered_blocks[$block['blockName']] instanceof \WP_Block_Type) {
+		if ( ! isset( $registered_blocks[ $block['blockName'] ] ) || ! $registered_blocks[ $block['blockName'] ] instanceof \WP_Block_Type ) {
 			return null;
 		}
 
-		return $registered_blocks[$block['blockName']];
+		return $registered_blocks[ $block['blockName'] ];
 	}
 
 	/**
@@ -43,147 +42,156 @@ final class ContentBlockInterface
 	 *
 	 * @throws Exception
 	 */
-	public static function register_type(TypeRegistry $type_registry)
-	{
+	public static function register_type( TypeRegistry $type_registry ) {
+		register_graphql_interface_type(
+			'NodeWithContentBlocks',
+			array(
+				'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
+				'eagerlyLoadType' => true,
+				'fields'          => array(
+					'contentBlocks' => array(
+						'type'        => array(
+							'list_of' => 'ContentBlock',
+						),
+						'args'        => array(
+							'flat' => array(
+								'type' => 'Boolean',
+							),
+						),
+						'description' => __( 'List of content blocks', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $node, $args ) {
+							$content = null;
+							if ( $node instanceof Post ) {
 
-		register_graphql_interface_type('NodeWithContentBlocks', [
-			'description' => __('Node that has content blocks associated with it', 'wp-graphql-content-blocks'),
-			'eagerlyLoadType' => true,
-			'fields'      => [
-				'contentBlocks' => [
-					'type'        => [
-						'list_of' => 'ContentBlock',
-					],
-					'args' => [
-						'flat' => [
-							'type' => 'Boolean',
-						],
-					],
-					'description' => __('List of content blocks', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($node, $args) {
+								// @todo: this is restricted intentionally.
+								// $content = $node->contentRaw;
 
-						$content = null;
-						if ($node instanceof Post) {
+								// This is the unrestricted version, but we need to
+								// probably have a "Block" Model that handles
+								// determining what fields should/should not be
+								// allowed to be returned?
+								$post    = get_post( $node->databaseId );
+								$content = $post->post_content;
+							}
 
-							// @todo: this is restricted intentionally.
-							// $content = $node->contentRaw;
+							if ( empty( $content ) ) {
+								return array();
+							}
 
-							// This is the unrestricted version, but we need to
-							// probably have a "Block" Model that handles
-							// determining what fields should/should not be
-							// allowed to be returned?
-							$post = get_post($node->databaseId);
-							$content = $post->post_content;
-						}
+							// Parse the blocks from HTML comments to an array of blocks
+							$parsed_blocks = parse_blocks( $content );
+							if ( empty( $parsed_blocks ) ) {
+								return array();
+							}
 
-						if (empty($content)) {
-							return [];
-						}
+							// Filter out blocks that have no name
+							$parsed_blocks = array_filter(
+								$parsed_blocks,
+								function ( $parsed_block ) {
+									return isset( $parsed_block['blockName'] ) && ! empty( $parsed_block['blockName'] );
+								},
+								ARRAY_FILTER_USE_BOTH
+							);
 
-						// Parse the blocks from HTML comments to an array of blocks
-						$parsed_blocks = parse_blocks($content);
-						if (empty($parsed_blocks)) {
-							return [];
-						}
-
-						// Filter out blocks that have no name
-						$parsed_blocks = array_filter($parsed_blocks, function ($parsed_block) {
-							return isset($parsed_block['blockName']) && !empty($parsed_block['blockName']);
-						}, ARRAY_FILTER_USE_BOTH);
-
-						$parsed_blocks = array_map(function ($parsed_block) {
-							$parsed_block['nodeId'] = uniqid();
-							return $parsed_block;
-						}, $parsed_blocks);
-						return $parsed_blocks;
-					}
-				],
-			],
-		]);
+							$parsed_blocks = array_map(
+								function ( $parsed_block ) {
+									$parsed_block['nodeId'] = uniqid();
+									return $parsed_block;
+								},
+								$parsed_blocks
+							);
+							return $parsed_blocks;
+						},
+					),
+				),
+			)
+		);
 
 		// Register the ContentBlock Interface
-		register_graphql_interface_type('ContentBlock', [
-			'eagerlyLoadType' => true,
-			'description' => __('Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks'),
-			'fields'      => [
-				'nodeId'                    => [
-					'type'        => 'String',
-					'description' => __('The id of the Block', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($block) {
-						return isset($block['nodeId']) ? $block['nodeId'] : [];
-					},
-				],
-				'parentId'                    => [
-					'type'        => 'String',
-					'description' => __('The parent id of the Block', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($block) {
-						return isset($block['parentId']) ? $block['parentId'] : null;
-					},
-				],
-				'name'                    => [
-					'type'        => 'String',
-					'description' => __('The name of the Block', 'wp-graphql-content-blocks'),
-				],
-				'blockEditorCategoryName' => [
-					'type'        => 'String',
-					'description' => __('The name of the category the Block belongs to', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($block, $args, AppContext $context, ResolveInfo $info) {
-						return isset(self::get_block($block, $context)->category) ? self::get_block($block, $context)->category : null;
-					}
-				],
-				'isDynamic'               => [
-					'type'        => ['non_null' => 'Boolean'],
-					'description' => __('Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($block, $args, AppContext $context, ResolveInfo $info) {
-						return isset(self::get_block($block, $context)->render_callback) && !empty(self::get_block($block, $context)->render_callback);
-					},
-				],
-				'apiVersion'              => [
-					'type'        => 'Integer',
-					'description' => __('The API version of the Gutenberg Block', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($block, $args, AppContext $context, ResolveInfo $info) {
-						return isset(self::get_block($block, $context)->api_version) && absint(self::get_block($block, $context)->api_version) ? absint(self::get_block($block, $context)->api_version) : 2;
-					},
-				],
-				'innerBlocks' => [
-					'type' => [
-						'list_of' => 'ContentBlock',
-					],
-					'description' => __('The inner blocks of the Block', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($block) {
-						return isset($block['innerBlocks']) && is_array($block['innerBlocks']) ? $block['innerBlocks'] : [];
-					},
-				],
-				'cssClassNames'           => [
-					'type'        => ['list_of' => 'String'],
-					'description' => __('CSS Classnames to apply to the block', 'wp-graphql-content-blocks'),
-					'resolve'     => function ($block) {
-						if (isset($block['attrs']['className'])) {
-							return explode(' ', $block['attrs']['className']);
-						}
+		register_graphql_interface_type(
+			'ContentBlock',
+			array(
+				'eagerlyLoadType' => true,
+				'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
+				'fields'          => array(
+					'nodeId'                  => array(
+						'type'        => 'String',
+						'description' => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block ) {
+							return isset( $block['nodeId'] ) ? $block['nodeId'] : array();
+						},
+					),
+					'parentId'                => array(
+						'type'        => 'String',
+						'description' => __( 'The parent id of the Block', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block ) {
+							return isset( $block['parentId'] ) ? $block['parentId'] : null;
+						},
+					),
+					'name'                    => array(
+						'type'        => 'String',
+						'description' => __( 'The name of the Block', 'wp-graphql-content-blocks' ),
+					),
+					'blockEditorCategoryName' => array(
+						'type'        => 'String',
+						'description' => __( 'The name of the category the Block belongs to', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block, $args, AppContext $context, ResolveInfo $info ) {
+							return isset( self::get_block( $block, $context )->category ) ? self::get_block( $block, $context )->category : null;
+						},
+					),
+					'isDynamic'               => array(
+						'type'        => array( 'non_null' => 'Boolean' ),
+						'description' => __( 'Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block, $args, AppContext $context, ResolveInfo $info ) {
+							return isset( self::get_block( $block, $context )->render_callback ) && ! empty( self::get_block( $block, $context )->render_callback );
+						},
+					),
+					'apiVersion'              => array(
+						'type'        => 'Integer',
+						'description' => __( 'The API version of the Gutenberg Block', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block, $args, AppContext $context, ResolveInfo $info ) {
+							return isset( self::get_block( $block, $context )->api_version ) && absint( self::get_block( $block, $context )->api_version ) ? absint( self::get_block( $block, $context )->api_version ) : 2;
+						},
+					),
+					'innerBlocks'             => array(
+						'type'        => array(
+							'list_of' => 'ContentBlock',
+						),
+						'description' => __( 'The inner blocks of the Block', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block ) {
+							return isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ? $block['innerBlocks'] : array();
+						},
+					),
+					'cssClassNames'           => array(
+						'type'        => array( 'list_of' => 'String' ),
+						'description' => __( 'CSS Classnames to apply to the block', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block ) {
+							if ( isset( $block['attrs']['className'] ) ) {
+								return explode( ' ', $block['attrs']['className'] );
+							}
 
-						return null;
+							return null;
+						},
+					),
+					'renderedHtml'            => array(
+						'type'        => 'String',
+						'description' => __( 'The rendered HTML for the block', 'wp-graphql-content-blocks' ),
+						'resolve'     => function ( $block ) {
+							return render_block( $block );
+						},
+					),
+				),
+				'resolveType'     => function ( $block ) use ( $type_registry ) {
+					if ( empty( $block['blockName'] ) ) {
+						$block['blockName'] = 'core/html';
 					}
-				],
-				'renderedHtml' => [
-					'type' => 'String',
-					'description' => __('The rendered HTML for the block', 'wp-graphql-content-blocks'),
-					'resolve' => function ($block) {
-						return render_block($block);
-					}
-				]
-			],
-			'resolveType' => function ($block) use ($type_registry) {
 
-				if (empty($block['blockName'])) {
-					$block['blockName'] = 'core/html';
-				}
-
-				$type_name = lcfirst(ucwords($block['blockName'], '/'));
-				$type_name = preg_replace('/\//', '', lcfirst(ucwords($type_name, '/')));
-				$type_name = Utils::format_type_name($type_name);
-				return $type_registry->get_type($type_name);
-			}
-		]);
+					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
+					$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
+					$type_name = Utils::format_type_name( $type_name );
+					return $type_registry->get_type( $type_name );
+				},
+			)
+		);
 	}
 }
