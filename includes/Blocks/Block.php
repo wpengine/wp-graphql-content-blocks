@@ -2,11 +2,11 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
-use DiDom\Document;
 use GraphQL\Type\Definition\ResolveInfo;
 use WP_Block_Type;
 use WPGraphQL\AppContext;
 use WPGraphQL\ContentBlocks\Registry\Registry;
+use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\Utils\Utils;
 
 /**
@@ -135,32 +135,16 @@ class Block {
 						if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
 							$rendered_block = wp_unslash( render_block( $block ) );
 							$value          = null;
+							if ( empty( $rendered_block ) ) {
+								return $value;
+							}
 							switch ( $attribute_config['source'] ) {
 								case 'attribute':
-									if ( empty( $rendered_block ) ) {
-										$value = null;
-										break;
-									}
-									$doc = new Document();
-									$doc->loadHTML( $rendered_block );
-									$node    = $doc->find( $attribute_config['selector'] );
-									$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
-									$value   = $node[0] ? $node[0]->getAttribute( $attribute_config['attribute'] ) : $default;
+									$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], $attribute_config['default'] );
 									break;
 								case 'html':
-									if ( empty( $rendered_block ) ) {
-										$value = null;
-										break;
-									}
-
-									$doc = new Document();
-									$doc->loadHTML( $rendered_block );
-									$node       = $doc->find( $attribute_config['selector'] );
-									$inner_html = isset( $attribute_config['default'] ) ? $attribute_config['default'] : '';
-									foreach ( $node as $elem ) {
-										$inner_html .= $elem->innerHTML();
-									}
-									return $inner_html;
+									$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $attribute_config['default'] );
+									break;
 							}//end switch
 
 							return $value;
