@@ -132,25 +132,7 @@ class Block {
 					'type'        => $graphql_type,
 					'description' => __( sprintf( 'The "%1$s" field on the "%2$s" block', $attribute_name, $this->type_name ), 'wp-graphql' ),
 					'resolve'     => function ( $block, $args, $context, $info ) use ( $attribute_name, $attribute_config ) {
-						if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
-							$rendered_block = wp_unslash( render_block( $block ) );
-							$value          = null;
-							if ( empty( $rendered_block ) ) {
-								return $value;
-							}
-							switch ( $attribute_config['source'] ) {
-								case 'attribute':
-									$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], $attribute_config['default'] );
-									break;
-								case 'html':
-									$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $attribute_config['default'] );
-									break;
-							}//end switch
-
-							return $value;
-						}//end if
-
-						return $block['attrs'][ $attribute_name ] ?? null;
+						return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
 					},
 				);
 			}//end foreach
@@ -201,7 +183,29 @@ class Block {
 		);
 	}
 
-	public function resolve( $block, array $args, AppContext $context, ResolveInfo $info ) {
+	private function resolve( $block, array $args, AppContext $context, ResolveInfo $info ) {
 		return isset( $block['blockName'] ) ? $block['blockName'] : '';
+	}
+
+	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
+		if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
+			$rendered_block = wp_unslash( render_block( $block ) );
+			$value          = null;
+			if ( empty( $rendered_block ) ) {
+				return $value;
+			}
+			switch ( $attribute_config['source'] ) {
+				case 'attribute':
+					$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], $attribute_config['default'] );
+					break;
+				case 'html':
+					$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $attribute_config['default'] );
+					break;
+			}//end switch
+
+			return $value;
+		}//end if
+
+		return $block['attrs'][ $attribute_name ] ?? null;
 	}
 }
