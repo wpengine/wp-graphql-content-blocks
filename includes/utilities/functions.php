@@ -2,14 +2,10 @@
 /**
  * Various utility functions used through the plugin.
  *
- * @package WPGraphQLContentBlocks
+ * @package WPGraphQL\ContentBlocks
  */
 
-namespace WPGraphQLContentBlocks\Utilities;
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+namespace WPGraphQL\ContentBlocks\Utilities;
 
 /**
  * Converts string to camelCase. Added to ensure that fields are compliant with the GraphQL spec.

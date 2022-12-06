@@ -12,19 +12,35 @@
  * Requires PHP: 7.2
  * Requires at least: 5.7
  *
- * @package WPGraphQLContentBlocks
+ * @package WPGraphQL\ContentBlocks
  */
-
-namespace WPGraphQLContentBlocks;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WPGRAPHQL_CONTENT_BLOCKS_FILE', __FILE__ );
 define( 'WPGRAPHQL_CONTENT_BLOCKS_DIR', dirname( __FILE__ ) );
-define( 'WPGRAPHQL_CONTENT_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'WPGRAPHQL_CONTENT_BLOCKS_PATH', plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_FILE ) );
-define( 'WPGRAPHQL_CONTENT_BLOCKS_SLUG', dirname( plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_FILE ) ) );
 
+if ( ! class_exists( 'WPGraphQLContentBlocks' ) ) {
+	require_once __DIR__ . '/includes/WPGraphQLContentBlocks.php';
+}
+
+
+if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
+	/**
+	 * The main function that returns the WPGraphQLContentBlocks class
+	 *
+	 * @since 1.0.0
+	 * @return object|WPGraphQLContentBlocks
+	 */
+	function wpgraphql_content_blocks_init() {
+		/**
+		 * Return an instance of the action
+		 */
+		return \WPGraphQLContentBlocks::instance();
+	}
+}
+
+// Get the plugin running.
+add_action( 'plugins_loaded', 'wpgraphql_content_blocks_init', 15 );
 require WPGRAPHQL_CONTENT_BLOCKS_DIR . '/includes/utilities/functions.php';

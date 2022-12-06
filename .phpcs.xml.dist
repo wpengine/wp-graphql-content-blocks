@@ -35,9 +35,9 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="wpgraphql_content_blocks" />
-				<element value="WPGRAPHQL_CONTENT_BLOCKS" />
-				<element value="WPGraphQLContentBlocks" />
+				<element value="wpgraphql\content_blocks" />
+				<element value="WPGRAPHQL\CONTENT_BLOCKS" />
+				<element value="WPGraphQL\ContentBlocks" />
 			</property>
 		</properties>
 	</rule>
