@@ -118,7 +118,7 @@ final class ContentBlockInterface {
 						'type'        => 'String',
 						'description' => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
-							return isset( $block['nodeId'] ) ? $block['nodeId'] : array();
+							return isset( $block['nodeId'] ) ? $block['nodeId'] : '';
 						},
 					),
 					'parentId'                => array(
