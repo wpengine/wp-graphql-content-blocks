@@ -100,7 +100,7 @@ final class ContentBlockInterface {
 								},
 								$parsed_blocks
 							);
-							return $parsed_blocks;
+							return collectBlocks_iter( $parsed_blocks );
 						},
 					),
 				),
@@ -194,4 +194,23 @@ final class ContentBlockInterface {
 			)
 		);
 	}
+}
+
+function collectBlocks_iter( $blocks ) {
+	$result = array();
+	foreach ( $blocks as $block ) {
+		$result = array_merge( $result, collectBlocks( $block ) );
+	}
+	return $result;
+}
+
+function collectBlocks( $block ) {
+	$result          = array();
+	$block['nodeId'] = isset( $block['nodeId'] ) ? $block['nodeId'] : uniqid();
+	array_push( $result, $block );
+	foreach ( $block['innerBlocks'] as $child ) {
+		$child['parentId'] = $block['nodeId'];
+		$result            = array_merge( $result, collectBlocks( $child ) );
+	}
+	return $result;
 }
