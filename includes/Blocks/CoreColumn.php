@@ -10,5 +10,11 @@ class CoreColumn extends Block {
 			'source'    => 'attribute',
 			'attribute' => 'class',
 		),
+		'style'     => array(
+			'type'      => 'string',
+			'selector'  => 'div',
+			'source'    => 'attribute',
+			'attribute' => 'style',
+		),
 	);
 }
