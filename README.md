@@ -6,7 +6,7 @@ WordPress plugin that extends WPGraphQL to support querying (Gutenberg) Blocks a
 
 ## How to Install
 
-The plugin is an extension of `wp-graphql`, so first of all make sure you have this plugin installed.
+This plugin is an extension of [`wp-graphql`](https://www.wpgraphql.com/), so make sure you have it installed first.
 
 1. Clone the repo or download the zip file of the project.
 2. Within the plugin folder use `composer` to install the vendor dependencies:
