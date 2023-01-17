@@ -15,3 +15,35 @@ The plugin is an extension of `wp-graphql`, so first of all make sure you have t
 composer install
 ```
 3. Activate the plugin within WordPress plugins page.
+
+
+## How to Use
+
+Once the plugin is installed, you need can perform queries from within the `GraphQLi` IDE Block data using the `contentBlocks` field:
+
+```graphql
+{
+  posts {
+    nodes {
+      # contentBlocks field represents array of Block data
+      contentBlocks {
+        # fields from the interface
+        renderedHtml
+        __typename
+        # expand the Paragraph block attributes
+        ... on CoreParagraph {
+          attributes {
+            content
+          }
+        }
+        # expand a Custom block attributes
+        ... on CreateBlockMyFirstBlock {
+          attributes {
+            title
+          }
+        }
+      }
+    }
+  }
+}
+```
