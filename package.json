@@ -1,4 +1,5 @@
 {
+    "name": "@wpengine/wp-graphql-content-blocks",
     "private": true,
     "engines": {
         "node": ">=16.0.0"
