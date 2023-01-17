@@ -119,6 +119,9 @@ class Block {
 					case 'number':
 						$graphql_type = 'Float';
 						break;
+					case 'object':
+						$graphql_type = 'BlockAttributesObject';
+						break;
 					case 'boolean':
 						$graphql_type = 'Boolean';
 						break;
@@ -205,7 +208,6 @@ class Block {
 
 			return $value;
 		}//end if
-
 		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
 		return $block['attrs'][ $attribute_name ] ?? $default;
 	}
