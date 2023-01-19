@@ -59,7 +59,10 @@ final class ContentBlocksResolver {
             },
             $parsed_blocks
         );
-        return self::flatten_block_list( $parsed_blocks );
+        if ( isset( $args['flat'] ) && 'true' == $args['flat'] ) {
+            return self::flatten_block_list( $parsed_blocks );
+        }
+        return $parsed_blocks;
     }
 
     private static function flatten_block_list( $blocks ) {
