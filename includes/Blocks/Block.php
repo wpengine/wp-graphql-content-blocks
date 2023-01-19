@@ -60,19 +60,40 @@ class Block {
 		$this->block            = $block;
 		$this->block_registry   = $block_registry;
 		$this->block_attributes = $this->block->attributes;
+		$this->type_name = $this->format_type_name( $block->name );
+		
+		$this->register_block_type();
+	}
 
+	/**
+	 * Template Method to Register fields to the Block
+	 *
+	 * @return void
+	 */
+	public function register_fields() {     }
+	/**
+	 * Formats the name of the block for the GraphQL registry
+	 * 
+	 * @param String $name The name of the block
+	 * @return String
+	 */
+
+	private function format_type_name( $name ) {
 		// Format the type name for showing in the GraphQL Schema
 		// @todo: WPGraphQL utility function should handle removing the '/' by default.
-		$type_name       = lcfirst( ucwords( $block->name, '/' ) );
+		$type_name       = lcfirst( ucwords( $name, '/' ) );
 		$type_name       = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
 		$type_name       = Utils::format_type_name( $type_name );
-		$this->type_name = Utils::format_type_name( $type_name );
+		return Utils::format_type_name( $type_name );
+	}
+
+	private function register_block_type() {
 		$this->register_block_attributes_as_fields();
 		$this->register_fields();
 		$this->register_type();
 	}
 
-	public function register_block_attributes_as_fields() {
+	private function register_block_attributes_as_fields() {
 		if ( isset( $this->additional_block_attributes ) ) {
 			$block_attribute_fields = $this->get_block_attribute_fields( array_merge( $this->block_attributes, $this->additional_block_attributes ) );
 		} else {
@@ -103,7 +124,7 @@ class Block {
 		}//end if
 	}
 
-	public function get_block_attribute_fields( $block_attributes ) {
+	private function get_block_attribute_fields( $block_attributes ) {
 		$block_attribute_fields = array();
 		if ( isset( $block_attributes ) ) {
 			foreach ( $block_attributes as $attribute_name => $attribute_config ) {
@@ -118,9 +139,6 @@ class Block {
 						break;
 					case 'number':
 						$graphql_type = 'Float';
-						break;
-					case 'object':
-						$graphql_type = 'BlockAttributesObject';
 						break;
 					case 'boolean':
 						$graphql_type = 'Boolean';
@@ -144,45 +162,30 @@ class Block {
 	}
 
 	/**
-	 * Register fields to the Block
-	 *
-	 * @return void
-	 */
-	public function register_fields() {     }
-
-	/**
-	 * Register array type attributes to the block
-	 *
-	 * @return void
-	 */
-	public function register_array_attribute_fields( $attribute_name, $attribute_config ) {
-	}
-
-	/**
 	 * Register the Type for the block
 	 *
 	 * @return void
 	 */
-	public function register_type() {
+	private function register_type() {
 		/**
 		 * Register the Block Object Type to the Schema
 		 */
 		register_graphql_object_type(
 			$this->type_name,
-			array(
+			[
 				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-				'interfaces'      => array( 'ContentBlock' ),
+				'interfaces'      => [ 'ContentBlock' ],
 				'eagerlyLoadType' => true,
-				'fields'          => array(
-					'name' => array(
-						'type'        => array( 'non_null' => 'String' ),
+				'fields'          => [
+					'name' => [
+						'type'        => 'String',
 						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block, array $args, AppContext $context, ResolveInfo $info ) {
 							return $this->resolve( $block, $args, $context, $info );
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 

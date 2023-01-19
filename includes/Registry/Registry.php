@@ -115,7 +115,7 @@ final class Registry implements OnInit {
 		 * This allows 3rd party extensions to hook and and provide
 		 * a path to their class for registering a field to the Schema
 		 */
-		$class_name = apply_filters( 'graphql_content_blocks_block_class', $class_name, $block, $this );
+		$class_name = apply_filters( 'wpgraphql_content_blocks_block_fields', $class_name, $block, $this );
 		if ( class_exists( $class_name ) ) {
 			new $class_name( $block, $this );
 		} else {
