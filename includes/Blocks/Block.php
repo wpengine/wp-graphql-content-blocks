@@ -140,6 +140,9 @@ class Block {
 					case 'number':
 						$graphql_type = 'Float';
 						break;
+					case 'integer':
+						$graphql_type = 'Int';
+						break;
 					case 'boolean':
 						$graphql_type = 'Boolean';
 						break;
