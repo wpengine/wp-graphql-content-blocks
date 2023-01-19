@@ -60,8 +60,8 @@ class Block {
 		$this->block            = $block;
 		$this->block_registry   = $block_registry;
 		$this->block_attributes = $this->block->attributes;
-		$this->type_name = $this->format_type_name( $block->name );
-		
+		$this->type_name        = $this->format_type_name( $block->name );
+
 		$this->register_block_type();
 	}
 
@@ -73,7 +73,7 @@ class Block {
 	public function register_fields() {     }
 	/**
 	 * Formats the name of the block for the GraphQL registry
-	 * 
+	 *
 	 * @param String $name The name of the block
 	 * @return String
 	 */
@@ -81,9 +81,9 @@ class Block {
 	private function format_type_name( $name ) {
 		// Format the type name for showing in the GraphQL Schema
 		// @todo: WPGraphQL utility function should handle removing the '/' by default.
-		$type_name       = lcfirst( ucwords( $name, '/' ) );
-		$type_name       = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
-		$type_name       = Utils::format_type_name( $type_name );
+		$type_name = lcfirst( ucwords( $name, '/' ) );
+		$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
+		$type_name = Utils::format_type_name( $type_name );
 		return Utils::format_type_name( $type_name );
 	}
 
@@ -175,20 +175,20 @@ class Block {
 		 */
 		register_graphql_object_type(
 			$this->type_name,
-			[
+			array(
 				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-				'interfaces'      => [ 'ContentBlock' ],
+				'interfaces'      => array( 'ContentBlock' ),
 				'eagerlyLoadType' => true,
-				'fields'          => [
-					'name' => [
+				'fields'          => array(
+					'name' => array(
 						'type'        => 'String',
 						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block, array $args, AppContext $context, ResolveInfo $info ) {
 							return $this->resolve( $block, $args, $context, $info );
 						},
-					],
-				],
-			]
+					),
+				),
+			)
 		);
 	}
 

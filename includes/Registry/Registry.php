@@ -54,11 +54,6 @@ final class Registry implements OnInit {
 		$this->pass_blocks_to_context();
 		$this->register_block_types();
 		$this->add_block_fields_to_schema();
-		register_graphql_scalar('BlockAttributesObject', [
-			'serialize' => function ($value) {
-				return json_encode($value);
-			}
-		]);
 	}
 
 	/**

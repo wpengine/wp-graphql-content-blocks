@@ -60,7 +60,7 @@ final class ContentBlockInterface {
 						),
 						'description' => __( 'List of content blocks', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $node, $args ) {
-							return ContentBlocksResolver::resolve_content_blocks($node, $args);
+							return ContentBlocksResolver::resolve_content_blocks( $node, $args );
 						},
 					),
 				),
