@@ -21,7 +21,7 @@ final class DOMHelpers {
 		$doc->loadHTML( $html );
 		$node    = $doc->find( $selector );
 		$default = isset( $default ) ? $default : null;
-		$value   = (!empty($node) && isset($node[0])) ? $node[0]->getAttribute( $attribute ) : $default;
+		$value   = ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default;
 		return $value;
 	}
 
