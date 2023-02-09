@@ -160,8 +160,7 @@ class Block {
 						$graphql_type = 'Boolean';
 						break;
 					case 'object':
-						// TODO: BlockAttributesObject?.
-						$graphql_type = 'Object';
+						$graphql_type = 'BlockAttributesObject';
 						break;
 				}
 
