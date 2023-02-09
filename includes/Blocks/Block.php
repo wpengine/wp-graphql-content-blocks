@@ -71,9 +71,9 @@ class Block {
 	 * @return void
 	 */
 	public function update_scalars() {
-		Registry::register_graphql_scalar( 'Block', [ 
+		Registry::register_graphql_scalar( 'BlockAttributesObject', [ 
 			'serialize' => function ( $value ) {
-				return json_encode( $value );
+				return wp_json_encode( $value );
 			}
 		]);
 	}
@@ -160,6 +160,7 @@ class Block {
 						$graphql_type = 'Boolean';
 						break;
 					case 'object':
+						// TODO: BlockAttributesObject?.
 						$graphql_type = 'Object';
 						break;
 				}
@@ -172,6 +173,9 @@ class Block {
 					'type'        => $graphql_type,
 					'description' => __( sprintf( 'The "%1$s" field on the "%2$s" block', $attribute_name, $this->type_name ), 'wp-graphql' ),
 					'resolve'     => function ( $block, $args, $context, $info ) use ( $attribute_name, $attribute_config ) {
+						if ( $graphql_type === 'object' ) {
+							// isset( $block['attrs']['data'] ) ? json_decode($block['attrs']['data']) : array().
+						}
 						return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
 					},
 				);
