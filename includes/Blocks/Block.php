@@ -61,8 +61,21 @@ class Block {
 		$this->block_registry   = $block_registry;
 		$this->block_attributes = $this->block->attributes;
 		$this->type_name        = $this->format_type_name( $block->name );
-
+		$this->update_scalars();
 		$this->register_block_type();
+	}
+
+	/**
+	 * Update scaler types
+	 * 
+	 * @return void
+	 */
+	public function update_scalars() {
+		Registry::register_graphql_scalar( 'Block', [ 
+			'serialize' => function ( $value ) {
+				return json_encode( $value );
+			}
+		]);
 	}
 
 	/**
@@ -145,6 +158,9 @@ class Block {
 						break;
 					case 'boolean':
 						$graphql_type = 'Boolean';
+						break;
+					case 'object':
+						$graphql_type = 'Object';
 						break;
 				}
 
