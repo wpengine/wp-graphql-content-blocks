@@ -6,6 +6,7 @@ use Exception;
 use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
 use WPGraphQL\ContentBlocks\Interfaces\OnInit;
+use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\ContentBlockInterface;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
@@ -51,6 +52,7 @@ final class Registry implements OnInit {
 	 */
 	public function OnInit() {
 		ContentBlockInterface::register_type( $this->type_registry );
+		( new Scalar() )->OnInit();
 		$this->pass_blocks_to_context();
 		$this->register_block_types();
 		$this->add_block_fields_to_schema();

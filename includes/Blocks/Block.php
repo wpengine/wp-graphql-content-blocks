@@ -7,6 +7,7 @@ use WP_Block_Type;
 use WPGraphQL\AppContext;
 use WPGraphQL\ContentBlocks\Registry\Registry;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
+use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\Utils\Utils;
 
 /**
@@ -61,21 +62,7 @@ class Block {
 		$this->block_registry   = $block_registry;
 		$this->block_attributes = $this->block->attributes;
 		$this->type_name        = $this->format_type_name( $block->name );
-		$this->update_scalars();
 		$this->register_block_type();
-	}
-
-	/**
-	 * Update scaler types
-	 * 
-	 * @return void
-	 */
-	public function update_scalars() {
-		Registry::register_graphql_scalar( 'BlockAttributesObject', [ 
-			'serialize' => function ( $value ) {
-				return wp_json_encode( $value );
-			}
-		]);
 	}
 
 	/**
@@ -160,7 +147,7 @@ class Block {
 						$graphql_type = 'Boolean';
 						break;
 					case 'object':
-						$graphql_type = 'BlockAttributesObject';
+						$graphql_type = Scalar::BlockAttributesObject();
 						break;
 				}
 
