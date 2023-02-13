@@ -48,6 +48,7 @@ final class UnknownBlockTest extends PluginTestCase
           contentBlocks(flat: true) {
               name
               parentId
+              renderedHtml
           }
 				}
 			}
