@@ -65,8 +65,10 @@ final class UnknownBlockTest extends PluginTestCase
     $this->assertEquals(count($node['contentBlocks']), 3);
 
     $this->assertEquals($node['contentBlocks'][0]['name'], 'core/paragraph');
+
     $this->assertEquals($node['contentBlocks'][1]['name'], 'core/heading');
+    
     $this->assertEquals($node['contentBlocks'][2]['name'], 'UnknownBlock');
-    $this->assertEquals($node['contentBlocks'][2]['renderedHtml'], '\r\n<p>Testing</p>\r\n');
+    $this->assertEquals($node['contentBlocks'][2]['renderedHtml'], ' <p>Testing</p> ');
   }
 }
