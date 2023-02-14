@@ -3,7 +3,7 @@ namespace WPGraphQL\ContentBlocks\Blocks;
 
 class CoreColumn extends Block {
 
-	protected ?array $additional_block_attributes = array(
+	protected $additional_block_attributes = array(
 		'cssClassName' => array(
 			'type'      => 'string',
 			'selector'  => 'div',

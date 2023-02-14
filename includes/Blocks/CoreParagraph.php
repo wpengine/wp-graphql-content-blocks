@@ -2,7 +2,7 @@
 namespace WPGraphQL\ContentBlocks\Blocks;
 
 class CoreParagraph extends Block {
-	protected ?array $additional_block_attributes = array(
+	protected $additional_block_attributes = array(
 		'style'        => array(
 			'type'      => 'string',
 			'selector'  => 'p',

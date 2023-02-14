@@ -23,7 +23,9 @@ final class Scalar implements OnInit {
 			)
 		);
 	}
-
+	/**
+	 * Return type name of BlockAttributesObject.
+	 */
 	public static function BlockAttributesObject() {
 		return 'BlockAttributesObject';
 	}

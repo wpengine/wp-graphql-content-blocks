@@ -59,7 +59,7 @@ final class ContentBlocksResolver {
 		);
 
 		// Flatten block list here if requested
-		if ( isset( $args['flat'] ) && 'true' == $args['flat'] ) {
+		if ( isset( $args['flat'] ) && 'true' === $args['flat'] ) {
 			return self::flatten_block_list( $parsed_blocks );
 		}
 		return $parsed_blocks;
