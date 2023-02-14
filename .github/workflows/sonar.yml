@@ -28,7 +28,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          scanMetadataReportFile: ./front/.scannerwork/report-task.txt
+          scanMetadataReportFile: .scannerwork/report-task.txt
 
       - name: "Display Quality gate result"
         run: echo "Front Quality Gate status ${{ toJSON(steps.sonarqube-result-front) }}"
