@@ -3,7 +3,7 @@ namespace WPGraphQL\ContentBlocks\Blocks;
 
 class CoreCode extends Block {
 
-	protected $additional_block_attributes = array(
+	protected ?array $additional_block_attributes = array(
 		'style'        => array(
 			'type'      => 'string',
 			'selector'  => 'pre',
