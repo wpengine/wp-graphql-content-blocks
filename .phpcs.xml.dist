@@ -54,6 +54,11 @@
 		</properties>
 	</rule>
 
+	<rule ref="WordPress.Files.FileName">
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+	</rule>
+
 	<!-- Exclude rules that break PHP Unit test conventions or result in redundant comments. -->
 	<!-- Test functions and properties are self-describing. -->
 	<rule ref="Generic.Commenting.DocComment.MissingShort">
@@ -114,4 +119,6 @@
 	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
+
+	
 </ruleset>

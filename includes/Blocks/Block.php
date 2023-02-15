@@ -7,6 +7,7 @@ use WP_Block_Type;
 use WPGraphQL\AppContext;
 use WPGraphQL\ContentBlocks\Registry\Registry;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
+use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\Utils\Utils;
 
 /**
@@ -61,7 +62,6 @@ class Block {
 		$this->block_registry   = $block_registry;
 		$this->block_attributes = $this->block->attributes;
 		$this->type_name        = $this->format_type_name( $block->name );
-
 		$this->register_block_type();
 	}
 
@@ -145,6 +145,9 @@ class Block {
 						break;
 					case 'boolean':
 						$graphql_type = 'Boolean';
+						break;
+					case 'object':
+						$graphql_type = Scalar::BlockAttributesObject();
 						break;
 				}
 

@@ -95,21 +95,21 @@ final class ContentBlockInterface {
 					'blockEditorCategoryName' => array(
 						'type'        => 'String',
 						'description' => __( 'The name of the category the Block belongs to', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, $args, AppContext $context, ResolveInfo $info ) {
+						'resolve'     => function ( $block, $args, AppContext $context ) {
 							return isset( self::get_block( $block, $context )->category ) ? self::get_block( $block, $context )->category : null;
 						},
 					),
 					'isDynamic'               => array(
 						'type'        => array( 'non_null' => 'Boolean' ),
 						'description' => __( 'Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, $args, AppContext $context, ResolveInfo $info ) {
+						'resolve'     => function ( $block, $args, AppContext $context ) {
 							return isset( self::get_block( $block, $context )->render_callback ) && ! empty( self::get_block( $block, $context )->render_callback );
 						},
 					),
 					'apiVersion'              => array(
 						'type'        => 'Integer',
 						'description' => __( 'The API version of the Gutenberg Block', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, $args, AppContext $context, ResolveInfo $info ) {
+						'resolve'     => function ( $block, $args, AppContext $context ) {
 							return isset( self::get_block( $block, $context )->api_version ) && absint( self::get_block( $block, $context )->api_version ) ? absint( self::get_block( $block, $context )->api_version ) : 2;
 						},
 					),
