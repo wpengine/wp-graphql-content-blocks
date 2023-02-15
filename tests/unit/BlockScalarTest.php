@@ -60,6 +60,6 @@ final class BlockScalarTest extends PluginTestCase {
 
 		// There should more than one block using that query when using flat: true
 		$this->assertEquals( count( $node['contentBlocks'] ), 1 );
-		$this->assertEquals( $node['contentBlocks'][0]['attributes']['style'], '{\"color\":{\"background\":\"#a62929\"}}' );
+		$this->assertEquals( $node['contentBlocks'][0]['attributes']['style'], '{"color":{"background":"#a62929"}}' );
 	}
 }
