@@ -34,15 +34,18 @@ final class BlockScalarTest extends PluginTestCase {
 		wp_delete_post( $this->post_id, true );
 	}
 
-	public function test_retrieve_flatten_content_blocks() {
+	public function test_resolve_attribute_object_type() {
 		$query = '
 		{
 			posts(first: 1) {
 				nodes {
 					databaseId
 						contentBlocks(flat: true) {
-							name
-							parentId
+							...on CoreParagraph {
+								attributes {
+									style
+								}
+							}
 						}
 				}
 			}
@@ -56,22 +59,7 @@ final class BlockScalarTest extends PluginTestCase {
 		$this->assertEquals( $this->post_id, $node['databaseId'] );
 
 		// There should more than one block using that query when using flat: true
-		$this->assertEquals( count( $node['contentBlocks'] ), 5 );
-
-		$this->assertEquals( $node['contentBlocks'][0]['name'], 'core/columns' );
-		$this->assertNull( $node['contentBlocks'][0]['parentId'] );
-
-		$this->assertEquals( $node['contentBlocks'][1]['name'], 'core/column' );
-		$this->assertNotNull( $node['contentBlocks'][1]['parentId'] );
-
-		$this->assertEquals( $node['contentBlocks'][2]['name'], 'core/paragraph' );
-		$this->assertNotNull( $node['contentBlocks'][2]['parentId'] );
-
-		$this->assertEquals( $node['contentBlocks'][3]['name'], 'core/column' );
-		$this->assertNotNull( $node['contentBlocks'][3]['parentId'] );
-
-		$this->assertEquals( $node['contentBlocks'][4]['name'], 'core/paragraph' );
-		$this->assertNotNull( $node['contentBlocks'][4]['parentId'] );
+		$this->assertEquals( count( $node['contentBlocks'] ), 1 );
+		$this->assertEquals( $node['contentBlocks'][0]['attributes']['style'], '{\"color\":{\"background\":\"#a62929\"}}' );
 	}
-
 }
