@@ -53,7 +53,33 @@ final class Registry implements OnInit {
 		ContentBlockInterface::register_type( $this->type_registry );
 		$this->pass_blocks_to_context();
 		$this->register_block_types();
+		$this->register_unknown_block();
 		$this->add_block_fields_to_schema();
+	}
+
+	/**
+	 * Registers the UnknownBlock in the instance a block is not defined
+	 * in the registry.
+	 * 
+	 */
+	public function register_unknown_block() {
+		register_graphql_object_type(
+			'UnknownBlock',
+			array(
+				'description'     => __( 'A block used for resolving blocks not found in the WordPress registry', 'wp-graphql-content-blocks' ),
+				'interfaces'      => array( 'ContentBlock' ),
+				'eagerlyLoadType' => true,
+				'fields'          => array(
+					'name' => array(
+						'type'        => 'String',
+						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
+						'resolve'     => function () {
+							return 'UnknownBlock';
+						}
+					),
+				),
+			)
+		);
 	}
 
 	/**
