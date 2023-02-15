@@ -2,7 +2,7 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-final class BlockScalarTest extends PluginTestCase {
+final class BlockAttributesObjectTest extends PluginTestCase {
 	public $instance;
 	public $post_id;
 
@@ -57,9 +57,9 @@ final class BlockScalarTest extends PluginTestCase {
 
 		// Verify that the ID of the first post matches the one we just created.
 		$this->assertEquals( $this->post_id, $node['databaseId'] );
-
-		// There should more than one block using that query when using flat: true
+		// There should be only 1 block
 		$this->assertEquals( count( $node['contentBlocks'] ), 1 );
+		// There should be a style attribute that matches the json for the content of the attribute
 		$this->assertEquals( $node['contentBlocks'][0]['attributes']['style'], '{"color":{"background":"#a62929"}}' );
 	}
 }
