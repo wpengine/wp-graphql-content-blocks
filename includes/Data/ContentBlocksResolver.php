@@ -14,7 +14,7 @@ final class ContentBlocksResolver {
 	 * Retrieves a list of content blocks
 	 *
 	 * @param mixed $node The node we are resolving.
-	 * @param array $args Query args to pass to the connection resolver.
+	 * @param array $args GraphQL query args to pass to the connection resolver.
 	 */
 	public static function resolve_content_blocks( $node, $args ) {
 		$content = null;
@@ -30,6 +30,15 @@ final class ContentBlocksResolver {
 			$post    = get_post( $node->databaseId );
 			$content = $post->post_content;
 		}
+
+		/**
+		 * Filters the content retrieved from the node used to parse the blocks.
+		 *
+		 * @param string                 $content The content to parse.
+		 * @param \WPGraphQL\Model\Model $node    The node we are resolving.
+		 * @param array                  $args    GraphQL query args to pass to the connection resolver.
+		 */
+		$content = apply_filters( 'wpgraphql_content_blocks_resolver_content', $content, $node, $args );
 
 		if ( empty( $content ) ) {
 			return array();
