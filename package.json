@@ -22,5 +22,8 @@
     },
     "overrides": {
         "jest": "28.1.2"
+    },
+    "dependencies": {
+        "@changesets/cli": "^2.26.0"
     }
 }
