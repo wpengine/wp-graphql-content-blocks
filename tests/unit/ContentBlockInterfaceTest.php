@@ -119,10 +119,10 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 					'name' => 'name',
 				),
 				array(
-					'name' => 'nodeId',
+					'name' => 'clientId',
 				),
 				array(
-					'name' => 'parentId',
+					'name' => 'parentClientId',
 				),
 				array(
 					'name' => 'renderedHtml',

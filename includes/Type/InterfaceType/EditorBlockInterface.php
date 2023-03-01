@@ -74,18 +74,18 @@ final class EditorBlockInterface {
 				'eagerlyLoadType' => true,
 				'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
 				'fields'          => array(
-					'nodeId'                  => array(
+					'clientId'                  => array(
 						'type'        => 'String',
 						'description' => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
-							return isset( $block['nodeId'] ) ? $block['nodeId'] : uniqid();
+							return isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 						},
 					),
-					'parentId'                => array(
+					'parentClientId'                => array(
 						'type'        => 'String',
 						'description' => __( 'The parent id of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
-							return isset( $block['parentId'] ) ? $block['parentId'] : null;
+							return isset( $block['parentClientId'] ) ? $block['parentClientId'] : null;
 						},
 					),
 					'name'                    => array(
