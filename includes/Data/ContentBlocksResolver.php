@@ -93,7 +93,7 @@ final class ContentBlocksResolver {
 		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 		array_push( $result, $block );
 		foreach ( $block['innerBlocks'] as $child ) {
-			$child['parentId'] = $block['clientId'];
+			$child['parentClientId'] = $block['clientId'];
 			$result            = array_merge( $result, self::flatten_inner_blocks( $child ) );
 		}
 		return $result;
