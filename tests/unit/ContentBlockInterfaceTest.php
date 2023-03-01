@@ -99,37 +99,18 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 			)
 		);
 		$expected = array(
-			'fields' => array(
-				array(
-					'name' => 'apiVersion',
-				),
-				array(
-					'name' => 'blockEditorCategoryName',
-				),
-				array(
-					'name' => 'cssClassNames',
-				),
-				array(
-					'name' => 'innerBlocks',
-				),
-				array(
-					'name' => 'isDynamic',
-				),
-				array(
-					'name' => 'name',
-				),
-				array(
-					'name' => 'clientId',
-				),
-				array(
-					'name' => 'parentClientId',
-				),
-				array(
-					'name' => 'renderedHtml',
-				),
-			),
+			'apiVersion',
+			'blockEditorCategoryName',
+			'cssClassNames',
+			'innerBlocks',
+			'isDynamic',
+			'name',
+			'clientId',
+			'parentClientId',
+			'renderedHtml',
 		);
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
-		$this->assertEquals( $response['data']['__type'], $expected );
+		$fields = array_map( function ($val) { return $val['name']; } , $response['data']['__type']['fields'] );
+		$this->assertEquals( $fields , $expected );
 	}
 }
