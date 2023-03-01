@@ -110,7 +110,9 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 			'renderedHtml',
 		);
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
-		$fields = array_map( function ($val) { return $val['name']; } , $response['data']['__type']['fields'] );
-		$this->assertEquals( $fields , $expected );
+		$actual = array_map( function ($val) { return $val['name']; } , $response['data']['__type']['fields'] );
+		natsort( $actual );
+		natsort( $expected);
+		$this->assertEquals( $actual , $expected );
 	}
 }
