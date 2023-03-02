@@ -7,7 +7,7 @@ use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
 use WPGraphQL\ContentBlocks\Interfaces\OnInit;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
-use WPGraphQL\ContentBlocks\Type\InterfaceType\ContentBlockInterface;
+use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
 
@@ -51,7 +51,7 @@ final class Registry implements OnInit {
 	 * @throws Exception
 	 */
 	public function OnInit() {
-		ContentBlockInterface::register_type( $this->type_registry );
+		EditorBlockInterface::register_type( $this->type_registry );
 		( new Scalar() )->OnInit();
 		$this->pass_blocks_to_context();
 		$this->register_block_types();
@@ -69,7 +69,7 @@ final class Registry implements OnInit {
 			'UnknownBlock',
 			array(
 				'description'     => __( 'A block used for resolving blocks not found in the WordPress registry', 'wp-graphql-content-blocks' ),
-				'interfaces'      => array( 'ContentBlock' ),
+				'interfaces'      => array( 'EditorBlock' ),
 				'eagerlyLoadType' => true,
 				'fields'          => array(
 					'name' => array(
@@ -158,8 +158,8 @@ final class Registry implements OnInit {
 			return;
 		}
 
-		// Register the `NodeWithContentBlocks` Interface to the supported post types
-		register_graphql_interfaces_to_types( array( 'NodeWithContentBlocks' ), $supported_post_types );
+		// Register the `NodeWithEditorBlocks` Interface to the supported post types
+		register_graphql_interfaces_to_types( array( 'NodeWithEditorBlocks' ), $supported_post_types );
 	}
 
 	/**

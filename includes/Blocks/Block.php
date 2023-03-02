@@ -180,7 +180,7 @@ class Block {
 			$this->type_name,
 			array(
 				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-				'interfaces'      => array( 'ContentBlock' ),
+				'interfaces'      => array( 'EditorBlock' ),
 				'eagerlyLoadType' => true,
 				'fields'          => array(
 					'name' => array(

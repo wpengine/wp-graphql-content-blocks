@@ -45,7 +45,7 @@ final class UnknownBlockTest extends PluginTestCase
 			posts(first: 1) {
 				nodes {
 					databaseId
-          contentBlocks(flat: true) {
+          editorBlocks(flat: true) {
               name
               parentId
               renderedHtml
@@ -62,13 +62,13 @@ final class UnknownBlockTest extends PluginTestCase
     $this->assertEquals($this->post_id, $node['databaseId']);
 
     // Verify 3 blocks are returned
-    $this->assertEquals(count($node['contentBlocks']), 3);
+    $this->assertEquals(count($node['editorBlocks']), 3);
 
-    $this->assertEquals($node['contentBlocks'][0]['name'], 'core/paragraph');
+    $this->assertEquals($node['editorBlocks'][0]['name'], 'core/paragraph');
 
-    $this->assertEquals($node['contentBlocks'][1]['name'], 'core/heading');
+    $this->assertEquals($node['editorBlocks'][1]['name'], 'core/heading');
     
-    $this->assertEquals($node['contentBlocks'][2]['name'], 'UnknownBlock');
-    $this->assertEquals($node['contentBlocks'][2]['renderedHtml'], ' <p>Testing</p> ');
+    $this->assertEquals($node['editorBlocks'][2]['name'], 'UnknownBlock');
+    $this->assertEquals($node['editorBlocks'][2]['renderedHtml'], ' <p>Testing</p> ');
   }
 }
