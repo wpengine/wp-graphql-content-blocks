@@ -1,6 +1,7 @@
 {
     "name": "@wpengine/wp-graphql-content-blocks",
     "private": true,
+    "version": "0.1.0",
     "engines": {
         "node": ">=16.0.0"
     },
@@ -9,9 +10,12 @@
         "test-e2e": "wp-scripts test-e2e",
         "test-e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
         "test-e2e:watch": "npm run test-e2e -- --watch",
-        "wp-env": "wp-env"
+        "wp-env": "wp-env",
+        "changeset": "changeset",
+        "version": "changeset version && node bin/versionPlugin.js",
     },
     "devDependencies": {
+        "@changesets/cli": "^2.26.0",
         "@wordpress/e2e-test-utils": "^8.5.0",
         "@wordpress/env": "^5.6.0",
         "@wordpress/jest-console": "^6.4.0",
@@ -22,8 +26,5 @@
     },
     "overrides": {
         "jest": "28.1.2"
-    },
-    "dependencies": {
-        "@changesets/cli": "^2.26.0"
     }
 }
