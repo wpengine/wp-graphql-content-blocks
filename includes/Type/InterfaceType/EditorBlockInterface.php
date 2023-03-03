@@ -10,11 +10,11 @@ use WPGraphQL\Utils\Utils;
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
 
 /**
- * Class ContentBlockInterface
+ * Class EditorBlockInterface
  *
  * @package WPGraphQL\ContentBlocks
  */
-final class ContentBlockInterface {
+final class EditorBlockInterface {
 
 
 	/**
@@ -44,21 +44,21 @@ final class ContentBlockInterface {
 	 */
 	public static function register_type( TypeRegistry $type_registry ) {
 		register_graphql_interface_type(
-			'NodeWithContentBlocks',
+			'NodeWithEditorBlocks',
 			array(
 				'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
 				'eagerlyLoadType' => true,
 				'fields'          => array(
-					'contentBlocks' => array(
+					'editorBlocks' => array(
 						'type'        => array(
-							'list_of' => 'ContentBlock',
+							'list_of' => 'EditorBlock',
 						),
 						'args'        => array(
 							'flat' => array(
 								'type' => 'Boolean',
 							),
 						),
-						'description' => __( 'List of content blocks', 'wp-graphql-content-blocks' ),
+						'description' => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $node, $args ) {
 							return ContentBlocksResolver::resolve_content_blocks( $node, $args );
 						},
@@ -67,9 +67,9 @@ final class ContentBlockInterface {
 			)
 		);
 
-		// Register the ContentBlock Interface
+		// Register the EditorBlock Interface
 		register_graphql_interface_type(
-			'ContentBlock',
+			'EditorBlock',
 			array(
 				'eagerlyLoadType' => true,
 				'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
@@ -115,7 +115,7 @@ final class ContentBlockInterface {
 					),
 					'innerBlocks'             => array(
 						'type'        => array(
-							'list_of' => 'ContentBlock',
+							'list_of' => 'EditorBlock',
 						),
 						'description' => __( 'The inner blocks of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
