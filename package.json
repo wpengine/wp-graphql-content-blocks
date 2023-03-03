@@ -12,7 +12,7 @@
         "test-e2e:watch": "npm run test-e2e -- --watch",
         "wp-env": "wp-env",
         "changeset": "changeset",
-        "version": "changeset version && node bin/versionPlugin.js",
+        "version": "changeset version && node bin/versionPlugin.js"
     },
     "devDependencies": {
         "@changesets/cli": "^2.26.0",
