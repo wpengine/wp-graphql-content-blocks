@@ -1,4 +1,4 @@
-# WPGraphQL Content Blocks
+# WP GraphQL Content Blocks
 
 ## 0.1.0
 
