@@ -2,9 +2,9 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-use \WPGraphQL\ContentBlocks\Type\InterfaceType\ContentBlockInterface;
+use \WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 
-final class ContentBlockInterfaceTest extends PluginTestCase {
+final class EditorBlockInterfaceTest extends PluginTestCase {
 
 	public $instance;
 	public function setUp(): void {
@@ -14,7 +14,7 @@ final class ContentBlockInterfaceTest extends PluginTestCase {
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
 
-		$this->instance = new ContentBlockInterface();
+		$this->instance = new EditorBlockInterface();
 	}
 
 	public function tearDown(): void {
@@ -25,7 +25,7 @@ final class ContentBlockInterfaceTest extends PluginTestCase {
 	}
 
 	/**
-	 * @covers ContentBlockInterface->get_block
+	 * @covers EditorBlockInterface->get_block
 	 */
 	public function test_get_block() {
 		$block_exists                                = array(
@@ -47,12 +47,12 @@ final class ContentBlockInterfaceTest extends PluginTestCase {
 	}
 
 	/**
-	 * @covers ContentBlockInterface->register_type
+	 * @covers EditorBlockInterface->register_type
 	 */
 	public function test_register_type() {
-		$queryNodeWithContentBlocksMeta = '
-		query NodeWithContentBlocksMeta {
-            __type(name: "NodeWithContentBlocks") {
+		$queryNodeWithEditorBlocksMeta = '
+		query NodeWithEditorBlocksMeta {
+            __type(name: "NodeWithEditorBlocks") {
               fields {
                 name
               }
@@ -60,19 +60,19 @@ final class ContentBlockInterfaceTest extends PluginTestCase {
           }
 		';
 
-		// Verify NodeWithContentBlocks fields registration
+		// Verify NodeWithEditorBlocks fields registration
 		$response = graphql(
 			array(
-				'query'     => $queryNodeWithContentBlocksMeta,
+				'query'     => $queryNodeWithEditorBlocksMeta,
 				'variables' => array(
-					'name' => 'NodeWithContentBlocks',
+					'name' => 'NodeWithEditorBlocks',
 				),
 			)
 		);
 		$expected = array(
 			'fields' => array(
 				array(
-					'name' => 'contentBlocks',
+					'name' => 'editorBlocks',
 				),
 			),
 		);
@@ -81,7 +81,7 @@ final class ContentBlockInterfaceTest extends PluginTestCase {
 
 		$queryContentBlockMeta = '
 		query ContentBlockMeta {
-            __type(name: "ContentBlock") {
+            __type(name: "EditorBlock") {
               fields {
                 name
               }
@@ -94,7 +94,7 @@ final class ContentBlockInterfaceTest extends PluginTestCase {
 			array(
 				'query'     => $queryContentBlockMeta,
 				'variables' => array(
-					'name' => 'ContentBlock',
+					'name' => 'EditorBlock',
 				),
 			)
 		);

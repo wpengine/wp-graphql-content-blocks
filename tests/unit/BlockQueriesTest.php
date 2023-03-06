@@ -44,15 +44,15 @@ final class BlockQueriesTest extends PluginTestCase {
 		wp_delete_post( $this->post_id, true );
 	}
 
-	public function test_retrieve_non_flatten_content_blocks() {
+	public function test_retrieve_non_flatten_editor_blocks() {
 		$query  = '
 		{
 			posts(first: 1) {
 				nodes {
 					databaseId
-                    			contentBlocks {
-                        			name
-                    			}
+                    editorBlocks {
+                    	name
+                    }
 				}
 			}
 		}
@@ -64,20 +64,20 @@ final class BlockQueriesTest extends PluginTestCase {
 		$this->assertEquals( $this->post_id, $node['databaseId'] );
 
 		// There should be only one block using that query when not using flat: true
-		$this->assertEquals( count( $node['contentBlocks'] ), 1 );
-		$this->assertEquals( $node['contentBlocks'][0]['name'], 'core/columns' );
+		$this->assertEquals( count( $node['editorBlocks'] ), 1 );
+		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/columns' );
 	}
 
-	public function test_retrieve_flatten_content_blocks() {
+	public function test_retrieve_flatten_editor_blocks() {
 		$query = '
 		{
 			posts(first: 1) {
 				nodes {
 					databaseId
-                    			contentBlocks(flat: true) {
-                        			name
-                        			parentId
-                    			}
+					editorBlocks(flat: true) {
+                        name
+                        parentId
+                    }
 				}
 			}
 		}
@@ -90,22 +90,22 @@ final class BlockQueriesTest extends PluginTestCase {
 		$this->assertEquals( $this->post_id, $node['databaseId'] );
 
 		// There should more than one block using that query when using flat: true
-		$this->assertEquals( count( $node['contentBlocks'] ), 5 );
+		$this->assertEquals( count( $node['editorBlocks'] ), 5 );
 
-		$this->assertEquals( $node['contentBlocks'][0]['name'], 'core/columns' );
-		$this->assertNull( $node['contentBlocks'][0]['parentId'] );
+		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/columns' );
+		$this->assertNull( $node['editorBlocks'][0]['parentId'] );
 
-		$this->assertEquals( $node['contentBlocks'][1]['name'], 'core/column' );
-		$this->assertNotNull( $node['contentBlocks'][1]['parentId'] );
+		$this->assertEquals( $node['editorBlocks'][1]['name'], 'core/column' );
+		$this->assertNotNull( $node['editorBlocks'][1]['parentId'] );
 
-		$this->assertEquals( $node['contentBlocks'][2]['name'], 'core/paragraph' );
-		$this->assertNotNull( $node['contentBlocks'][2]['parentId'] );
+		$this->assertEquals( $node['editorBlocks'][2]['name'], 'core/paragraph' );
+		$this->assertNotNull( $node['editorBlocks'][2]['parentId'] );
 
-		$this->assertEquals( $node['contentBlocks'][3]['name'], 'core/column' );
-		$this->assertNotNull( $node['contentBlocks'][3]['parentId'] );
+		$this->assertEquals( $node['editorBlocks'][3]['name'], 'core/column' );
+		$this->assertNotNull( $node['editorBlocks'][3]['parentId'] );
 
-		$this->assertEquals( $node['contentBlocks'][4]['name'], 'core/paragraph' );
-		$this->assertNotNull( $node['contentBlocks'][4]['parentId'] );
+		$this->assertEquals( $node['editorBlocks'][4]['name'], 'core/paragraph' );
+		$this->assertNotNull( $node['editorBlocks'][4]['parentId'] );
 	}
 
 }

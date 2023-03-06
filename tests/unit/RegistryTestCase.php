@@ -70,7 +70,7 @@ final class RegistryTest extends PluginTestCase {
 			)
 		);
 		$contains_interface = array(
-			'name'        => 'NodeWithContentBlocks',
+			'name'        => 'NodeWithEditorBlocks',
 			'description' => 'Node that has content blocks associated with it',
 		);
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
