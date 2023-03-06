@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - MERL-746-implement-changesets # For testing the initial PR
 
 jobs:
   release_plugin:
