@@ -2,4 +2,4 @@
 "@wpengine/wp-graphql-content-blocks": minor
 ---
 
-- Changed the `contentBlocks` field to be `editorBlocks`.
+- __[BREAKING]__ Changed the `contentBlocks` field to be `editorBlocks`.
