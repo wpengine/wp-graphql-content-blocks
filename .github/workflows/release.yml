@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - MERL-746-implement-changesets
 
 jobs:
   release:
