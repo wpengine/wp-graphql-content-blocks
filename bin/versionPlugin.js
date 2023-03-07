@@ -4,9 +4,10 @@
  * Versions a WordPress plugin.
  *
  * Ported over from FaustJS
+ * @link https://github.com/wpengine/faustjs/blob/canary/scripts/versionPlugin.js
  */
-import fs from 'fs/promises';
-import path from 'path';
+const fs = require('fs/promises');
+const path = require('path');
 
 const readFile = (filename) => fs.readFile(filename, { encoding: 'utf8' });
 const writeFile = fs.writeFile;
