@@ -61,7 +61,7 @@ final class ContentBlocksResolver {
 
 		$parsed_blocks = array_map(
 			function ( $parsed_block ) {
-				$parsed_block['nodeId'] = uniqid();
+				$parsed_block['clientId'] = uniqid();
 				return $parsed_block;
 			},
 			$parsed_blocks
@@ -86,14 +86,14 @@ final class ContentBlocksResolver {
 	}
 
 	/**
-	 * Flattens a block and it's inner blocks into a single while attaching unique nodeId's
+	 * Flattens a block and it's inner blocks into a single while attaching unique clientId's
 	 */
 	private static function flatten_inner_blocks( $block ) {
 		$result          = array();
-		$block['nodeId'] = isset( $block['nodeId'] ) ? $block['nodeId'] : uniqid();
+		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 		array_push( $result, $block );
 		foreach ( $block['innerBlocks'] as $child ) {
-			$child['parentId'] = $block['nodeId'];
+			$child['parentClientId'] = $block['clientId'];
 			$result            = array_merge( $result, self::flatten_inner_blocks( $child ) );
 		}
 		return $result;

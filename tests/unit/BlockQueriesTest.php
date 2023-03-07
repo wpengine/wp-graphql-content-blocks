@@ -76,7 +76,7 @@ final class BlockQueriesTest extends PluginTestCase {
 					databaseId
 					editorBlocks(flat: true) {
                         name
-                        parentId
+                        parentClientId
                     }
 				}
 			}
@@ -93,19 +93,19 @@ final class BlockQueriesTest extends PluginTestCase {
 		$this->assertEquals( count( $node['editorBlocks'] ), 5 );
 
 		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/columns' );
-		$this->assertNull( $node['editorBlocks'][0]['parentId'] );
+		$this->assertNull( $node['editorBlocks'][0]['parentClientId'] );
 
 		$this->assertEquals( $node['editorBlocks'][1]['name'], 'core/column' );
-		$this->assertNotNull( $node['editorBlocks'][1]['parentId'] );
+		$this->assertNotNull( $node['editorBlocks'][1]['parentClientId'] );
 
 		$this->assertEquals( $node['editorBlocks'][2]['name'], 'core/paragraph' );
-		$this->assertNotNull( $node['editorBlocks'][2]['parentId'] );
+		$this->assertNotNull( $node['editorBlocks'][2]['parentClientId'] );
 
 		$this->assertEquals( $node['editorBlocks'][3]['name'], 'core/column' );
-		$this->assertNotNull( $node['editorBlocks'][3]['parentId'] );
+		$this->assertNotNull( $node['editorBlocks'][3]['parentClientId'] );
 
 		$this->assertEquals( $node['editorBlocks'][4]['name'], 'core/paragraph' );
-		$this->assertNotNull( $node['editorBlocks'][4]['parentId'] );
+		$this->assertNotNull( $node['editorBlocks'][4]['parentClientId'] );
 	}
 
 }

@@ -111,19 +111,19 @@ It will return the following blocks:
 	  "__typename": "CoreColumns",
 		"name": "core/columns",
 		"id": "63dbec9abcf9d",
-		"parentId": null
+		"parentClientId": null
 	},
 	{
 	  "__typename": "CoreColumn",
 	  "name": "core/column",
 	  "id": "63dbec9abcfa6",
-      "parentId": "63dbec9abcf9d"
+      "parentClientId": "63dbec9abcf9d"
 	},
 	{
 	  "__typename": "CoreParagraph",
 	  "name": "core/paragraph",
 	  "id": "63dbec9abcfa9",
-      "parentId": "63dbec9abcfa6",
+      "parentClientId": "63dbec9abcfa6",
 	  "attributes": {
 	    "content": "Example paragraph in Column 1",
 	    "className": null
@@ -134,12 +134,12 @@ It will return the following blocks:
 
 The `CoreColumns` contains one or more `CoreColumn` block, and each `CoreColumn` contains a `CoreParagraph`.
 
-Given the flattened list of blocks though, how can you put it back? Well that's where you use the `nodeId` and `parentId` fields to assign temporary unique ids for each block.
+Given the flattened list of blocks though, how can you put it back? Well that's where you use the `` and `parentId` fields to assign temporary unique ids for each block.
 
-The `nodeId` field assigns a temporary unique id for a specific block and the `parentId` will
-be assigned only if the current block has a parent. If the current block does have a parent, it will get the parent's `nodeId` value.
+The `clientId` field assigns a temporary unique id for a specific block and the `parentClientId` will
+be assigned only if the current block has a parent. If the current block does have a parent, it will get the parent's `clientId` value.
 
 So in order to put everything back in the Headless site, you want to use the `flatListToHierarchical` function as mentioned in the [WPGraphQL docs](https://www.wpgraphql.com/docs/menus#hierarchical-data).
 
 ### Note
-> Currently the `nodeId` field is only unique per request and is not persisted anywhere. If you perform another request each block will be assigned a new `nodeId` each time.
+> Currently the `clientId` field is only unique per request and is not persisted anywhere. If you perform another request each block will be assigned a new `clientId` each time.
