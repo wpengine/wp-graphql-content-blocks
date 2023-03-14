@@ -28,5 +28,18 @@ jobs:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: npm run release
           version: npm run version
+          title: "Release Plugin"
+          commit: "Release Plugin"
+          
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release artifact
+        if: steps.changesets.outputs.published == 'true'
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "@wpengine/wp-graphql-content-blocks.zip"
+          asset_name: wp-graphql-content-blocks.zip
+          tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
+          overwrite: true
