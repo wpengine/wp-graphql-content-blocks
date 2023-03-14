@@ -12,11 +12,12 @@
         "test-e2e:watch": "npm run test-e2e -- --watch",
         "wp-env": "wp-env",
         "changeset": "changeset",
+        "build": "npm run build:clean-vendor && npm run build:composer-install && npm run build:zip",
         "build:clean-vendor": "rimraf vendor",
         "build:composer-install": "composer install --no-dev",
         "build:zip": "wp-scripts plugin-zip",
-        "build": "npm run build:clean-vendor && npm run build:composer-install && npm run build:zip",
-        "version": "changeset version && node bin/versionPlugin.js"
+        "version": "changeset version && node bin/versionPlugin.js",
+        "release": "npm run build && changeset publish"
     },
     "files": [
         "includes",
