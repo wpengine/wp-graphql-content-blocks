@@ -146,6 +146,7 @@ class Block {
 					case 'boolean':
 						$graphql_type = 'Boolean';
 						break;
+					case 'array':
 					case 'object':
 						$graphql_type = Scalar::BlockAttributesObject();
 						break;
@@ -200,24 +201,28 @@ class Block {
 	}
 
 	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
+		// Get default value.
+		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
+		
 		if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
 			$rendered_block = wp_unslash( render_block( $block ) );
 			$value          = null;
 			if ( empty( $rendered_block ) ) {
 				return $value;
 			}
+			
 			switch ( $attribute_config['source'] ) {
 				case 'attribute':
-					$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], $attribute_config['default'] );
+					$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], $default );
 					break;
 				case 'html':
-					$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $attribute_config['default'] );
+					$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $default );
 					break;
 			}//end switch
 
 			return $value;
 		}//end if
-		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
+
 		return $block['attrs'][ $attribute_name ] ?? $default;
 	}
 }
