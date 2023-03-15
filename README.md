@@ -133,7 +133,7 @@ It will return the following blocks:
 
 The `CoreColumns` contains one or more `CoreColumn` block, and each `CoreColumn` contains a `CoreParagraph`.
 
-Given the flattened list of blocks though, how can you put it back? Well that's where you use the ``and`parentId` fields to assign temporary unique ids for each block.
+Given the flattened list of blocks though, how can you put it back? Well that's where you use the \`\` and `parentId` fields to assign temporary unique ids for each block.
 
 The `clientId` field assigns a temporary unique id for a specific block and the `parentClientId` will
 be assigned only if the current block has a parent. If the current block does have a parent, it will get the parent's `clientId` value.

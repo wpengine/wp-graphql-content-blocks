@@ -40,6 +40,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "@wpengine/wp-graphql-content-blocks.zip"
-          asset_name: wp-graphql-content-blocks.zip
+          asset_name: ${{ format('wp-graphql-content-blocks.{0}.zip', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           overwrite: true
