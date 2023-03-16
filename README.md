@@ -8,12 +8,8 @@ WordPress plugin that extends WPGraphQL to support querying (Gutenberg) Blocks a
 
 This plugin is an extension of [`wp-graphql`](https://www.wpgraphql.com/), so make sure you have it installed first.
 
-1. Clone the repo or download the zip file of the project.
-2. Within the plugin folder use `composer` to install the vendor dependencies:
-
-```bash
-composer install
-```
+1. Download the [latest .zip version of the plugin](https://github.com/wpengine/wp-graphql-content-blocks/releases/latest)
+2. Upload the plugin .zip to your WordPress site
 3. Activate the plugin within WordPress plugins page.
 
 There is no other configuration needed once you install the plugin.
@@ -63,7 +59,7 @@ For example, to use `CoreParagraph` attributes you need to use the following que
       editorBlocks {
         __typename
         name
-        ...on CoreParagraph {
+        ... on CoreParagraph {
           attributes {
             content
             className
@@ -79,12 +75,12 @@ If the resolved block has values for those fields, it will return them, otherwis
 
 ```json
 {
-	"__typename" : "CoreParagraph",
-	"name": "core/paragraph",
-	"attributes": {
-    	"content": "Hello world",
-    	"className": null
-	}
+  "__typename": "CoreParagraph",
+  "name": "core/paragraph",
+  "attributes": {
+    "content": "Hello world",
+    "className": null
+  }
 }
 ```
 
@@ -97,44 +93,47 @@ For example, given the following HTML Content:
 
 ```html
 <columns>
-	<column>
-		<p>Example paragraph in Column<p>
-	</column>
-<column>
+  <column>
+    <p>Example paragraph in Column</p>
+    <p></p
+  ></column>
+
+  <column></column
+></columns>
 ```
 
 It will return the following blocks:
 
 ```json
 [
-	{
-	  "__typename": "CoreColumns",
-		"name": "core/columns",
-		"id": "63dbec9abcf9d",
-		"parentClientId": null
-	},
-	{
-	  "__typename": "CoreColumn",
-	  "name": "core/column",
-	  "id": "63dbec9abcfa6",
-      "parentClientId": "63dbec9abcf9d"
-	},
-	{
-	  "__typename": "CoreParagraph",
-	  "name": "core/paragraph",
-	  "id": "63dbec9abcfa9",
-      "parentClientId": "63dbec9abcfa6",
-	  "attributes": {
-	    "content": "Example paragraph in Column 1",
-	    "className": null
-	  }
-	}
+  {
+    "__typename": "CoreColumns",
+    "name": "core/columns",
+    "id": "63dbec9abcf9d",
+    "parentClientId": null
+  },
+  {
+    "__typename": "CoreColumn",
+    "name": "core/column",
+    "id": "63dbec9abcfa6",
+    "parentClientId": "63dbec9abcf9d"
+  },
+  {
+    "__typename": "CoreParagraph",
+    "name": "core/paragraph",
+    "id": "63dbec9abcfa9",
+    "parentClientId": "63dbec9abcfa6",
+    "attributes": {
+      "content": "Example paragraph in Column 1",
+      "className": null
+    }
+  }
 ]
 ```
 
 The `CoreColumns` contains one or more `CoreColumn` block, and each `CoreColumn` contains a `CoreParagraph`.
 
-Given the flattened list of blocks though, how can you put it back? Well that's where you use the `` and `parentId` fields to assign temporary unique ids for each block.
+Given the flattened list of blocks though, how can you put it back? Well that's where you use the \`\` and `parentId` fields to assign temporary unique ids for each block.
 
 The `clientId` field assigns a temporary unique id for a specific block and the `parentClientId` will
 be assigned only if the current block has a parent. If the current block does have a parent, it will get the parent's `clientId` value.
@@ -142,4 +141,5 @@ be assigned only if the current block has a parent. If the current block does ha
 So in order to put everything back in the Headless site, you want to use the `flatListToHierarchical` function as mentioned in the [WPGraphQL docs](https://www.wpgraphql.com/docs/menus#hierarchical-data).
 
 ### Note
+
 > Currently the `clientId` field is only unique per request and is not persisted anywhere. If you perform another request each block will be assigned a new `clientId` each time.

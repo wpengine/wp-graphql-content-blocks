@@ -21,3 +21,6 @@ artifacts
 # docker
 .docker/plugins/
 !.docker/plugins/test-cpt
+
+# Built Zip
+@wpengine

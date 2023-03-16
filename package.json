@@ -12,17 +12,31 @@
         "test-e2e:watch": "npm run test-e2e -- --watch",
         "wp-env": "wp-env",
         "changeset": "changeset",
-        "version": "changeset version && node bin/versionPlugin.js"
+        "build": "npm run build:clean-vendor && npm run build:composer-install && npm run build:zip",
+        "build:clean-vendor": "rimraf vendor",
+        "build:composer-install": "composer install --no-dev",
+        "build:zip": "wp-scripts plugin-zip",
+        "version": "changeset version && node bin/versionPlugin.js",
+        "release": "npm run build && changeset publish"
     },
+    "files": [
+        "includes",
+        "vendor",
+        "LICENSE",
+        "README.md",
+        "readme.txt",
+        "wp-graphql-content-blocks.php"
+    ],
     "devDependencies": {
         "@changesets/cli": "^2.26.0",
         "@wordpress/e2e-test-utils": "^8.5.0",
         "@wordpress/env": "^5.6.0",
         "@wordpress/jest-console": "^6.4.0",
         "@wordpress/jest-puppeteer-axe": "^5.4.0",
-        "@wordpress/scripts": "^24.5.0",
+        "@wordpress/scripts": "^24.6.0",
         "expect-puppeteer": "^6.1.1",
-        "puppeteer-testing-library": "^0.6.0"
+        "puppeteer-testing-library": "^0.6.0",
+        "rimraf": "^4.4.0"
     },
     "overrides": {
         "jest": "28.1.2"
