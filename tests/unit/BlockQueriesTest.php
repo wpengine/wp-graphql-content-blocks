@@ -50,7 +50,7 @@ final class BlockQueriesTest extends PluginTestCase {
 			posts(first: 1) {
 				nodes {
 					databaseId
-                    editorBlocks {
+                    editorBlocks(flat: false) {
                     	name
                     }
 				}
