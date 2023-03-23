@@ -2,6 +2,8 @@
 
 [![End-to-End Tests](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/e2e-tests.yml)
 
+~Current Version:0.5.1~
+
 WordPress plugin that extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 ## How to Install
