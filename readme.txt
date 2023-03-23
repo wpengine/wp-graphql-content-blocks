@@ -10,6 +10,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
+~Current Version:0.2.1~
+
 == Description ==
 
 Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
