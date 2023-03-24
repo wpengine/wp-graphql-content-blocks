@@ -2,13 +2,15 @@
 
 [![End-to-End Tests](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/e2e-tests.yml)
 
+[![Download Latest Version](https://img.shields.io/github/package-json/version/wpengine/wp-graphql-content-blocks?label=Download%20Latest%20Version)](https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip)
+
 WordPress plugin that extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 ## How to Install
 
 This plugin is an extension of [`wp-graphql`](https://www.wpgraphql.com/), so make sure you have it installed first.
 
-1. Download the [latest .zip version of the plugin](https://github.com/wpengine/wp-graphql-content-blocks/releases/latest)
+1. Download the [latest .zip version of the plugin](https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip)
 2. Upload the plugin .zip to your WordPress site
 3. Activate the plugin within WordPress plugins page.
 
