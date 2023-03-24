@@ -29,7 +29,7 @@ include_once __DIR__ . '/includes/utilities/updater.php';
 
 if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
 	/**
-	 * The main function that returns the WPGraphQLContentBlocks class
+	 * The main function that returns the WPGraphQLContentBlocks class (note)
 	 *
 	 * @since 1.0.0
 	 * @return object|WPGraphQLContentBlocks
