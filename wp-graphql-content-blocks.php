@@ -25,7 +25,7 @@ if ( ! class_exists( 'WPGraphQLContentBlocks' ) ) {
 	require_once __DIR__ . '/includes/WPGraphQLContentBlocks.php';
 }
 
-include_once __DIR__ . 'includes/utilities/updater.php';
+include_once __DIR__ . '/includes/utilities/updater.php';
 
 if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
 	/**
