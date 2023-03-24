@@ -25,11 +25,11 @@ if ( ! class_exists( 'WPGraphQLContentBlocks' ) ) {
 	require_once __DIR__ . '/includes/WPGraphQLContentBlocks.php';
 }
 
-include_once __DIR__ . '/includes/utilities/updater.php';
+include_once __DIR__ . 'includes/utilities/updater.php';
 
 if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
 	/**
-	 * The main function that returns the WPGraphQLContentBlocks class (note)
+	 * The main function that returns the WPGraphQLContentBlocks class
 	 *
 	 * @since 1.0.0
 	 * @return object|WPGraphQLContentBlocks
