@@ -27,7 +27,7 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
-= 3.3.3 =
+= 0.1.0 =
 
 ### Minor Changes
 
