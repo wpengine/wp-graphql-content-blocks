@@ -43,7 +43,7 @@ if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
 				'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
 				'proper_folder_name' => 'wp-graphql-content-blocks', // this is the name of the folder your plugin lives in
 				'api_url' => 'https://api.github.com/repos/wpengine/wp-graphql-content-blocks', // the GitHub API url of your GitHub repo
-				'raw_url' => 'https://raw.github.com/wpengine/wp-graphql-content-blocks/MERL-735-setup-auto-updater-for-wpgraphql-blocks-plugin', // the GitHub raw url of your GitHub repo
+				'raw_url' => 'https://raw.github.com/wpengine/wp-graphql-content-blocks/main', // the GitHub raw url of your GitHub repo
 				'github_url' => 'https://github.com/wpengine/wp-graphql-content-blocks', // the GitHub url of your GitHub repo
 				'zip_url' => 'https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip', // the zip url of the GitHub repo
 				'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
