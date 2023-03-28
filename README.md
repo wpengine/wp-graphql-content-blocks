@@ -14,7 +14,7 @@ This plugin is an extension of [`wp-graphql`](https://www.wpgraphql.com/), so ma
 2. Upload the plugin .zip to your WordPress site
 3. Activate the plugin within WordPress plugins page.
 
-There is no other configuration needed once you install the plugin.
+There is no other configuration needed once you install the plugin. The plugin will automatically push updates from Github after installation.
 
 ## Getting started
 
