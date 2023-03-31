@@ -100,6 +100,24 @@ final class WPGraphQLContentBlocks {
 			if ( file_exists( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 				// Autoload Required Classes.
 				require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php';
+			} else {
+				add_action(
+					'admin_notices',
+					function () {
+
+						if ( ! current_user_can( 'manage_options' ) ) {
+							return;
+						}
+
+						echo sprintf(
+							'<div class="notice notice-error">' .
+							'<p>%s</p>' .
+							'</div>',
+							__( 'WPGraphQL Content Blocks appears to have been installed without it\'s dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wp-graphql' )
+						);
+					}
+				);
+
 			}
 
 			// If GraphQL class doesn't exist, then dependencies cannot be
@@ -135,7 +153,7 @@ final class WPGraphQLContentBlocks {
 	 * @since 0.0.1
 	 */
 	public function actions() {
-		 add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
+		add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
 	}
 
 	public function filters() {     }
