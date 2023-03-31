@@ -91,6 +91,38 @@ class Block {
 		$this->register_block_attributes_as_fields();
 		$this->register_fields();
 		$this->register_type();
+		$this->register_block_support_fields();
+	}
+
+	private function register_block_support_fields() {
+		if (isset($this->block->supports) && is_array($this->block->supports) && array_key_exists('anchor', $this->block->supports)) {
+			register_graphql_interface_type('BlockWithSupportsAnchor', [
+				'description' => __( 'Block that supports Anchor field', 'wp-graphql' ),
+				'fields'      => [
+					'anchor'           => [
+						'type'        => 'string',
+						'description' => __( 'The anchor field for the block.', 'wp-graphql' ),
+						'resolve'     => function ( $block ) {
+							$attribute_config = [
+								'type' => 'string',
+								'source' => 'attribute',
+								'attribute' => 'id',
+								'selector' => '*',
+							];
+							$rendered_block = wp_unslash( render_block( $block ) );
+							$value          = null;
+							if ( empty( $rendered_block ) ) {
+								return $value;
+							}
+							$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], null );
+							return $value;
+						},
+					],
+				]
+			]);
+			register_graphql_interfaces_to_types('BlockWithSupportsAnchor', [$this->type_name . 'Attributes']);
+			register_graphql_interfaces_to_types('BlockWithSupportsAnchor', [$this->type_name]);
+		}
 	}
 
 	private function register_block_attributes_as_fields() {

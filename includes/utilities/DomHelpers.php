@@ -19,6 +19,9 @@ final class DOMHelpers {
 		$value = null;
 		$doc   = new Document();
 		$doc->loadHTML( $html );
+		if ('*' == $selector) {
+			$selector = '*' . '[' . $attribute . ']';
+		}
 		$node    = $doc->find( $selector );
 		$default = isset( $default ) ? $default : null;
 		$value   = ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default;
