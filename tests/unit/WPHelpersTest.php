@@ -4,7 +4,7 @@ namespace WPGraphQL\ContentBlocks\Unit;
 
 use \WPGraphQL\ContentBlocks\Utilities\WPHelpers;
 
-final class WPhelpersTest extends PluginTestCase {
+final class WPHelpersTest extends PluginTestCase {
 	public function setUp(): void {
 		parent::setUp();
 		register_post_type(
