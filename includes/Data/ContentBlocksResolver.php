@@ -49,11 +49,11 @@ final class ContentBlocksResolver {
 		if ( empty( $parsed_blocks ) ) {
 			return array();
 		}
-
 		// Filter out blocks that have no name
 		$parsed_blocks = array_filter(
 			$parsed_blocks,
 			function ( $parsed_block ) {
+
 				return isset( $parsed_block['blockName'] ) && ! empty( $parsed_block['blockName'] );
 			},
 			ARRAY_FILTER_USE_BOTH
@@ -66,9 +66,8 @@ final class ContentBlocksResolver {
 			},
 			$parsed_blocks
 		);
-
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
-		if ( !isset( $args['flat'] ) || 'true' == $args['flat'] ) {
+		if ( !isset( $args['flat'] ) || 'false' == $args['flat'] ) {
 			return self::flatten_block_list( $parsed_blocks );
 		}
 		return $parsed_blocks;

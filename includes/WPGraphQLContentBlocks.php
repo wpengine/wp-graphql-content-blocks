@@ -7,8 +7,7 @@
  * @since   0.0.1
  */
 // Global. - namespace WPGraphQL\ContentBlocks
-use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
-use WPGraphQL\Utils\Utils;
+
 final class WPGraphQLContentBlocks {
 
 
@@ -144,126 +143,6 @@ final class WPGraphQLContentBlocks {
 	public function init_block_editor_registry( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
 		$block_editor_registry = new \WPGraphQL\ContentBlocks\Registry\Registry( $type_registry, \WP_Block_Type_Registry::get_instance() );
 		$block_editor_registry->onInit();
-		register_graphql_interface_type(
-			"postBlock",
-			array(
-				'interfaces' => array( 'EditorBlock' ),
-				'fields'     => array(
-					'name' => array(
-						'type' => 'String',
-					),
-				),
-				'resolveType'     => function ( $block ) use ( $type_registry ) {
-					if ( empty( $block['blockName'] ) ) {
-						$block['blockName'] = 'core/html';
-					}
-
-					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
-					$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
-					$type_name = Utils::format_type_name( $type_name );
-
-					return $type_registry->get_type( $type_name ) ?? $type_registry->get_type( 'UnknownBlock' );
-				},
-			)
-		);
-
-		register_graphql_interfaces_to_types( array( "postBlock" ), ["CoreParagraph", "CoreImage", "CoreColumn", "CoreColumns", "UnknownBlock"] );
-		register_graphql_interface_type(
-			"pageBlock",
-			array(
-				'interfaces' => array( 'EditorBlock' ),
-				'fields'     => array(
-					'name' => array(
-						'type' => 'String',
-					),
-				),
-				'resolveType'     => function ( $block ) use ( $type_registry ) {
-					if ( empty( $block['blockName'] ) ) {
-						$block['blockName'] = 'core/html';
-					}
-
-					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
-					$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
-					$type_name = Utils::format_type_name( $type_name );
-
-					return $type_registry->get_type( $type_name ) ?? $type_registry->get_type( 'UnknownBlock' );
-				},
-			)
-		);
-
-		register_graphql_interfaces_to_types( array( "pageBlock" ), ["CoreParagraph", "CoreImage", "CoreColumn", "CoreColumns", "UnknownBlock"] );
-		deregister_graphql_type("NodeWithEditorBlocks");
-		register_graphql_interface_type(
-			'NodeWithPostEditorBlocks',
-			array(
-				'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
-				'eagerlyLoadType' => true,
-				'fields'          => array(
-					'editorBlocks' => array(
-						'type'        => array(
-							'list_of' => "postBlock",
-						),
-						'args'        => array(
-							'flat' => array(
-								'type' => 'Boolean',
-							),
-						),
-						'description' => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $node, $args ) {
-							return ContentBlocksResolver::resolve_content_blocks( $node, $args );
-						},
-					),
-				),
-			)
-		);
-		register_graphql_interface_type(
-			'NodeWithPageEditorBlocks',
-			array(
-				'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
-				'eagerlyLoadType' => true,
-				'fields'          => array(
-					'editorBlocks' => array(
-						'type'        => array(
-							'list_of' => "pageBlock",
-						),
-						'args'        => array(
-							'flat' => array(
-								'type' => 'Boolean',
-							),
-						),
-						'description' => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $node, $args ) {
-							return ContentBlocksResolver::resolve_content_blocks( $node, $args );
-						},
-					),
-				),
-			)
-		);
-		register_graphql_interfaces_to_types( array( 'NodeWithPageEditorBlocks' ), ["page"] );
-		register_graphql_interfaces_to_types( array( 'NodeWithPostEditorBlocks' ), ["post"] );
-
-		// $post_id = -99; // negative ID, to avoid clash with a valid post
-		// $post = new stdClass();
-		// $post->ID = $post_id;
-		// $post->post_author = 1;
-		// $post->post_date = current_time( 'mysql' );
-		// $post->post_date_gmt = current_time( 'mysql', 1 );
-		// $post->post_title = 'Some title or other';
-		// $post->post_content = 'Whatever you want here. Maybe some cat pictures....';
-		// $post->post_status = 'publish';
-		// $post->comment_status = 'closed';
-		// $post->ping_status = 'closed';
-		// $post->post_name = 'fake-post-' . rand( 1, 99999 ); // append random number to avoid clash
-		// $post->post_type = 'post';
-		// $post->filter = 'raw'; // important!
-		// $block_editor_context = new WP_Block_Editor_Context( array( 'post' => new WP_Post( $post ) ) );
-		// $blocks = get_allowed_block_types($block_editor_context);
-		// print_r($blocks);
-		// // $res = "";
-		// // foreach ($blocks as $block) {
-		// // 	$res += $block;
-		// // }
-		// // print_r($res);
 	}
 
 	/**

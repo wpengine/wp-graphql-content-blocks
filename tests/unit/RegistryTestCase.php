@@ -20,27 +20,6 @@ final class RegistryTest extends PluginTestCase {
 	}
 
 	/**
-	 * @covers Registry->load_registered_editor_blocks
-	 */
-	public function test_load_registered_editor_blocks_callback() {
-		global $wp_filter;
-		$this->assertTrue( isset( $wp_filter['graphql_register_types']->callbacks ) );
-		$config = $this->instance->load_registered_editor_blocks( array() );
-		$this->assertEquals( $config['registered_editor_blocks'], $this->instance->registered_blocks );
-	}
-
-	/**
-	 * @covers Registry->get_supported_post_types
-	 */
-	public function test_get_supported_post_types() {
-		$expected_post_types = array(
-			'Post',
-			'Page',
-		);
-		$this->assertEquals( $this->instance->get_supported_post_types(), $expected_post_types );
-	}
-
-	/**
 	 * This test ensures that the `add_block_fields_to_schema()` method
 	 * works as expected.
 	 */

@@ -4,6 +4,11 @@ namespace WPGraphQL\ContentBlocks\Utilities;
 
 use DiDom\Document;
 
+/**
+ * Class DOMHelpers
+ *
+ * @package WPGraphQL\ContentBlocks\Utilities
+ */
 final class DOMHelpers {
 	/**
 	 * Parses the given HTML string to extract the specified attribute selector.
