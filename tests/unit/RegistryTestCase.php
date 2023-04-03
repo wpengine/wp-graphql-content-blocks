@@ -20,10 +20,10 @@ final class RegistryTest extends PluginTestCase {
 	}
 
 	/**
-	 * This test ensures that the `add_block_fields_to_schema()` method
-	 * works as expected.
+	 * This test ensures that the `register_interface_types()` method
+	 * works as expected when no get_allowed_block_types is used
 	 */
-	public function test_add_block_fields_to_schema() {
+	public function test_add_block_fields_to_schema_no_get_allowed_block_types() {
 		$post = 'Post';
 
 		$query = '

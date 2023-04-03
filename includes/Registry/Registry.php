@@ -21,7 +21,6 @@ use WPGraphQL\Utils\Utils;
  */
 final class Registry implements OnInit {
 
-
 	/**
 	 * @var TypeRegistry
 	 */

@@ -45,7 +45,7 @@ final class WPHelpers {
 	}
 
 	/**
-	 * Gets the get_block_editor_context
+	 * Gets the get_block_editor_context of a specific Post Type
 	 *
 	 * @param string $post_type The Post Type to use.
 	 * @param number $id The Post Id to use.
