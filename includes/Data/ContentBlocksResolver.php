@@ -69,7 +69,7 @@ final class ContentBlocksResolver {
 		);
 		
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
-		if ( ! isset( $args['flat'] ) || 'false' == $args['flat'] ) {
+		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) {
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
 		}
 
