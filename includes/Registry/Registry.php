@@ -90,7 +90,7 @@ final class Registry implements OnInit {
 			// If there is a list of supported blocks for current post type
 			if ( is_array( $supported_blocks_for_post_type ) ) {
 				// Register an [PostType]Block type for the blocks using that post type
-				PostTypeBlockInterface::register_type( $type_name, $this->type_registry );
+				PostTypeBlockInterface::register_type( $type_name, $supported_blocks_for_post_type, $this->type_registry );
 
 				// Normalize the list of supported block names
 				$block_names = array_map(
@@ -100,7 +100,6 @@ final class Registry implements OnInit {
 					},
 					$supported_blocks_for_post_type
 				);
-
 				// Register [PostType]Block type to allowed block names
 				register_graphql_interfaces_to_types( array( $type_name . 'Block' ), $block_names );
 

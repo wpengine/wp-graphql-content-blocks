@@ -14,12 +14,13 @@ use WPGraphQL\Utils\Utils;
  */
 final class PostTypeBlockInterface {
 	/**
-	 * @param string       $post_type The post type
-	 * @param TypeRegistry $type_registry
+	 * @param string        $post_type The post type
+	 * @param array(string) $$block_names The list of allowed block names
+	 * @param TypeRegistry  $type_registry
 	 *
 	 * @throws Exception
 	 */
-	public static function register_type( $post_type, TypeRegistry $type_registry ) {
+	public static function register_type( $post_type, $block_names, TypeRegistry $type_registry ) {
 		register_graphql_interface_type(
 			ucfirst( $post_type ) . 'Block',
 			array(
@@ -59,8 +60,8 @@ final class PostTypeBlockInterface {
 							),
 						),
 						'description' => __( 'List of ' . $post_type . ' editor blocks', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $node, $args ) {
-							return ContentBlocksResolver::resolve_content_blocks( $node, $args );
+						'resolve'     => function ( $node, $args ) use ( $block_names ) {
+							return ContentBlocksResolver::resolve_content_blocks( $node, $args, $block_names );
 						},
 					),
 				),

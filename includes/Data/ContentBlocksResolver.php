@@ -15,8 +15,9 @@ final class ContentBlocksResolver {
 	 *
 	 * @param mixed $node The node we are resolving.
 	 * @param array $args GraphQL query args to pass to the connection resolver.
+	 * @param array $allowed_block_names The list of allowed block names to filter.
 	 */
-	public static function resolve_content_blocks( $node, $args ) {
+	public static function resolve_content_blocks( $node, $args, $allowed_block_names = array() ) {
 		$content = null;
 		if ( $node instanceof Post ) {
 
@@ -49,16 +50,16 @@ final class ContentBlocksResolver {
 		if ( empty( $parsed_blocks ) ) {
 			return array();
 		}
-		// Filter out blocks that have no name
+		// 1st Level filtering of blocks that have no name
 		$parsed_blocks = array_filter(
 			$parsed_blocks,
 			function ( $parsed_block ) {
-
 				return isset( $parsed_block['blockName'] ) && ! empty( $parsed_block['blockName'] );
 			},
 			ARRAY_FILTER_USE_BOTH
 		);
 
+		// 1st Level assigning of unique id's
 		$parsed_blocks = array_map(
 			function ( $parsed_block ) {
 				$parsed_block['clientId'] = uniqid();
@@ -66,9 +67,21 @@ final class ContentBlocksResolver {
 			},
 			$parsed_blocks
 		);
+		
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
-		if ( !isset( $args['flat'] ) || 'false' == $args['flat'] ) {
-			return self::flatten_block_list( $parsed_blocks );
+		if ( ! isset( $args['flat'] ) || 'false' == $args['flat'] ) {
+			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
+		}
+
+		// Final level of filtering out blocks not in the allowed list
+		if ( ! empty( $allowed_block_names ) ) {
+			$parsed_blocks = array_filter(
+				$parsed_blocks,
+				function ( $parsed_block ) use ( $allowed_block_names ) {
+					return isset( $parsed_block['blockName'] ) && in_array( $parsed_block['blockName'], $allowed_block_names, TRUE);
+				},
+				ARRAY_FILTER_USE_BOTH
+			);
 		}
 		return $parsed_blocks;
 	}
@@ -88,12 +101,12 @@ final class ContentBlocksResolver {
 	 * Flattens a block and it's inner blocks into a single while attaching unique clientId's
 	 */
 	private static function flatten_inner_blocks( $block ) {
-		$result          = array();
+		$result            = array();
 		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 		array_push( $result, $block );
 		foreach ( $block['innerBlocks'] as $child ) {
 			$child['parentClientId'] = $block['clientId'];
-			$result            = array_merge( $result, self::flatten_inner_blocks( $child ) );
+			$result                  = array_merge( $result, self::flatten_inner_blocks( $child ) );
 		}
 		return $result;
 	}
