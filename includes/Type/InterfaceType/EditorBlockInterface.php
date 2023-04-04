@@ -3,6 +3,7 @@
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
 use Exception;
+use WP_Block_Type_Registry;
 use WPGraphQL\AppContext;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
@@ -21,7 +22,7 @@ final class EditorBlockInterface {
 	 * @return mixed WP_Block_Type|null
 	 */
 	public static function get_block( array $block, AppContext $context ) {
-		$registered_blocks = $context->config['registered_editor_blocks'];
+		$registered_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
 
 		if ( ! isset( $block['blockName'] ) ) {
 			return null;
