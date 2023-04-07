@@ -133,6 +133,15 @@ class Block {
 					return $block_attribute_fields;
 				}
 
+				if ( isset( $attribute_config['define'] ) ) {
+					$definition = $attribute_config['define'];
+					if ( ! empty( $definition['resolve'] ) && 'string' === gettype( $definition['resolve'] ) ) {
+						$definition['resolve'] = [ $this, $definition['resolve'] ];
+					}
+					$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = $definition;
+					continue;
+				}
+
 				switch ( $attribute_config['type'] ) {
 					case 'string':
 						$graphql_type = 'String';
@@ -200,7 +209,7 @@ class Block {
 		return isset( $block['blockName'] ) ? $block['blockName'] : '';
 	}
 
-	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
+	protected function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
 		// Get default value.
 		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
 		
