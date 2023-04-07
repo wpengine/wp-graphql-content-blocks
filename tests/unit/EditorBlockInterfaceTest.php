@@ -28,21 +28,15 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 	 * @covers EditorBlockInterface->get_block
 	 */
 	public function test_get_block() {
-		$block_exists                                = array(
+		$block_exists         = array(
 			'blockName' => 'core/paragraph',
 		);
-		$block_does_not_exist                        = array(
+		$block_does_not_exist = array(
 			'blockName' => 'core/block_does_not_exist',
 		);
-		$block_has_wrong_type                        = array(
-			'blockName' => 'core/block_has_wrong_type',
-		);
-		$context                                     = \WPGraphQL::get_app_context();
-		$context->config['registered_editor_blocks'] = \WP_Block_Type_Registry::get_instance()->get_all_registered();
-		$context->config['registered_editor_blocks']['core/block_has_wrong_type'] = array( 'core/block_has_wrong_type' );
+		$context              = \WPGraphQL::get_app_context();
 
 		$this->assertNull( $this->instance->get_block( $block_does_not_exist, $context ) );
-		$this->assertNull( $this->instance->get_block( $block_has_wrong_type, $context ) );
 		$this->assertNotNull( $this->instance->get_block( $block_exists, $context ) );
 	}
 
@@ -110,9 +104,14 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 			'renderedHtml',
 		);
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
-		$actual = array_map( function ($val) { return $val['name']; } , $response['data']['__type']['fields'] );
+		$actual = array_map(
+			function ( $val ) {
+				return $val['name'];
+			},
+			$response['data']['__type']['fields']
+		);
 		sort( $actual );
 		sort( $expected );
-		$this->assertEquals( $actual , $expected );
+		$this->assertEquals( $actual, $expected );
 	}
 }

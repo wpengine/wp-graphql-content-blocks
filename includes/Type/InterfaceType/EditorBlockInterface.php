@@ -3,7 +3,7 @@
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
 use Exception;
-use GraphQL\Type\Definition\ResolveInfo;
+use WP_Block_Type_Registry;
 use WPGraphQL\AppContext;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
@@ -15,16 +15,14 @@ use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
  * @package WPGraphQL\ContentBlocks
  */
 final class EditorBlockInterface {
-
-
 	/**
-	 * @param array      $block   The block being resolved
-	 * @param AppContext $context The AppContext
+	 * @param array      $block   The block being resolved.
+	 * @param AppContext $context The AppContext.
 	 *
 	 * @return mixed WP_Block_Type|null
 	 */
 	public static function get_block( array $block, AppContext $context ) {
-		$registered_blocks = $context->config['registered_editor_blocks'];
+		$registered_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
 
 		if ( ! isset( $block['blockName'] ) ) {
 			return null;
@@ -38,7 +36,7 @@ final class EditorBlockInterface {
 	}
 
 	/**
-	 * @param TypeRegistry $type_registry
+	 * @param WPGraphQL\Registry\TypeRegistry $type_registry The TypeRegistry.
 	 *
 	 * @throws Exception
 	 */
@@ -74,14 +72,14 @@ final class EditorBlockInterface {
 				'eagerlyLoadType' => true,
 				'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
 				'fields'          => array(
-					'clientId'                  => array(
+					'clientId'                => array(
 						'type'        => 'String',
 						'description' => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
 							return isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 						},
 					),
-					'parentClientId'                => array(
+					'parentClientId'          => array(
 						'type'        => 'String',
 						'description' => __( 'The parent id of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {

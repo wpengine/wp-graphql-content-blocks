@@ -8,6 +8,9 @@ use WPGraphQL\ContentBlocks\Blocks\Block;
 use WPGraphQL\ContentBlocks\Interfaces\OnInit;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
+use WPGraphQL\ContentBlocks\Type\InterfaceType\PostTypeBlockInterface;
+use WPGraphQL\ContentBlocks\Type\ObjectType\UnknownBlock;
+use WPGraphQL\ContentBlocks\Utilities\WPHelpers;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
 
@@ -17,7 +20,6 @@ use WPGraphQL\Utils\Utils;
  * @package WPGraphQL\ContentBlocks\Registry
  */
 final class Registry implements OnInit {
-
 
 	/**
 	 * @var TypeRegistry
@@ -51,56 +53,68 @@ final class Registry implements OnInit {
 	 * @throws Exception
 	 */
 	public function OnInit() {
-		EditorBlockInterface::register_type( $this->type_registry );
-		( new Scalar() )->OnInit();
-		$this->pass_blocks_to_context();
+		$this->register_interface_types();
+		$this->register_scalar_types();
 		$this->register_block_types();
-		$this->register_unknown_block();
-		$this->add_block_fields_to_schema();
+		UnknownBlock::register_type();
 	}
 
 	/**
-	 * Registers the UnknownBlock in the instance a block is not defined
-	 * in the registry.
-	 * 
-	 */
-	public function register_unknown_block() {
-		register_graphql_object_type(
-			'UnknownBlock',
-			array(
-				'description'     => __( 'A block used for resolving blocks not found in the WordPress registry', 'wp-graphql-content-blocks' ),
-				'interfaces'      => array( 'EditorBlock' ),
-				'eagerlyLoadType' => true,
-				'fields'          => array(
-					'name' => array(
-						'type'        => 'String',
-						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
-						'resolve'     => function () {
-							return 'UnknownBlock';
-						}
-					),
-				),
-			)
-		);
-	}
-
-	/**
-	 * This adds the WP Block Registry to AppContext
+	 * Register Interface types to the GraphQL Schema
 	 *
 	 * @return void
 	 */
-	public function pass_blocks_to_context() {
-		add_filter( 'graphql_app_context_config', array( $this, 'load_registered_editor_blocks' ) );
+	protected function register_interface_types() {
+		// First register the NodeWithEditorBlocks interface by default
+		EditorBlockInterface::register_type( $this->type_registry );
+
+		// Then try to register both NodeWithEditorBlocks and NodeWith[PostType]Blocks per post type
+		$supported_post_types = WPHelpers::get_supported_post_types();
+		if ( empty( $supported_post_types ) ) {
+			return;
+		}
+		register_graphql_interfaces_to_types( array( 'NodeWithEditorBlocks' ), $supported_post_types );
+		$post_id = -1;
+		// For each Post type
+		foreach ( $supported_post_types as $post_type ) {
+			// Normalize the post type name
+			$type_name = strtolower( $post_type );
+
+			// retrieve a block_editor_context for the current post type
+			$block_editor_context = WPHelpers::get_block_editor_context( $type_name, $post_id-- );
+
+			// Fetch the list of allowed blocks for the current post type
+			$supported_blocks_for_post_type = get_allowed_block_types( $block_editor_context );
+
+			// If there is a list of supported blocks for current post type
+			if ( is_array( $supported_blocks_for_post_type ) ) {
+				// Register an [PostType]Block type for the blocks using that post type
+				PostTypeBlockInterface::register_type( $type_name, $supported_blocks_for_post_type, $this->type_registry );
+
+				// Normalize the list of supported block names
+				$block_names = array_map(
+					function( $supported_block ) {
+						$block_name = preg_replace( '/\//', '', lcfirst( ucwords( $supported_block, '/' ) ) );
+						return \WPGraphQL\Utils\Utils::format_type_name( $block_name );
+					},
+					$supported_blocks_for_post_type
+				);
+				// Register [PostType]Block type to allowed block names
+				register_graphql_interfaces_to_types( array( $type_name . 'Block' ), $block_names );
+
+				// Register the `NodeWith[PostType]Blocks` Interface to the post type
+				register_graphql_interfaces_to_types( array( 'NodeWith' . $post_type . 'Blocks' ), array( $type_name ) );
+			}
+		}//end foreach
 	}
 
 	/**
-	 * Loads registered_blocks into the app context config
+	 * Register Scalar types to the GraphQL Schema
 	 *
-	 * @return object
+	 * @return void
 	 */
-	public function load_registered_editor_blocks( $config ) {
-		$config['registered_editor_blocks'] = $this->registered_blocks;
-		return $config;
+	protected function register_scalar_types() {
+		( new Scalar() )->OnInit();
 	}
 
 	/**
@@ -109,7 +123,7 @@ final class Registry implements OnInit {
 	 * @return void
 	 */
 	protected function register_block_types() {
-		 $this->registered_blocks = $this->block_type_registry->get_all_registered();
+		$this->registered_blocks = $this->block_type_registry->get_all_registered();
 
 		if ( empty( $this->registered_blocks ) || ! is_array( $this->registered_blocks ) ) {
 			return;
@@ -144,60 +158,5 @@ final class Registry implements OnInit {
 		} else {
 			new Block( $block, $this );
 		}
-	}
-
-	/**
-	 * Adds Block Fields to the WPGraphQL Schema
-	 *
-	 * @return void
-	 */
-	public function add_block_fields_to_schema() {
-		$supported_post_types = $this->get_supported_post_types();
-		// If there are no supported post types, early return
-		if ( empty( $supported_post_types ) ) {
-			return;
-		}
-
-		// Register the `NodeWithEditorBlocks` Interface to the supported post types
-		register_graphql_interfaces_to_types( array( 'NodeWithEditorBlocks' ), $supported_post_types );
-	}
-
-	/**
-	 * Gets Block Editor supported post types
-	 *
-	 * @return array<string>
-	 */
-	public function get_supported_post_types() {
-		$supported_post_types = array();
-		// Get Post Types that are set to Show in GraphQL and Show in REST
-		// If it doesn't show in REST, it's not block-editor enabled
-		$block_editor_post_types = get_post_types(
-			array(
-				'show_in_graphql' => true,
-				'show_in_rest'    => true,
-			),
-			'objects'
-		);
-
-		if ( empty( $block_editor_post_types ) || ! is_array( $block_editor_post_types ) ) {
-			return;
-		}
-
-		// Iterate over the post types
-		foreach ( $block_editor_post_types as $block_editor_post_type ) {
-
-			// If the post type doesn't support the editor, it's not block-editor enabled
-			if ( ! post_type_supports( $block_editor_post_type->name, 'editor' ) ) {
-				continue;
-			}
-
-			if ( ! isset( $block_editor_post_type->graphql_single_name ) ) {
-				continue;
-			}
-
-			$supported_post_types[] = Utils::format_type_name( $block_editor_post_type->graphql_single_name );
-		}
-
-		return $supported_post_types;
 	}
 }

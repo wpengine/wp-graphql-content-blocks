@@ -5,7 +5,7 @@ namespace WPGraphQL\ContentBlocks\Blocks;
 class CoreImage extends Block {
 
 	protected ?array $additional_block_attributes = array(
-		'className' => array(
+		'cssClassName' => array(
 			'type'      => 'string',
 			'selector'  => 'figure',
 			'source'    => 'attribute',

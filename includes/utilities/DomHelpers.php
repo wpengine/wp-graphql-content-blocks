@@ -4,6 +4,11 @@ namespace WPGraphQL\ContentBlocks\Utilities;
 
 use DiDom\Document;
 
+/**
+ * Class DOMHelpers
+ *
+ * @package WPGraphQL\ContentBlocks\Utilities
+ */
 final class DOMHelpers {
 	/**
 	 * Parses the given HTML string to extract the specified attribute selector.
@@ -19,6 +24,9 @@ final class DOMHelpers {
 		$value = null;
 		$doc   = new Document();
 		$doc->loadHTML( $html );
+		if ('*' == $selector) {
+			$selector = '*' . '[' . $attribute . ']';
+		}
 		$node    = $doc->find( $selector );
 		$default = isset( $default ) ? $default : null;
 		$value   = ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default;
