@@ -29,10 +29,10 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 	public function test_register_type() {
 		$this->instance::register_type( 'post', array(), \WPGraphQL::get_type_registry() );
 
-		// Verify NodeWithPostBlocks fields registration
-		$queryNodeWithPostBlocksMeta = '
-		query NodeWithPostBlocksMeta {
-            __type(name: "NodeWithPostBlocks") {
+		// Verify NodeWithPostEditorBlocks fields registration
+		$queryNodeWithPostEditorBlocksMeta = '
+		query NodeWithPostEditorBlocksMeta {
+            __type(name: "NodeWithPostEditorBlocks") {
               fields {
                 name
               }
@@ -41,9 +41,9 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 		';
 		$response                    = graphql(
 			array(
-				'query'     => $queryNodeWithPostBlocksMeta,
+				'query'     => $queryNodeWithPostEditorBlocksMeta,
 				'variables' => array(
-					'name' => 'NodeWithPostBlocks',
+					'name' => 'NodeWithPostEditorBlocks',
 				),
 			)
 		);
@@ -57,10 +57,10 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertEquals( $response['data']['__type'], $expected );
 
-		// Verify PostBlock fields registration
+		// Verify PostEditorBlock fields registration
 		$queryContentBlockMeta = '
 		query ContentBlockMeta {
-		    __type(name: "PostBlock") {
+		    __type(name: "PostEditorBlock") {
 		        fields {
 		            name
 		        }
@@ -73,7 +73,7 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 			array(
 				'query'     => $queryContentBlockMeta,
 				'variables' => array(
-					'name' => 'PostBlock',
+					'name' => 'PostEditorBlock',
 				),
 			)
 		);

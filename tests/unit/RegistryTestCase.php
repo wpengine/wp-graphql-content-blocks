@@ -110,7 +110,7 @@ final class RegistryTest extends PluginTestCase {
 			)
 		);
 		$contains_interface = array(
-			'name'        => 'NodeWithPostBlocks',
+			'name'        => 'NodeWithPostEditorBlocks',
 			'description' => 'Node that has post content blocks associated with it',
 		);
 
@@ -118,12 +118,12 @@ final class RegistryTest extends PluginTestCase {
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
 		$this->assertTrue( in_array( $contains_interface, $response['data']['__type']['interfaces'] ) );
 
-		// Verify PostBlock meta
+		// Verify PostEditorBlock meta
 		$response                = graphql(
 			array(
 				'query'     => $query,
 				'variables' => array(
-					'name' => 'PostBlock',
+					'name' => 'PostEditorBlock',
 				),
 			)
 		);
@@ -132,7 +132,7 @@ final class RegistryTest extends PluginTestCase {
 			'description' => 'Blocks that can be edited to create content and layouts',
 		);
 		$contains_detail         = array(
-			'name'        => 'PostBlock',
+			'name'        => 'PostEditorBlock',
 			'description' => '',
 		);
 		$contains_possible_types = array(
@@ -150,12 +150,12 @@ final class RegistryTest extends PluginTestCase {
 		$this->assertEquals( array_intersect_key( $contains_detail, $response['data']['__type'] ), $contains_detail );
 		$this->assertEquals( $contains_possible_types, $response['data']['__type']['possibleTypes'] );
 
-		// Verify NodeWithPostBlocks meta
+		// Verify NodeWithPostEditorBlocks meta
 		$response           = graphql(
 			array(
 				'query'     => $query,
 				'variables' => array(
-					'name' => 'NodeWithPostBlocks',
+					'name' => 'NodeWithPostEditorBlocks',
 				),
 			)
 		);
@@ -164,7 +164,7 @@ final class RegistryTest extends PluginTestCase {
 			'description' => 'Node that has content blocks associated with it',
 		);
 		$contains_detail    = array(
-			'name'        => 'NodeWithPostBlocks',
+			'name'        => 'NodeWithPostEditorBlocks',
 			'description' => 'Node that has post content blocks associated with it',
 		);
 
