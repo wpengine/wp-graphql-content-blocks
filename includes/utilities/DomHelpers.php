@@ -39,9 +39,24 @@ final class DOMHelpers {
 		$doc->loadHTML( $html );
 		$node       = $doc->find( $selector );
 		$inner_html = isset( $default ) ? $default : '';
+
 		foreach ( $node as $elem ) {
 			$inner_html .= $elem->innerHTML();
 		}
+		return $inner_html;
+	}
+	
+	public static function getElementsFromHTML($html, $element) {
+		$doc = new Document();
+		$doc->loadHTML( $html );
+		$elements = $doc->find( $element );
+
+		$inner_html = '';
+
+		foreach ( $elements as $element ) {
+			$inner_html .= $element->html();
+		}
+
 		return $inner_html;
 	}
 }

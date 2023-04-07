@@ -217,6 +217,11 @@ class Block {
 					break;
 				case 'html':
 					$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $default );
+
+					if( isset( $attribute_config['multiline'] ) ) {
+						$value = DOMHelpers::getElementsFromHTML( $value, $attribute_config['multiline'] );
+					}
+
 					break;
 			}//end switch
 
