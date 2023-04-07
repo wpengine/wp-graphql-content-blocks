@@ -13,6 +13,7 @@ use WPGraphQL\Utils\Utils;
  * @package WPGraphQL\ContentBlocks
  */
 final class PostTypeBlockInterface {
+
 	/**
 	 * @param string        $post_type The post type
 	 * @param array(string) $$block_names The list of allowed block names
@@ -20,9 +21,9 @@ final class PostTypeBlockInterface {
 	 *
 	 * @throws Exception
 	 */
-	public static function register_type( $post_type, $block_names, TypeRegistry $type_registry ) {
+	public static function register_type( string $post_type, $block_names, TypeRegistry $type_registry ) {
 		register_graphql_interface_type(
-			ucfirst( $post_type ) . 'Block',
+			ucfirst( $post_type ) . 'EditorBlock',
 			array(
 				'interfaces'  => array( 'EditorBlock' ),
 				'fields'      => array(
@@ -43,8 +44,9 @@ final class PostTypeBlockInterface {
 				},
 			)
 		);
+
 		register_graphql_interface_type(
-			'NodeWith' . ucfirst( $post_type ) . 'Blocks',
+			'NodeWith' . ucfirst( $post_type ) . 'EditorBlocks',
 			array(
 				'description'     => __( 'Node that has ' . $post_type . ' content blocks associated with it', 'wp-graphql-content-blocks' ),
 				'eagerlyLoadType' => true,
@@ -52,7 +54,7 @@ final class PostTypeBlockInterface {
 				'fields'          => array(
 					'editorBlocks' => array(
 						'type'        => array(
-							'list_of' => ucfirst( $post_type ) . 'Block',
+							'list_of' => ucfirst( $post_type ) . 'EditorBlock',
 						),
 						'args'        => array(
 							'flat' => array(
@@ -68,4 +70,5 @@ final class PostTypeBlockInterface {
 			)
 		);
 	}
+
 }

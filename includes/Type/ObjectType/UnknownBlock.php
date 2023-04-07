@@ -12,7 +12,6 @@ final class UnknownBlock {
 	/**
 	 * Registers the UnknownBlock in the instance a block is not defined
 	 * in the registry.
-     * 
 	 */
 	public static function register_type() {
 		register_graphql_object_type(
