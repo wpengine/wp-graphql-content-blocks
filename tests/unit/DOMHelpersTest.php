@@ -41,4 +41,13 @@ final class DOMHelpersTest extends PluginTestCase {
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $class_selector ), '<span>Bar</span>' );
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $element_selector ), '<span>Bar</span>' );
 	}
+
+	public function testGetElementsFromHTML(): void {
+		$html = '<blockquote><p>First paragraph</p><div>a div that should be filtered</div><p>Second paragraph</p></blockquote>';
+		$element_selector = 'p';
+		$no_existant_selector = 'span';
+
+		$this->assertEquals( DOMHelpers::getElementsFromHTML( $html, $element_selector), '<p>First paragraph</p><p>Second paragraph</p>' );
+		$this->assertEmpty( DOMHelpers::getElementsFromHTML( $html, $no_existant_selector) );
+	}
 }
