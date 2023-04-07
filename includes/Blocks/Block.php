@@ -223,6 +223,10 @@ class Block {
 					}
 
 					break;
+				case 'text':
+					$value = DOMHelpers::getTextFromSelector( $rendered_block, $attribute_config['selector'], $default );
+
+					break;
 			}//end switch
 
 			return $value;
