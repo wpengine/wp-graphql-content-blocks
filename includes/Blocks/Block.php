@@ -203,7 +203,7 @@ class Block {
 	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
 		// Get default value.
 		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
-		
+
 		if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
 			$rendered_block = wp_unslash( render_block( $block ) );
 			$value          = null;
@@ -228,6 +228,11 @@ class Block {
 
 					break;
 			}//end switch
+
+			// if type is set to integer, get the integer value of the attribute.
+			if( $attribute_config['type'] === 'integer' ) {
+				$value = intval( $value );
+			}
 
 			return $value;
 		}//end if
