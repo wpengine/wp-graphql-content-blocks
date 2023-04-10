@@ -76,7 +76,7 @@ final class RegistryTest extends PluginTestCase {
 						'core/paragraph',
 					);
 				}
-				return true;
+				return $allowed_blocks;
 			},
 			10,
 			2

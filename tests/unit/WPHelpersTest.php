@@ -41,9 +41,9 @@ final class WPHelpersTest extends PluginTestCase {
 	 */
 	public function test_get_supported_post_types() {
 		$expected_post_types = array(
-			'Post',
-			'Page',
-			'Recipe',
+			get_post_type_object( 'post' ),
+			get_post_type_object( 'page' ),
+			get_post_type_object( 'recipe' ),
 		);
 		$this->assertEquals( WPHelpers::get_supported_post_types(), $expected_post_types );
 	}

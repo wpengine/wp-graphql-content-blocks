@@ -180,7 +180,7 @@ class Block {
 	 *
 	 * @return void
 	 */
-	private function register_type() {
+	private function register_type(): void {
 		/**
 		 * Register the Block Object Type to the Schema
 		 */
@@ -188,7 +188,7 @@ class Block {
 			$this->type_name,
 			array(
 				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-				'interfaces'      => $this->get_block_interfaces( $this->block->name ),
+				'interfaces'      => $this->get_block_interfaces(),
 				'eagerlyLoadType' => true,
 				'fields'          => array(
 					'name' => array(

@@ -38,9 +38,7 @@ final class PostTypeBlockInterface {
 
 					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
 					$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
-					$type_name = Utils::format_type_name( $type_name );
-
-					return $type_registry->get_type( $type_name ) ?? $type_registry->get_type( 'UnknownBlock' );
+					return Utils::format_type_name( $type_name );
 				},
 			)
 		);

@@ -38,7 +38,7 @@ final class WPHelpers {
 				continue;
 			}
 
-			$supported_post_types[] = Utils::format_type_name( $block_editor_post_type->graphql_single_name );
+			$supported_post_types[] = $block_editor_post_type;
 		}
 
 		return $supported_post_types;
