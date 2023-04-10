@@ -39,7 +39,7 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
             }
           }
 		';
-		$response                    = graphql(
+		$response                          = graphql(
 			array(
 				'query'     => $queryNodeWithPostEditorBlocksMeta,
 				'variables' => array(
@@ -47,7 +47,7 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 				),
 			)
 		);
-		$expected                    = array(
+		$expected                          = array(
 			'fields' => array(
 				array(
 					'name' => 'editorBlocks',

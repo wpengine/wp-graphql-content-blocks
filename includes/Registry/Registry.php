@@ -116,7 +116,6 @@ final class Registry implements OnInit {
 			}
 		}//end foreach
 
-
 		return ! empty( $this->block_interfaces[ $block_name ] ) ? $this->block_interfaces[ $block_name ] : array();
 	}
 
@@ -131,7 +130,6 @@ final class Registry implements OnInit {
 
 		// Get the interfaces a block should implement based on the context a block is available to be accessed from.
 		$context_interfaces = $this->get_block_context_interfaces( $block_name );
-
 
 		// @todo: if blocks need to implement other interfaces (i.e. "BlockSupports" interfaces, that could be handled here as well)
 		return array_merge( array( 'EditorBlock' ), $context_interfaces );
@@ -153,9 +151,12 @@ final class Registry implements OnInit {
 			return;
 		}
 
-		$type_names = array_map( function( $post_type ) {
-			return $post_type->graphql_single_name ?? null;
-		}, $supported_post_types );
+		$type_names = array_map(
+			function( $post_type ) {
+				return $post_type->graphql_single_name ?? null;
+			},
+			$supported_post_types
+		);
 
 		register_graphql_interfaces_to_types( array( 'NodeWithEditorBlocks' ), $type_names );
 		$post_id = -1;
