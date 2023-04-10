@@ -86,6 +86,8 @@ final class DOMHelpers {
 			return null;
 		}
 
+		// Returns the element's "textContent"
+		// https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
 		return $nodes[0]->text();
 	}
 }
