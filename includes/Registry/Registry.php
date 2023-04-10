@@ -118,7 +118,7 @@ final class Registry implements OnInit {
 			);
 		}//end foreach
 
-		return $this->block_interfaces[ $this->block->name ] ?? array();
+		return $this->block_interfaces[ $block_name ] ?? array();
 	}
 
 	/**
