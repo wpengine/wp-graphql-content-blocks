@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OnInit interface
  *
@@ -15,11 +16,5 @@ namespace WPGraphQL\ContentBlocks\Interfaces;
  */
 interface OnInit {
 
-	/**
-	 * Initialize the class
-	 *
-	 * @return mixed
-	 */
 	public function onInit();
-
 }

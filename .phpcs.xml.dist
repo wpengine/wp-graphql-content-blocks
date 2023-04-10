@@ -5,10 +5,8 @@
 	<file>.</file>
 
 	<!-- Exclude composer vendor directory -->
-	<exclude-pattern>*/node_modules/*</exclude-pattern>
-    <exclude-pattern>*/vendor/*</exclude-pattern>
-    <exclude-pattern>.docker/*</exclude-pattern>
-    <exclude-pattern>tests/*</exclude-pattern>
+	<exclude-pattern>/vendor/</exclude-pattern>
+	<exclude-pattern>/node_modules/</exclude-pattern>
 
 	<!-- How to scan -->
 	<!-- Usage instructions: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage -->
@@ -21,7 +19,7 @@
 
 	<!-- Rules: Check PHP version compatibility -->
 	<!-- https://github.com/PHPCompatibility/PHPCompatibility#sniffing-your-code-for-compatibility-with-specific-php-versions -->
-	<config name="testVersion" value="7.3-" />
+	<config name="testVersion" value="7.2-" />
 
 	<!-- https://github.com/wpengine/wpengine-coding-standards -->
 	<rule ref="WP-Engine-Strict"/>
@@ -32,7 +30,7 @@
 	<!-- Rules: WordPress Coding Standards -->
 	<!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards -->
 	<!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties -->
-	<config name="minimum_supported_wp_version" value="6.0" />
+	<config name="minimum_supported_wp_version" value="5.3" />
 
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
@@ -122,5 +120,5 @@
 		<exclude-pattern>/tests/</exclude-pattern>
 	</rule>
 
-
+	
 </ruleset>

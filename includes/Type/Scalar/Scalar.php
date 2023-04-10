@@ -1,9 +1,4 @@
 <?php
-/**
- * Register new Scalars to the WPGraphQL Schema.
- *
- * @package WPGraphQL\ContentBlocks
- */
 
 namespace WPGraphQL\ContentBlocks\Type\Scalar;
 
