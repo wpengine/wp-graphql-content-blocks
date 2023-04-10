@@ -34,6 +34,11 @@ final class WPHelpers {
 				continue;
 			}
 
+			// If the post type is not set to show in REST then Gutenberg will not be enabled for the type.
+			if ( ! $block_editor_post_type->show_in_rest ) {
+				continue;
+			}
+
 			if ( ! isset( $block_editor_post_type->graphql_single_name ) ) {
 				continue;
 			}
