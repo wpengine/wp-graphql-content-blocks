@@ -1,17 +1,25 @@
 <?php
-
 /**
  * Setup WPGraphQLContentBlocks
  *
  * @package WPGraphQL\ContentBlocks
  * @since   0.0.1
  */
-// Global. - namespace WPGraphQL\ContentBlocks
 
+/**
+ * Global. - namespace WPGraphQL\ContentBlocks.
+ *
+ * @package WPGraphQL\ContentBlocks
+ */
+// @phpcs:ignore
 final class WPGraphQLContentBlocks {
 
-
-	private static $instance;
+	/**
+	 * Instance of the WPGraphQLContentBlocks class
+	 *
+	 * @var WPGraphQLContentBlocks
+	 */
+	private static WPGraphQLContentBlocks $instance;
 
 	/**
 	 * The instance of the WPGraphQLContentBlocks object

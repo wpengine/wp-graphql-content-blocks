@@ -1,4 +1,9 @@
 <?php
+/**
+ * Resolve Content Blocks.
+ *
+ * @package WPGraphQL\ContentBlocks
+ */
 
 namespace WPGraphQL\ContentBlocks\Data;
 
@@ -10,14 +15,17 @@ use WPGraphQL\Model\Post;
  * @package WPGraphQL\ContentBlocks
  */
 final class ContentBlocksResolver {
+
 	/**
 	 * Retrieves a list of content blocks
 	 *
 	 * @param mixed $node The node we are resolving.
 	 * @param array $args GraphQL query args to pass to the connection resolver.
 	 * @param array $allowed_block_names The list of allowed block names to filter.
+	 *
+	 * @return array
 	 */
-	public static function resolve_content_blocks( $node, $args, $allowed_block_names = array() ) {
+	public static function resolve_content_blocks( $node, array $args, array $allowed_block_names = array() ): array {
 		$content = null;
 		if ( $node instanceof Post ) {
 
@@ -28,6 +36,7 @@ final class ContentBlocksResolver {
 			// probably have a "Block" Model that handles
 			// determining what fields should/should not be
 			// allowed to be returned?
+			// phpcs:ignore
 			$post    = get_post( $node->databaseId );
 			$content = $post->post_content;
 		}
@@ -39,6 +48,7 @@ final class ContentBlocksResolver {
 		 * @param \WPGraphQL\Model\Model $node    The node we are resolving.
 		 * @param array                  $args    GraphQL query args to pass to the connection resolver.
 		 */
+		// phpcs:ignore
 		$content = apply_filters( 'wpgraphql_content_blocks_resolver_content', $content, $node, $args );
 
 		if ( empty( $content ) ) {
@@ -69,7 +79,7 @@ final class ContentBlocksResolver {
 		);
 
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
-		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) {
+		if ( ! isset( $args['flat'] ) || 'true' === $args['flat'] ) {
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
 		}
 
@@ -88,8 +98,10 @@ final class ContentBlocksResolver {
 
 	/**
 	 * Flattens a list blocks into a single array
+	 *
+	 * @param array $blocks The blocks to convert into a flattened list.
 	 */
-	private static function flatten_block_list( $blocks ) {
+	private static function flatten_block_list( array $blocks = array() ): array {
 		$result = array();
 		foreach ( $blocks as $block ) {
 			$result = array_merge( $result, self::flatten_inner_blocks( $block ) );
@@ -99,10 +111,16 @@ final class ContentBlocksResolver {
 
 	/**
 	 * Flattens a block and it's inner blocks into a single while attaching unique clientId's
+	 *
+	 * @param array $block The instance of the Block being flattened.
 	 */
-	private static function flatten_inner_blocks( $block ) {
+	private static function flatten_inner_blocks( array $block = array() ): array {
+		if ( empty( $block ) ) {
+			return $block;
+		}
+
 		$result            = array();
-		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
+		$block['clientId'] = $block['clientId'] ?? uniqid();
 		array_push( $result, $block );
 		foreach ( $block['innerBlocks'] as $child ) {
 			$child['parentClientId'] = $block['clientId'];
