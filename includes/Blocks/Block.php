@@ -224,8 +224,22 @@ class Block {
 					break;
 				case 'html':
 					$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $default );
+
+					if ( isset( $attribute_config['multiline'] ) ) {
+						$value = DOMHelpers::getElementsFromHTML( $value, $attribute_config['multiline'] );
+					}
+
+					break;
+				case 'text':
+					$value = DOMHelpers::getTextFromSelector( $rendered_block, $attribute_config['selector'], $default );
+
 					break;
 			}//end switch
+
+			// if type is set to integer, get the integer value of the attribute.
+			if ( $attribute_config['type'] === 'integer' ) {
+				$value = intval( $value );
+			}
 
 			return $value;
 		}//end if

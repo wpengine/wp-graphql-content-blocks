@@ -41,4 +41,30 @@ final class DOMHelpersTest extends PluginTestCase {
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $class_selector ), '<span>Bar</span>' );
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $element_selector ), '<span>Bar</span>' );
 	}
+
+	public function testGetElementsFromHTML(): void {
+		$html = '<blockquote><p>First paragraph</p><div>My div</div><p>Second paragraph</p></blockquote>';
+		$element_selector = 'p';
+		$no_existant_selector = 'span';
+
+		$this->assertEquals( DOMHelpers::getElementsFromHTML( $html, $element_selector), '<p>First paragraph</p><p>Second paragraph</p>' );
+		$this->assertEmpty( DOMHelpers::getElementsFromHTML( $html, $no_existant_selector) );
+	}
+
+	public function getTextFromSelector(): void {
+		$html = '<blockquote><p>First paragraph</p><div>My div</div><p>Second paragraph</p></blockquote>';
+
+		$blockquote_element = 'blockquote';
+		$p_element = 'p';
+		$div_element = 'div';
+		$no_existant_selector = 'span';
+
+		// getTextFromSelector should get all text (even descendents) according to "textContent"
+		// https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
+		$this->assertEquals( DOMHelpers::getTextFromSelector($html, $blockquote_element), 'First paragraphMy divSecond paragraph' );
+		
+		$this->assertEquals( DOMHelpers::getTextFromSelector($html, $p_element), 'First paragraph' );
+		$this->assertEquals( DOMHelpers::getTextFromSelector($html, $div_element), 'My div' );
+		$this->assertEmpty( DOMHelpers::getElementsFromHTML( $html, $no_existant_selector ) );
+	}
 }
