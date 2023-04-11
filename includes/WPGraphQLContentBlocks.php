@@ -104,7 +104,6 @@ final class WPGraphQLContentBlocks {
 				add_action(
 					'admin_notices',
 					function () {
-
 						if ( ! current_user_can( 'manage_options' ) ) {
 							return;
 						}
@@ -117,8 +116,7 @@ final class WPGraphQLContentBlocks {
 						);
 					}
 				);
-
-			}
+			}//end if
 
 			// If GraphQL class doesn't exist, then dependencies cannot be
 			// detected. This likely means the user cloned the repo from Github

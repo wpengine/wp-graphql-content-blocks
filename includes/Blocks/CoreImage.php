@@ -11,7 +11,7 @@ class CoreImage extends Block {
 			'source'    => 'attribute',
 			'attribute' => 'class',
 		),
-		'src'       => array(
+		'src'          => array(
 			'type'      => 'string',
 			'selector'  => 'img',
 			'source'    => 'attribute',

@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WPGRAPHQL_CONTENT_BLOCKS_DIR', dirname( __FILE__ ) );
+define( 'WPGRAPHQL_CONTENT_BLOCKS_DIR', __DIR__ );
 
 if ( ! class_exists( 'WPGraphQLContentBlocks' ) ) {
 	require_once __DIR__ . '/includes/WPGraphQLContentBlocks.php';

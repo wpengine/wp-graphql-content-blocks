@@ -169,11 +169,18 @@ class Block {
 	}
 
 	/**
+	 * @return string[]
+	 */
+	private function get_block_interfaces(): array {
+		return $this->block_registry->get_block_interfaces( $this->block->name );
+	}
+
+	/**
 	 * Register the Type for the block
 	 *
 	 * @return void
 	 */
-	private function register_type() {
+	private function register_type(): void {
 		/**
 		 * Register the Block Object Type to the Schema
 		 */
@@ -181,7 +188,7 @@ class Block {
 			$this->type_name,
 			array(
 				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-				'interfaces'      => array( 'EditorBlock' ),
+				'interfaces'      => $this->get_block_interfaces(),
 				'eagerlyLoadType' => true,
 				'fields'          => array(
 					'name' => array(
@@ -203,14 +210,14 @@ class Block {
 	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
 		// Get default value.
 		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
-		
+
 		if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
 			$rendered_block = wp_unslash( render_block( $block ) );
 			$value          = null;
 			if ( empty( $rendered_block ) ) {
 				return $value;
 			}
-			
+
 			switch ( $attribute_config['source'] ) {
 				case 'attribute':
 					$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], $default );
