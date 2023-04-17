@@ -15,24 +15,24 @@ commands:
     steps:
       - run:
           command: |
-            echo "export VERSION=$(grep 'Version:' ~/project/atlas-content-modeler/atlas-content-modeler.php | awk -F: '{print $2}' | sed 's/^\s//')" >> ${BASH_ENV}
+            echo "export VERSION=$(grep 'Version:' ~/project/wp-graphql-content-blocks/wp-graphql-content-blocks.php | awk -F: '{print $2}' | sed 's/^\s//')" >> ${BASH_ENV}
 
   svn_setup:
     description: "Set up SVN"
     steps:
       - set_version_variable
       - run: sudo apt-get update && sudo apt-get install subversion
-      - run: svn co https://plugins.svn.wordpress.org/atlas-content-modeler --depth=empty .
+      - run: svn co https://plugins.svn.wordpress.org/wp-graphql-content-blocks --depth=empty .
       - run: svn up trunk
       - run: svn up tags --depth=empty
       - run: svn up assets
       - run: find ./trunk -not -path "./trunk" -delete
       - run: mkdir ~/project/unzip-temp
-      - run: unzip ~/project/build/atlas-content-modeler.${VERSION}.zip -d ~/project/unzip-temp
-      - run: cp -r ~/project/unzip-temp/atlas-content-modeler/. ./trunk
-      - run: cp -r ~/project/atlas-content-modeler/assets/wporg/* ./assets
+      - run: unzip ~/project/build/wp-graphql-content-blocks.${VERSION}.zip -d ~/project/unzip-temp
+      - run: cp -r ~/project/unzip-temp/wp-graphql-content-blocks/. ./trunk
+      - run: cp -r ~/project/wp-graphql-content-blocks/assets/wporg/* ./assets
       - run: rm -rf node_modules/
-      - run: cp ~/project/atlas-content-modeler/.svnignore ./trunk
+      - run: cp ~/project/wp-graphql-content-blocks/.svnignore ./trunk
       - run: svn propset svn:ignore -F ./trunk/.svnignore ./trunk
       - run: svn propset svn:ignore -F ./trunk/.svnignore ./tags
 
@@ -106,7 +106,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - atlas-content-modeler/vendor
+            - wp-graphql-content-blocks/vendor
 
   plugin-build-npm:
     executor:
@@ -150,7 +150,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - atlas-content-modeler/readme.txt
+            - wp-graphql-content-blocks/readme.txt
 
   plugin-build-json:
     executor: wp-product-orb/parser
@@ -187,11 +187,11 @@ jobs:
       - run:
           name: Build .pot file
           command: |
-            ./wp-cli.phar i18n make-pot ~/project/atlas-content-modeler
+            ./wp-cli.phar i18n make-pot ~/project/wp-graphql-content-blocks
       - persist_to_workspace:
           root: .
           paths:
-            - atlas-content-modeler/languages
+            - wp-graphql-content-blocks/languages
 
   plugin-build-zip:
     executor: wp-product-orb/default
@@ -275,7 +275,7 @@ jobs:
             ./wp-cli.phar core install --path=/tmp/wordpress --url=http://localhost:5501 --title="WPE Headless Testing" --admin_user=admin --admin_password=password --admin_email=admin@example.com --skip-email
 
       - run:
-          name: Activate atlas-content-modeler plugin
+          name: Activate wp-graphql-content-blocks plugin
           command: |
             ./wp-cli.phar plugin install --activate --path=/tmp/wordpress build/$(cat build/file.txt)
 
@@ -285,7 +285,7 @@ jobs:
             ./wp-cli.phar plugin install --path=/tmp/wordpress wp-graphql --activate
 
       - run:
-          working_directory: /home/circleci/project/atlas-content-modeler
+          working_directory: /home/circleci/project/wp-graphql-content-blocks
           name: Create database dump for Codeception
           command: |
             mkdir -p tests/_data
@@ -305,24 +305,24 @@ jobs:
           background: true
 
       - run:
-          working_directory: /home/circleci/project/atlas-content-modeler
+          working_directory: /home/circleci/project/wp-graphql-content-blocks
           name: Set up Codeception files
           command: |
             cp .env.testing.circleci .env.testing
             cp tests/acceptance.suite.circleci.yml tests/acceptance.suite.yml
 
       - run:
-          working_directory: /home/circleci/project/atlas-content-modeler
+          working_directory: /home/circleci/project/wp-graphql-content-blocks
           name: Run Codeception
           command: |
             vendor/bin/codecept build
             vendor/bin/codecept -vvv run acceptance --xml="tests/_output/results.xml" --no-interaction
 
       - store_test_results:
-          path: atlas-content-modeler/tests/_output
+          path: wp-graphql-content-blocks/tests/_output
 
       - store_artifacts:
-          path: atlas-content-modeler/tests/_output
+          path: wp-graphql-content-blocks/tests/_output
 
   plugin-test-jest:
     executor:
@@ -376,7 +376,7 @@ jobs:
       - run:
           name: Run Code Sniffer sniffs
           command: /usr/local/bin/composer lint && /usr/local/bin/composer phpcs
-          working_directory: atlas-content-modeler
+          working_directory: wp-graphql-content-blocks
 
   plugin-test-unit:
     docker:
@@ -479,18 +479,18 @@ jobs:
 
 workflows:
   # Workflows defined for each package and plugin.
-  # tag example for deploying an update for atlas-content-modeler: 1.0.0
+  # tag example for deploying an update for wp-graphql-content-blocks: 1.0.0
   plugin:
     jobs:
       - plugin-checkout:
-          slug: atlas-content-modeler
-          filename: atlas-content-modeler.php
+          slug: wp-graphql-content-blocks
+          filename: wp-graphql-content-blocks.php
           # run this job for any build, any branch
           filters:
             tags:
               only: /.*/
       - plugin-build-composer:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-checkout
           # run this job for any build, any branch
@@ -498,7 +498,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-build-npm:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-checkout
           # run this job for any build, any branch
@@ -506,7 +506,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-build-readme:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-npm
           # run this job for any build, any branch
@@ -514,7 +514,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-build-json:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-readme
           # Run this job on every commit/PR to make sure it's in working order prior to deploying
@@ -529,7 +529,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-build-zip:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-composer
             - plugin-build-npm
@@ -547,7 +547,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-test-jest:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-zip
           # run this job for any build, any branch
@@ -555,7 +555,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-test-lint-js:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-zip
           # run this job for any build, any branch
@@ -571,7 +571,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-test-unit:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-zip
             - plugin-build-composer
@@ -580,7 +580,7 @@ workflows:
             tags:
               only: /.*/
       - plugin-test-content-connect:
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-zip
             - plugin-build-composer
@@ -590,7 +590,7 @@ workflows:
               only: /.*/
       - plugin-deploy:
           name: "plugin-deploy-staging"
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-build-zip
             - plugin-build-json
@@ -612,7 +612,7 @@ workflows:
           upload_url: https://wp-product-info-staging.wpesvc.net/v1/plugins
       - plugin-deploy:
           name: "plugin-deploy-production"
-          slug: atlas-content-modeler
+          slug: wp-graphql-content-blocks
           requires:
             - "plugin-deploy-staging"
           filters:
