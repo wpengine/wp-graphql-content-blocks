@@ -419,6 +419,7 @@ workflows:
           slug: wp-graphql-content-blocks
           requires:
             - plugin-checkout
+            - plugin-build-composer
           # run this job for any build, any branch
           filters:
             tags:
