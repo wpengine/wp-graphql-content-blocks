@@ -5,7 +5,6 @@ namespace WPGraphQL\ContentBlocks\Registry;
 use Exception;
 use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
-use WPGraphQL\ContentBlocks\Interfaces\OnInit;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\PostTypeBlockInterface;
@@ -18,7 +17,7 @@ use WPGraphQL\Utils\Utils;
  *
  * @package WPGraphQL\ContentBlocks\Registry
  */
-final class Registry implements OnInit {
+final class Registry {
 
 	/**
 	 * @var TypeRegistry
