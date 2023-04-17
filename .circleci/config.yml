@@ -123,26 +123,6 @@ jobs:
           paths:
             - build
 
-  plugin-build-pot:
-    executor: php/default
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install WP-CLI
-          command: |
-            curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-            chmod +x wp-cli.phar
-            ./wp-cli.phar --info
-      - run:
-          name: Build .pot file
-          command: |
-            ./wp-cli.phar i18n make-pot ~/project/wp-graphql-content-blocks
-      - persist_to_workspace:
-          root: .
-          paths:
-            - wp-graphql-content-blocks/languages
-
   plugin-build-zip:
     executor: wp-product-orb/default
     environment:
@@ -459,19 +439,11 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - plugin-build-pot:
-          requires:
-            - plugin-checkout
-          # Run this job on every commit/PR so the plugin is available as a build artifact
-          filters:
-            tags:
-              only: /.*/
       - plugin-build-zip:
           slug: wp-graphql-content-blocks
           requires:
             - plugin-build-composer
             - plugin-build-npm
-            - plugin-build-pot
           # Run this job on every commit/PR so the plugin is available as a build artifact
           filters:
             tags:
