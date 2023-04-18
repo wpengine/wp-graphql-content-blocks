@@ -2,7 +2,6 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-use WP_Block_Type_Registry;
 use \WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
 
 final class BlockSupportsAnchorTest extends PluginTestCase {
@@ -10,7 +9,6 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 	public $post_id;
 	public function setUp(): void {
 		parent::setUp();
-		global $wpdb;
 		$settings                                 = get_option( 'graphql_general_settings' );
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
@@ -54,7 +52,7 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		$this->instance::register( $block );
 
 		// Verify BlockWithSupportsAnchor fields registration
-		$queryBlockWithSupportsAnchor = '
+		$query    = '
 		query BlockWithSupportsAnchorMeta {
             __type(name: "BlockWithSupportsAnchor") {
               fields {
@@ -66,12 +64,8 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
             }
           }
 		';
-		$response                     = graphql(
-			array(
-				'query' => $queryBlockWithSupportsAnchor,
-			)
-		);
-		$expected                     = array(
+		$actual   = graphql( array( 'query' => $query ) );
+		$expected = array(
 			'fields'        => array(
 				array(
 					'name' => 'anchor',
@@ -86,9 +80,40 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 				),
 			),
 		);
-		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
-		$this->assertEquals( $response['data']['__type']['fields'], $expected['fields'] );
-		$this->assertContains( $expected['possibleTypes'][0], $response['data']['__type']['possibleTypes'] );
-		$this->assertContains( $expected['possibleTypes'][1], $response['data']['__type']['possibleTypes'] );
+		$this->assertArrayHasKey( 'data', $actual, json_encode( $actual ) );
+		$this->assertEquals( $actual['data']['__type']['fields'], $expected['fields'] );
+		$this->assertContains( $expected['possibleTypes'][0], $actual['data']['__type']['possibleTypes'] );
+		$this->assertContains( $expected['possibleTypes'][1], $actual['data']['__type']['possibleTypes'] );
+	}
+
+	/**
+	 * @covers Anchor->register querying for field data
+	 */
+	public function test_register_anchor_query_field() {
+		$block = \WP_Block_Type_Registry::get_instance()->get_registered( 'core/paragraph' );
+		$this->instance::register( $block );
+
+		// Verify BlockWithSupportsAnchor returns data
+		$query  = '
+		{
+			posts(first: 1) {
+				nodes {
+                    editorBlocks {
+                    	name
+						... on BlockWithSupportsAnchor {
+							anchor
+						}
+                    }
+				}
+			}
+		}';
+		$actual = graphql( array( 'query' => $query ) );
+		$node   = $actual['data']['posts']['nodes'][0];
+
+		$this->assertEquals( count( $node['editorBlocks'] ), 2 );
+		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/paragraph' );
+		$this->assertEquals( $node['editorBlocks'][0]['anchor'], 'example' );
+		$this->assertEquals( $node['editorBlocks'][1]['name'], 'core/paragraph' );
+		$this->assertNull( $node['editorBlocks'][1]['anchor'] );
 	}
 }
