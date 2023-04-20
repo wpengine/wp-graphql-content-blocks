@@ -2,14 +2,12 @@
 
 namespace WPGraphQL\ContentBlocks\Type\Scalar;
 
-use WPGraphQL\ContentBlocks\Interfaces\OnInit;
-
 /**
  * Class Scalar
  *
  * @package WPGraphQL\ContentBlocks
  */
-final class Scalar implements OnInit {
+final class Scalar {
 	/**
 	 * Scalar init procedure.
 	 */

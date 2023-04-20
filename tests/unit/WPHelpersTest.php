@@ -25,7 +25,7 @@ final class WPHelpersTest extends PluginTestCase {
 				'graphql_plural_name' => 'blocksEnabled',
 				'supports'            => array( 'title', 'editor', 'author', 'thumbnail' ),
 				'public'              => true,
-				'show_in_rest'        => true
+				'show_in_rest'        => true,
 			)
 		);
 
@@ -37,7 +37,8 @@ final class WPHelpersTest extends PluginTestCase {
 				'graphql_plural_name' => 'blocksDisabled',
 				'supports'            => array( 'title', 'editor', 'author', 'thumbnail' ),
 				'public'              => true,
-				'show_in_rest'        => false // post types that support the editor but do not show in rest will be prevented from using the Block editor
+				'show_in_rest'        => false,
+			// post types that support the editor but do not show in rest will be prevented from using the Block editor
 			)
 		);
 
@@ -55,14 +56,11 @@ final class WPHelpersTest extends PluginTestCase {
 	 * @covers WPHelpers::get_supported_post_types
 	 */
 	public function test_get_supported_post_types() {
-
 		$supported_post_types = WPHelpers::get_supported_post_types();
 
 		$this->assertContains( get_post_type_object( 'post' ), $supported_post_types );
 		$this->assertContains( get_post_type_object( 'page' ), $supported_post_types );
 		$this->assertContains( get_post_type_object( 'blocks_enabled' ), $supported_post_types );
 		$this->assertNotContains( get_post_type_object( 'blocks_disabled' ), $supported_post_types );
-
-
 	}
 }
