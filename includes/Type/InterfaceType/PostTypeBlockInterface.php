@@ -33,7 +33,7 @@ final class PostTypeBlockInterface {
 				),
 				'resolveType' => function ( $block ) use ( $type_registry ) {
 					if ( empty( $block['blockName'] ) ) {
-						$block['blockName'] = 'core/html';
+						$block['blockName'] = 'core/freeform';
 					}
 
 					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
