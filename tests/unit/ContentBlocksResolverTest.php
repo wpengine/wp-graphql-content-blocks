@@ -40,6 +40,9 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 			    <!-- /wp:paragraph --></div>
 			    <!-- /wp:column --></div>
 			    <!-- /wp:columns -->
+
+				<!-- Classic Block -->
+				<p>Hello Classic Block</p>
                 '
 					)
 				),
@@ -58,10 +61,16 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	public function test_resolve_content_blocks_filters_empty_blocks() {
 		$post_model = new Post( get_post( $this->post_id ) );
 		$actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
-
 		// There should return only the non-empty blocks
-		$this->assertEquals( count( $actual ), 5 );
+		$this->assertEquals( count( $actual ), 6 );
 		$this->assertEquals( $actual[0]['blockName'], 'core/columns' );
+	}
+
+	public function test_resolve_content_blocks_resolves_classic_blocks() {
+		$post_model = new Post( get_post( $this->post_id ) );
+		$actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
+
+		$this->assertEquals( $actual[5]['blockName'], 'core/freeform' );
 	}
 
 	public function test_resolve_content_blocks_filters_blocks_not_from_allow_list() {

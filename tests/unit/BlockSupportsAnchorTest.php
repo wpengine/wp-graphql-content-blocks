@@ -23,10 +23,10 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 						'
                         <!-- wp:paragraph -->
                         <p id="example">Example paragraph with Anchor</p>
-                        <!-- /wp:paragraph --></div>
+                        <!-- /wp:paragraph -->
                         <!-- wp:paragraph -->
                         <p>Example paragraph without Anchor</p>
-                        <!-- /wp:paragraph --></div>
+                        <!-- /wp:paragraph -->
 			        '
 					)
 				),
@@ -109,7 +109,6 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		}';
 		$actual = graphql( array( 'query' => $query ) );
 		$node   = $actual['data']['posts']['nodes'][0];
-
 		$this->assertEquals( count( $node['editorBlocks'] ), 2 );
 		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/paragraph' );
 		$this->assertEquals( $node['editorBlocks'][0]['anchor'], 'example' );
