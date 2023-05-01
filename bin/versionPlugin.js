@@ -29,10 +29,10 @@ async function versionPlugin() {
   const version = await getNewVersion(pluginPath);
 
   if (version) {
-    bumpPluginHeader(pluginFile, version);
+    await bumpPluginHeader(pluginFile, version);
     await bumpStableTag(readmeTxt, version);
     await bumpVersionConstant(constantsFile, version);
-    generateReadmeChangelog(readmeTxt, changelog);
+    await generateReadmeChangelog(readmeTxt, changelog);
   }
 }
 
