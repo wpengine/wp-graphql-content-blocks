@@ -66,7 +66,6 @@ async function bumpStableTag(readmeTxt, version) {
  * @param {String} version    The new version number.
  */
 async function bumpVersionConstant(pluginFile, version) {
-  console.log(version);
   return bumpVersion(
     pluginFile,
     /^\s*\$this->define\(\s*'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '([0-9.]+)/gm,
