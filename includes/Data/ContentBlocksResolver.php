@@ -50,19 +50,25 @@ final class ContentBlocksResolver {
 		if ( empty( $parsed_blocks ) ) {
 			return array();
 		}
-		// 1st Level filtering of blocks that have no name
+		// 1st Level filtering of blocks that are empty
 		$parsed_blocks = array_filter(
 			$parsed_blocks,
 			function ( $parsed_block ) {
-				return isset( $parsed_block['blockName'] ) && ! empty( $parsed_block['blockName'] );
+				// Strip empty comments and spaces
+				return ! empty( trim( preg_replace('/<!--(.*)-->/Uis', '', $parsed_block['innerHTML']) ) );
 			},
 			ARRAY_FILTER_USE_BOTH
 		);
 
-		// 1st Level assigning of unique id's
+		// 1st Level assigning of unique id's and missing blockNames
 		$parsed_blocks = array_map(
 			function ( $parsed_block ) {
 				$parsed_block['clientId'] = uniqid();
+				// Since Gutenberg assigns an empty blockName for Classic block
+				// we define the name here
+				if ( empty( $parsed_block['blockName'] ) ) {
+					$parsed_block['blockName'] = 'core/freeform';
+				}
 				return $parsed_block;
 			},
 			$parsed_blocks
@@ -78,7 +84,7 @@ final class ContentBlocksResolver {
 			$parsed_blocks = array_filter(
 				$parsed_blocks,
 				function ( $parsed_block ) use ( $allowed_block_names ) {
-					return isset( $parsed_block['blockName'] ) && in_array( $parsed_block['blockName'], $allowed_block_names, true );
+					return in_array( $parsed_block['blockName'], $allowed_block_names, true );
 				},
 				ARRAY_FILTER_USE_BOTH
 			);
@@ -88,6 +94,8 @@ final class ContentBlocksResolver {
 
 	/**
 	 * Flattens a list blocks into a single array
+	 *
+	 * @param mixed $blocks A list of blocks to flatten.
 	 */
 	private static function flatten_block_list( $blocks ) {
 		$result = array();
@@ -99,6 +107,8 @@ final class ContentBlocksResolver {
 
 	/**
 	 * Flattens a block and it's inner blocks into a single while attaching unique clientId's
+	 *
+	 * @param mixed $block A block.
 	 */
 	private static function flatten_inner_blocks( $block ) {
 		$result            = array();

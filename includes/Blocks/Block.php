@@ -73,7 +73,7 @@ class Block {
 	 * @return void
 	 */
 	public function register_fields() {     }
-	
+
 
 	private function register_block_type() {
 		$this->register_block_attributes_as_fields();
@@ -203,7 +203,21 @@ class Block {
 	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
 		// Get default value.
 		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
-
+		// Case when only source defined: Classic Blocks
+		if ( isset( $attribute_config['source'] ) && ! isset( $attribute_config['selector'] ) ) {
+			$rendered_block = wp_unslash( render_block( $block ) );
+			$value          = null;
+			if ( empty( $rendered_block ) ) {
+				return $value;
+			}
+			switch ( $attribute_config['source'] ) {
+				case 'html':
+					$value = $rendered_block;
+					break;
+			}
+			return $value;
+		}
+		// Case when both selector and source are defined
 		if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
 			$rendered_block = wp_unslash( render_block( $block ) );
 			$value          = null;
