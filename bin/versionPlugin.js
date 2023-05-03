@@ -6,10 +6,10 @@
  * Ported over from FaustJS
  * @link https://github.com/wpengine/faustjs/blob/canary/scripts/versionPlugin.js
  */
-const fs = require('fs/promises');
-const path = require('path');
+const fs = require("fs/promises");
+const path = require("path");
 
-const readFile = (filename) => fs.readFile(filename, { encoding: 'utf8' });
+const readFile = (filename) => fs.readFile(filename, { encoding: "utf8" });
 const writeFile = fs.writeFile;
 
 /**
@@ -17,17 +17,22 @@ const writeFile = fs.writeFile;
  * including version bumps and readme.txt changelog updates.
  */
 async function versionPlugin() {
-  const pluginPath = path.join(__dirname, '../');
-  const pluginFile = path.join(pluginPath, 'wp-graphql-content-blocks.php');
-  const readmeTxt = path.join(pluginPath, 'readme.txt');
-  const changelog = path.join(pluginPath, 'CHANGELOG.md');
+  const pluginPath = path.join(__dirname, "../");
+  const pluginFile = path.join(pluginPath, "wp-graphql-content-blocks.php");
+  const readmeTxt = path.join(pluginPath, "readme.txt");
+  const changelog = path.join(pluginPath, "CHANGELOG.md");
+  const constantsFile = path.join(
+    pluginPath,
+    "includes/WPGraphQLContentBlocks.php"
+  );
 
   const version = await getNewVersion(pluginPath);
 
   if (version) {
-    bumpPluginHeader(pluginFile, version);
+    await bumpPluginHeader(pluginFile, version);
     await bumpStableTag(readmeTxt, version);
-    generateReadmeChangelog(readmeTxt, changelog);
+    await bumpVersionConstant(constantsFile, version);
+    await generateReadmeChangelog(readmeTxt, changelog);
   }
 }
 
@@ -52,6 +57,20 @@ async function bumpPluginHeader(pluginFile, version) {
  */
 async function bumpStableTag(readmeTxt, version) {
   return bumpVersion(readmeTxt, /^Stable tag:\s*([0-9.]+)$/gm, version);
+}
+
+/**
+ * Updates the version constant found in the WPGraphQLContentBlocks.php file.
+ *
+ * @param {String} pluginFile Full path to a file containing PHP constants.
+ * @param {String} version    The new version number.
+ */
+async function bumpVersionConstant(pluginFile, version) {
+  return bumpVersion(
+    pluginFile,
+    /^\s*\$this->define\(\s*'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '([0-9.]+)/gm,
+    version
+  );
 }
 
 /**
@@ -99,7 +118,7 @@ async function bumpVersion(file, regex, version) {
  * @returns The version number string found in the plugin's package.json.
  */
 async function getNewVersion(pluginPath) {
-  const packageJsonFile = path.join(pluginPath, 'package.json');
+  const packageJsonFile = path.join(pluginPath, "package.json");
 
   try {
     let packageJson = await readFile(packageJsonFile);
@@ -129,8 +148,8 @@ async function generateReadmeChangelog(readmeTxtFile, changelog) {
     changelog = await readFile(changelog);
 
     changelog = changelog.replace(
-      '# WPGraphQL Content Blocks',
-      '== Changelog =='
+      "# WPGraphQL Content Blocks",
+      "== Changelog =="
     );
 
     // split the contents by new line
@@ -141,12 +160,12 @@ async function generateReadmeChangelog(readmeTxtFile, changelog) {
     // print all lines in current version
     changelogLines.every((line) => {
       // Version numbers in CHANGELOG.md are h2
-      if (line.startsWith('## ')) {
+      if (line.startsWith("## ")) {
         if (versionCount == 3) {
           return false;
         }
         // Format version number for WordPress
-        line = line.replace('## ', '= ') + ' =';
+        line = line.replace("## ", "= ") + " =";
         versionCount++;
       }
 
@@ -157,10 +176,11 @@ async function generateReadmeChangelog(readmeTxtFile, changelog) {
 
     changelog = processedLines.join("\n");
 
-    const changelogStart = readmeTxt.indexOf('== Changelog ==');
+    const changelogStart = readmeTxt.indexOf("== Changelog ==");
 
     output = readmeTxt.substring(0, changelogStart) + changelog;
-    output += "\n[View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)";
+    output +=
+      "\n[View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)";
 
     return writeFile(readmeTxtFile, output);
   } catch (e) {
