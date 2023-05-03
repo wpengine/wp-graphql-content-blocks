@@ -43,8 +43,12 @@ final class DOMHelpers {
 	 */
 	public static function parseFirstNodeAttribute( $html, $attribute ) {
 		$value = null;
-		$doc   = new Document( $html );
-		$elem  = $doc->find( '*' )[2];
+		if ( trim( empty( $html ) ) ) {
+			return $value;
+		}
+		$doc = new Document( $html );
+		// <html><body>$html</body></html>
+		$elem = $doc->find( '*' )[2];
 		if ( $elem ) {
 			$value = $elem->getAttribute( $attribute );
 		}
