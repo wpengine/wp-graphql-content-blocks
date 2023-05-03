@@ -37,7 +37,9 @@ class Anchor {
 									'attribute' => 'id',
 									'selector'  => '*',
 								);
-								$rendered_block   = wp_unslash( render_block( $block ) );
+
+								$rendered_block   = wp_unslash( $block['innerHTML'] );
+
 								$value            = null;
 								if ( empty( $rendered_block ) ) {
 									return $value;

@@ -27,6 +27,13 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
                         <!-- wp:paragraph -->
                         <p>Example paragraph without Anchor</p>
                         <!-- /wp:paragraph -->
+
+						<!-- wp:group -->
+						<div class="wp-block-group">
+							<!-- wp:paragraph -->
+							<p id="example-inner">Example inner block</p>
+							<!-- /wp:paragraph -->
+						<!-- /wp:group -->				
 			        '
 					)
 				),
@@ -109,10 +116,18 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		}';
 		$actual = graphql( array( 'query' => $query ) );
 		$node   = $actual['data']['posts']['nodes'][0];
-		$this->assertEquals( count( $node['editorBlocks'] ), 2 );
+
+		$this->assertEquals( count( $node['editorBlocks'] ), 4 );
 		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/paragraph' );
 		$this->assertEquals( $node['editorBlocks'][0]['anchor'], 'example' );
+
 		$this->assertEquals( $node['editorBlocks'][1]['name'], 'core/paragraph' );
 		$this->assertNull( $node['editorBlocks'][1]['anchor'] );
+
+		$this->assertEquals( $node['editorBlocks'][2]['name'], 'core/group' );
+		$this->assertNull( $node['editorBlocks'][2]['anchor'] );
+
+		$this->assertEquals( $node['editorBlocks'][3]['name'], 'core/paragraph' );
+		$this->assertEquals( $node['editorBlocks'][3]['anchor'], 'example-inner' );
 	}
 }
