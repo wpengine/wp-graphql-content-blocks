@@ -31,20 +31,12 @@ class Anchor {
 							'type'        => 'string',
 							'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
 							'resolve'     => function ( $block ) {
-								$attribute_config = array(
-									'type'      => 'string',
-									'source'    => 'attribute',
-									'attribute' => 'id',
-									'selector'  => '*',
-								);
-
-								$rendered_block   = wp_unslash( $block['innerHTML'] );
-
+								$rendered_block   = wp_unslash( render_block( $block ) );
 								$value            = null;
 								if ( empty( $rendered_block ) ) {
 									return $value;
 								}
-								$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], null );
+								$value = DOMHelpers::parseFirstNodeAttribute( $rendered_block, 'id' );
 								return $value;
 							},
 						),

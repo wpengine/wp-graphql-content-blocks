@@ -34,6 +34,25 @@ final class DOMHelpers {
 	}
 
 	/**
+	 * Parses the given HTML string to extract the specified attribute selector of the first node.
+	 *
+	 * @param string $html The HTML string to parse.
+	 * @param string $attribute The attribute to extract of the first node.
+	 *
+	 * @return string|null extracted attribute
+	 */
+	public static function parseFirstNodeAttribute( $html, $attribute ) {
+		$value = null;
+		$doc   = new Document( $html );
+		$elem  = $doc->find( '*' )[2];
+		if ( $elem ) {
+			$value = $elem->getAttribute( $attribute );
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Parses the given HTML string to extract the innerHTML contents.
 	 *
 	 * @param string  $html The HTML string to parse.
@@ -53,16 +72,16 @@ final class DOMHelpers {
 		}
 		return $inner_html;
 	}
-	
+
 	/**
 	 * Parses the given HTML string and extracts the specified elements.
-	 * 
+	 *
 	 * @param string $html The HTML string to parse.
 	 * @param string $element The element (selector) to extract.
-	 * 
+	 *
 	 * @return string|null the HTML string of the extracted elements
 	 */
-	public static function getElementsFromHTML($html, $element) {
+	public static function getElementsFromHTML( $html, $element ) {
 		$doc = new Document();
 		$doc->loadHTML( $html );
 		$elements = $doc->find( $element );
@@ -79,18 +98,18 @@ final class DOMHelpers {
 	/**
 	 * Gets the text content of a given selector. If multiple selectors exist,
 	 * the first result will be used.
-	 * 
+	 *
 	 * @param string $html The HTML string to parse.
 	 * @param string $selector The selector to get the text content from.
-	 * 
+	 *
 	 * @return string|null The text content of the selector if found.
 	 */
-	public static function getTextFromSelector($html, $selector) {
+	public static function getTextFromSelector( $html, $selector ) {
 		$doc = new Document();
 		$doc->loadHTML( $html );
 		$nodes = $doc->find( $selector );
 
-		if( count( $nodes ) === 0 ) {
+		if ( count( $nodes ) === 0 ) {
 			return null;
 		}
 
