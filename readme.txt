@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,6 +24,19 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 0.2.1 =
+
+### Patch Changes
+
+- 0a29e79: Added support for the `multiline` property in `html` sourced block attributes
+- 0a29e79: Added support for `integer` type block attributes
+- 0a29e79: Added support for `text` sourced block attributes
+- 51011a6: Fix: slow schema / slow queries / unexpected Schema output
+- c2e6648: Warn the user if they downloaded the source code .zip instead of the production ready .zip file
+- 8955fac: Bug Fix: inner blocks "anchor" field being applied to parent block resulting in duplicates
+- c474da8: Add support for querying blocks per post type
+- a12542c: Add interface BlockWithSupportsAnchor for querying blocks that supports Anchor field
 
 = 0.2.0 =
 
