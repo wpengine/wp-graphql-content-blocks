@@ -55,7 +55,7 @@ final class ContentBlocksResolver {
 			$parsed_blocks,
 			function ( $parsed_block ) {
 				// Strip empty comments and spaces
-				return ! empty( trim( preg_replace('/<!--(.*)-->/Uis', '', $parsed_block['innerHTML']) ) );
+				return ! empty( trim( preg_replace( '/<!--(.*)-->/Uis', '', render_block( $parsed_block ) ) ) );
 			},
 			ARRAY_FILTER_USE_BOTH
 		);
