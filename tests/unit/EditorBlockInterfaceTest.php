@@ -6,15 +6,12 @@ use \WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 
 final class EditorBlockInterfaceTest extends PluginTestCase {
 
-	public $instance;
 	public function setUp(): void {
 		parent::setUp();
 
 		$settings                                 = get_option( 'graphql_general_settings' );
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
-
-		$this->instance = new EditorBlockInterface();
 	}
 
 	public function tearDown(): void {
@@ -34,10 +31,9 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 		$block_does_not_exist = array(
 			'blockName' => 'core/block_does_not_exist',
 		);
-		$context              = \WPGraphQL::get_app_context();
 
-		$this->assertNull( $this->instance->get_block( $block_does_not_exist, $context ) );
-		$this->assertNotNull( $this->instance->get_block( $block_exists, $context ) );
+		$this->assertNull( EditorBlockInterface::get_block( $block_does_not_exist ) );
+		$this->assertNotNull( EditorBlockInterface::get_block( $block_exists ) );
 	}
 
 	/**
@@ -46,12 +42,12 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 	public function test_register_type() {
 		$queryNodeWithEditorBlocksMeta = '
 		query NodeWithEditorBlocksMeta {
-            __type(name: "NodeWithEditorBlocks") {
-              fields {
-                name
-              }
-            }
-          }
+				__type(name: "NodeWithEditorBlocks") {
+					fields {
+						name
+					}
+				}
+			}
 		';
 
 		// Verify NodeWithEditorBlocks fields registration
@@ -75,12 +71,12 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 
 		$queryContentBlockMeta = '
 		query ContentBlockMeta {
-            __type(name: "EditorBlock") {
-              fields {
-                name
-              }
-            }
-          }
+				__type(name: "EditorBlock") {
+					fields {
+						name
+					}
+				}
+			}
 		';
 
 		// Verify ContentBlock fields registration
