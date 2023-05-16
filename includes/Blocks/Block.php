@@ -151,7 +151,7 @@ class Block {
 
 				$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = array(
 					'type'        => $graphql_type,
-					'description' => __( sprintf( 'The "%1$s" field on the "%2$s" block', $attribute_name, $this->type_name ), 'wp-graphql' ),
+					'description' => __( sprintf( 'The "%1$s" field on the "%2$s" block', $attribute_name, $this->type_name ), 'wp-graphql-content-blocks' ),
 					'resolve'     => function ( $block, $args, $context, $info ) use ( $attribute_name, $attribute_config ) {
 						return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
 					},
