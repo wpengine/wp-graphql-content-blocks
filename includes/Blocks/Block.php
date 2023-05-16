@@ -257,7 +257,7 @@ class Block {
 			}//end switch
 
 			// if type is set to integer, get the integer value of the attribute.
-			if ( $attribute_config['type'] === 'integer' ) {
+			if ( 'integer' === $attribute_config['type'] ) {
 				$value = intval( $value );
 			}
 
