@@ -1,11 +1,14 @@
 <?php
+/**
+ * The BlockAttributesObject scalar type.
+ *
+ * @package WPGraphQL\ContentBlocks\Type\Scalar
+ */
 
 namespace WPGraphQL\ContentBlocks\Type\Scalar;
 
 /**
  * Class Scalar
- *
- * @package WPGraphQL\ContentBlocks
  */
 final class Scalar {
 	/**
