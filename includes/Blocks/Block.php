@@ -165,7 +165,7 @@ class Block {
 						$attribute_name,
 						$this->type_name
 					),
-					'resolve'     => function ( $block, $args, $context, $info ) use ( $attribute_name, $attribute_config ) {
+					'resolve'     => function ( $block ) use ( $attribute_name, $attribute_config ) {
 						return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
 					},
 				);
