@@ -11,7 +11,7 @@ final class Scalar {
 	/**
 	 * Scalar init procedure.
 	 */
-	public function OnInit() {
+	public function init() {
 		register_graphql_scalar(
 			'BlockAttributesObject',
 			array(

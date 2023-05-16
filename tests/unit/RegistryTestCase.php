@@ -4,8 +4,10 @@ namespace WPGraphQL\ContentBlocks\Unit;
 
 use \WPGraphQL\ContentBlocks\Registry\Registry;
 
-final class RegistryTest extends PluginTestCase {
-
+final class RegistryTestCase extends PluginTestCase {
+	/**
+	 * @var ?\WPGraphQL\ContentBlocks\Registry\Registry
+	 */
 	public $instance;
 
 	public function setUp(): void {
@@ -36,13 +38,13 @@ final class RegistryTest extends PluginTestCase {
 			__type(name: $name) {
 				interfaces {
 					name
-                    description
+					description
 				}
 			}
 		}
 		';
 
-		$this->instance->OnInit();
+		$this->instance->init();
 
 		// Verify the response contains what we put in cache
 		$response           = graphql(
@@ -89,7 +91,7 @@ final class RegistryTest extends PluginTestCase {
 				description
 				interfaces {
 					name
-                    description
+					description
 				}
 				possibleTypes {
 					name
@@ -98,7 +100,7 @@ final class RegistryTest extends PluginTestCase {
 		}
 		';
 
-		$this->instance->OnInit();
+		$this->instance->init();
 
 		// Verify Post meta
 		$response           = graphql(

@@ -52,10 +52,8 @@ final class Registry {
 
 	/**
 	 * Registry init procedure.
-	 *
-	 * @throws Exception
 	 */
-	public function OnInit() {
+	public function init(): void {
 		$this->register_interface_types();
 		$this->register_scalar_types();
 		$this->register_block_types();
@@ -193,7 +191,7 @@ final class Registry {
 	 * @return void
 	 */
 	protected function register_scalar_types() {
-		( new Scalar() )->OnInit();
+		( new Scalar() )->init();
 	}
 
 	/**

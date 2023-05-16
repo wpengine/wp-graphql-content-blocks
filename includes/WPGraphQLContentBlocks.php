@@ -158,7 +158,7 @@ final class WPGraphQLContentBlocks {
 
 	public function init_block_editor_registry( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
 		$block_editor_registry = new \WPGraphQL\ContentBlocks\Registry\Registry( $type_registry, \WP_Block_Type_Registry::get_instance() );
-		$block_editor_registry->onInit();
+		$block_editor_registry->init();
 	}
 
 	/**
