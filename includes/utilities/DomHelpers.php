@@ -25,7 +25,7 @@ final class DOMHelpers {
 		$doc   = new Document();
 		$doc->loadHTML( $html );
 		if ( '*' == $selector ) {
-			$selector = '*' . '[' . $attribute . ']';
+			$selector = '*[' . $attribute . ']';
 		}
 		$node    = $doc->find( $selector );
 		$default = isset( $default ) ? $default : null;

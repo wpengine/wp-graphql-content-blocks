@@ -110,9 +110,9 @@ final class WPGraphQLContentBlocks {
 
 						echo sprintf(
 							'<div class="notice notice-error">' .
-							'<p>%s</p>' .
+								'<p>%s</p>' .
 							'</div>',
-							__( 'WPGraphQL Content Blocks appears to have been installed without it\'s dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wp-graphql-content-blocks' )
+							esc_html__( 'WPGraphQL Content Blocks appears to have been installed without it\'s dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wp-graphql-content-blocks' )
 						);
 					}
 				);
@@ -132,8 +132,8 @@ final class WPGraphQLContentBlocks {
 						echo sprintf(
 							'<div class="notice notice-error is-dismissible">' .
 								'<p>%s</p>' .
-								'</div>',
-							__( 'WPGraphQL Content Blocks will not work without WPGraphQL installed and active.', 'wp-graphql-content-blocks' )
+							'</div>',
+							esc_html__( 'WPGraphQL Content Blocks will not work without WPGraphQL installed and active.', 'wp-graphql-content-blocks' )
 						);
 					}
 				);

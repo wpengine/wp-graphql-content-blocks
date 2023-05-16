@@ -46,7 +46,11 @@ final class PostTypeBlockInterface {
 		register_graphql_interface_type(
 			'NodeWith' . ucfirst( $post_type ) . 'EditorBlocks',
 			array(
-				'description'     => __( 'Node that has ' . $post_type . ' content blocks associated with it', 'wp-graphql-content-blocks' ),
+				'description'     => sprintf(
+					// translators: %s is the post type.
+					__( 'Node that has %s content blocks associated with it', 'wp-graphql-content-blocks' ),
+					$post_type
+				),
 				'eagerlyLoadType' => true,
 				'interfaces'      => array( 'NodeWithEditorBlocks' ),
 				'fields'          => array(
@@ -59,7 +63,11 @@ final class PostTypeBlockInterface {
 								'type' => 'Boolean',
 							),
 						),
-						'description' => __( 'List of ' . $post_type . ' editor blocks', 'wp-graphql-content-blocks' ),
+						'description' => sprintf(
+							// translators: %s is the post type.
+							__( 'List of %s editor blocks', 'wp-graphql-content-blocks' ),
+							$post_type
+						),
 						'resolve'     => function ( $node, $args ) use ( $block_names ) {
 							return ContentBlocksResolver::resolve_content_blocks( $node, $args, $block_names );
 						},
