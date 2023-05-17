@@ -1,4 +1,9 @@
 <?php
+/**
+ *  Handles mapping a WP_Block_Type to the WPGraphQL Schema
+ *
+ * @package WPGraphQL\ContentBlocks\Blocks
+ */
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
@@ -14,28 +19,26 @@ use WPGraphQL\Utils\Utils;
 
 /**
  * Class Block
- *
- * Handles mapping a WP_Block_Type to the WPGraphQL Schema
- *
- * @package WPGraphQL\ContentBlocks\Blocks
  */
 class Block {
-
-
 	/**
 	 * The Block Type
 	 *
-	 * @var WP_Block_Type
+	 * @var \WP_Block_Type
 	 */
 	protected WP_Block_Type $block;
 
 	/**
+	 * The GraphQL type name of the block.
+	 *
 	 * @var string
 	 */
 	protected string $type_name;
 
 	/**
-	 * @var Registry
+	 * The instance of the WPGraphQL block registry.
+	 *
+	 * @var \WPGraphQL\ContentBlocks\Registry\Registry
 	 */
 	protected Registry $block_registry;
 
@@ -56,8 +59,8 @@ class Block {
 	/**
 	 * Block constructor.
 	 *
-	 * @param WP_Block_Type $block
-	 * @param Registry      $block_registry
+	 * @param \WP_Block_Type                            $block The Block Type.
+	 * @param WPGraphQL\ContentBlocks\Registry\Registry $block_registry The instance of the WPGraphQL block registry.
 	 */
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		$this->block            = $block;
@@ -75,6 +78,11 @@ class Block {
 	public function register_fields() {     }
 
 
+	/**
+	 * Registers the Block Type to WPGraphQL.
+	 *
+	 * @return void
+	 */
 	private function register_block_type() {
 		$this->register_block_attributes_as_fields();
 		$this->register_block_support_fields();
@@ -82,6 +90,11 @@ class Block {
 		$this->register_type();
 	}
 
+	/**
+	 * Registers the block attributes GraphQL type and adds it as a field on the Block.
+	 *
+	 * @return void
+	 */
 	private function register_block_attributes_as_fields() {
 		if ( isset( $this->additional_block_attributes ) ) {
 			$block_attribute_fields = $this->get_block_attribute_fields( array_merge( $this->block_attributes, $this->additional_block_attributes ) );
@@ -113,10 +126,18 @@ class Block {
 		}//end if
 	}
 
+	/**
+	 * Registers fields for the block supports.
+	 */
 	private function register_block_support_fields() {
 		Anchor::register( $this->block );
 	}
 
+	/**
+	 * Gets the WPGraphQL field registration config for the block attributes.
+	 *
+	 * @param array $block_attributes The block attributes.
+	 */
 	private function get_block_attribute_fields( $block_attributes ) {
 		$block_attribute_fields = array();
 		if ( isset( $block_attributes ) ) {
@@ -141,7 +162,7 @@ class Block {
 						break;
 					case 'array':
 					case 'object':
-						$graphql_type = Scalar::BlockAttributesObject();
+						$graphql_type = Scalar::get_block_attributes_object_type_name();
 						break;
 				}
 
@@ -162,6 +183,8 @@ class Block {
 	}
 
 	/**
+	 * Gets the GraphQL interfaces that should be implemented by the block.
+	 *
 	 * @return string[]
 	 */
 	private function get_block_interfaces(): array {
@@ -196,10 +219,25 @@ class Block {
 		);
 	}
 
+	/**
+	 * Returns the necessary block data to resolve the block field.
+	 *
+	 * @param mixed                                $block   The block data passed to the resolver.
+	 * @param array                                $args    The arguments passed to the resolver.
+	 * @param \WPGraphQL\AppContext                $context The AppContext instance passed to the resolver.
+	 * @param \GraphQL\Type\Definition\ResolveInfo $info    The ResolveInfo instance passed to the resolver.
+	 */
 	private function resolve( $block, array $args, AppContext $context, ResolveInfo $info ) {
 		return isset( $block['blockName'] ) ? $block['blockName'] : '';
 	}
 
+	/**
+	 * Returns the necessary block data to resolve the block attributes.
+	 *
+	 * @param array  $block            The block data passed to the resolver.
+	 * @param string $attribute_name   The name of the attribute to resolve.
+	 * @param array  $attribute_config The config for the attribute.
+	 */
 	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
 		// Get default value.
 		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;

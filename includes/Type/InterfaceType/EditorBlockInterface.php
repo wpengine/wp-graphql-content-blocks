@@ -1,4 +1,9 @@
 <?php
+/**
+ * The EditorBlockInterface interface type.
+ *
+ * @package WPGraphQL\ContentBlocks\Type\InterfaceType
+ */
 
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
@@ -10,8 +15,6 @@ use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
 
 /**
  * Class EditorBlockInterface
- *
- * @package WPGraphQL\ContentBlocks
  */
 final class EditorBlockInterface {
 	/**
@@ -20,7 +23,7 @@ final class EditorBlockInterface {
 	 * @param array $block The block being resolved.
 	 * @param null  $context Deprecated.
 	 *
-	 * @return mixed WP_Block_Type|null
+	 * @return \WP_Block_Type|null
 	 */
 	public static function get_block( array $block, #[Deprecated] $context = null ) {
 		if ( null !== $context ) {
@@ -45,9 +48,9 @@ final class EditorBlockInterface {
 	}
 
 	/**
-	 * @param WPGraphQL\Registry\TypeRegistry $type_registry The TypeRegistry.
+	 * Registers the types to WPGraphQL.
 	 *
-	 * @throws Exception
+	 * @param WPGraphQL\Registry\TypeRegistry $type_registry The TypeRegistry.
 	 */
 	public static function register_type( TypeRegistry $type_registry ) {
 		register_graphql_interface_type(
