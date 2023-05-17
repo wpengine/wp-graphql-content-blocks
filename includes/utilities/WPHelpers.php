@@ -1,4 +1,9 @@
 <?php
+/**
+ * Helper functions for WordPress
+ *
+ * @package WPGraphQL\ContentBlocks\Utilities
+ */
 
 namespace WPGraphQL\ContentBlocks\Utilities;
 
@@ -8,8 +13,6 @@ use WP_Block_Editor_Context;
 
 /**
  * Class WPHelpers
- *
- * @package WPGraphQL\ContentBlocks\Utilities
  */
 final class WPHelpers {
 	/**
@@ -52,7 +55,7 @@ final class WPHelpers {
 	 * Gets the get_block_editor_context of a specific Post Type
 	 *
 	 * @param string $post_type The Post Type to use.
-	 * @param number $id The Post Id to use.
+	 * @param int    $id The Post Id to use.
 	 *
 	 * @return WP_Block_Editor_Context The Block Editor Context
 	 */
@@ -68,7 +71,7 @@ final class WPHelpers {
 		$post->post_status    = '';
 		$post->comment_status = 'closed';
 		$post->ping_status    = 'closed';
-		$post->post_name      = 'fake-post-' . rand( 1, 99999 );
+		$post->post_name      = 'fake-post-' . wp_rand( 1, 99999 );
 
 		$post->post_type      = $post_type;
 		$post->filter         = 'raw';

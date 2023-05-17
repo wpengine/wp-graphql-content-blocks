@@ -1,4 +1,9 @@
 <?php
+/**
+ * Helper functions for WPGraphQL
+ *
+ * @package WPGraphQL\ContentBlocks\Utilities
+ */
 
 namespace WPGraphQL\ContentBlocks\Utilities;
 
@@ -6,15 +11,13 @@ use WPGraphQL\Utils\Utils;
 
 /**
  * Class WPGraphQLHelpers
- *
- * @package WPGraphQL\ContentBlocks\Utilities
  */
 final class WPGraphQLHelpers {
 	/**
 	 * Formats the name of the block for the GraphQL registry
 	 *
-	 * @param String $name The name of the block
-	 * @return String
+	 * @param string $name The name of the block.
+	 * @return string
 	 */
 	public static function format_type_name( $name ) {
 		// Format the type name for showing in the GraphQL Schema

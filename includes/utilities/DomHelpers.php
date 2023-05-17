@@ -1,4 +1,9 @@
 <?php
+/**
+ * Helper functions for manipulating DOM
+ *
+ * @package WPGraphQL\ContentBlocks\Utilities
+ */
 
 namespace WPGraphQL\ContentBlocks\Utilities;
 
@@ -6,17 +11,15 @@ use DiDom\Document;
 
 /**
  * Class DOMHelpers
- *
- * @package WPGraphQL\ContentBlocks\Utilities
  */
 final class DOMHelpers {
 	/**
 	 * Parses the given HTML string to extract the specified attribute selector.
 	 *
-	 * @param string  $html The HTML string to parse.
-	 * @param string  $selector The selector to use.
-	 * @param string  $attribute The attribute to extract.
-	 * @param default $default The default value to return if the selector is not found.
+	 * @param string $html The HTML string to parse.
+	 * @param string $selector The selector to use.
+	 * @param string $attribute The attribute to extract.
+	 * @param mixed  $default The default value to return if the selector is not found.
 	 *
 	 * @return string|null extracted attribute
 	 */
@@ -24,7 +27,7 @@ final class DOMHelpers {
 		$value = null;
 		$doc   = new Document();
 		$doc->loadHTML( $html );
-		if ( '*' == $selector ) {
+		if ( '*' === $selector ) {
 			$selector = '*[' . $attribute . ']';
 		}
 		$node    = $doc->find( $selector );

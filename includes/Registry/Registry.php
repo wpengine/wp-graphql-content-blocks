@@ -1,4 +1,9 @@
 <?php
+/**
+ * The Type Registry.
+ *
+ * @package WPGraphQL\ContentBlocks\Registry
+ */
 
 namespace WPGraphQL\ContentBlocks\Registry;
 
@@ -14,27 +19,33 @@ use WPGraphQL\Utils\Utils;
 
 /**
  * Class Registry
- *
- * @package WPGraphQL\ContentBlocks\Registry
  */
 final class Registry {
 
 	/**
-	 * @var TypeRegistry
+	 * The instance of the WPGraphQL type registry.
+	 *
+	 * @var WPGraphQL\Registry\TypeRegistry
 	 */
 	public $type_registry;
 
 	/**
-	 * @var WP_Block_Type_Registry
+	 * The instance of the WP_Block_Type_Registry.
+	 *
+	 * @var \WP_Block_Type_Registry
 	 */
 	public $block_type_registry;
 
 	/**
+	 * The registered blocks.
+	 *
 	 * @var array
 	 */
 	public $registered_blocks;
 
 	/**
+	 * The registered block interfaces.
+	 *
 	 * @var array
 	 */
 	public $block_interfaces = array();
@@ -42,8 +53,8 @@ final class Registry {
 	/**
 	 * Registry constructor.
 	 *
-	 * @param TypeRegistry           $type_registry
-	 * @param WP_Block_Type_Registry $block_type_registry
+	 * @param WPGraphQL\Registry\TypeRegistry $type_registry .
+	 * @param \WP_Block_Type_Registry         $block_type_registry .
 	 */
 	public function __construct( TypeRegistry $type_registry, $block_type_registry ) {
 		$this->type_registry       = $type_registry;
@@ -53,7 +64,7 @@ final class Registry {
 	/**
 	 * Registry init procedure.
 	 *
-	 * @throws Exception
+	 * @return void
 	 */
 	public function OnInit() {
 		$this->register_interface_types();
@@ -64,14 +75,12 @@ final class Registry {
 	/**
 	 * Given the name of a block, return a list of Interfaces the block should implement to represent which contexts the block can be accessed from.
 	 *
-	 * i.e.
+	 * In effect:
 	 * - a Block that is allowed on the "Post" post type will implement the "PostEditorBlock" interface
 	 * - a Block allowed on the "Page" post type will implement the "PageEditorBlock" interface
 	 * - a Block that is exposed in another context, for example NavMenu would implement the "NavMenuEditorBlock" interface (not yet supported)
 	 *
 	 * @param string $block_name The name of the block to get the interfaces for.
-	 *
-	 * @return array
 	 */
 	public function get_block_context_interfaces( string $block_name ): array {
 
@@ -121,7 +130,7 @@ final class Registry {
 	/**
 	 * Given the name of a Block, return interfaces the Block should implement.
 	 *
-	 * @param string $block_name
+	 * @param string $block_name The name of the block to get the interfaces for.
 	 *
 	 * @return string[]
 	 */
@@ -138,7 +147,6 @@ final class Registry {
 	 * Register Interface types to the GraphQL Schema
 	 *
 	 * @return void
-	 * @throws Exception
 	 */
 	protected function register_interface_types(): void {
 		// First register the NodeWithEditorBlocks interface by default
@@ -216,7 +224,7 @@ final class Registry {
 	/**
 	 * Register a block from the Gutenberg server registry to the WPGraphQL Registry
 	 *
-	 * @param WP_Block_Type $block
+	 * @param \WP_Block_Type $block The block type to register.
 	 */
 	protected function register_block_type( WP_Block_Type $block ) {
 		$block_name = isset( $block->name ) && ! empty( $block->name ) ? $block->name : 'Core/HTML';

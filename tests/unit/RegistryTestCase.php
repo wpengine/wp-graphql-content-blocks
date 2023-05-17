@@ -4,7 +4,7 @@ namespace WPGraphQL\ContentBlocks\Unit;
 
 use \WPGraphQL\ContentBlocks\Registry\Registry;
 
-final class RegistryTest extends PluginTestCase {
+final class RegistryTestCase extends PluginTestCase {
 
 	public $instance;
 
