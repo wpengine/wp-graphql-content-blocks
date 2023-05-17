@@ -25,7 +25,7 @@ final class EditorBlockInterface {
 	 *
 	 * @return \WP_Block_Type|null
 	 */
-	public static function get_block( array $block, #[Deprecated] $context = null ) {
+	public static function get_block( array $block, $context = null ) {
 		if ( null !== $context ) {
 			_deprecated_argument(
 				__METHOD__,
