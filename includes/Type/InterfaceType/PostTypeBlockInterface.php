@@ -1,4 +1,9 @@
 <?php
+/**
+ * The Post Type Block Interface
+ *
+ * @package WPGraphQL\ContentBlocks\Type\InterfaceType
+ */
 
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
@@ -9,17 +14,14 @@ use WPGraphQL\Utils\Utils;
 
 /**
  * Class PostTypeBlockInterface
- *
- * @package WPGraphQL\ContentBlocks
  */
 final class PostTypeBlockInterface {
-
 	/**
-	 * @param string        $post_type The post type
-	 * @param array(string) $$block_names The list of allowed block names
-	 * @param TypeRegistry  $type_registry
+	 * Registers the types to WPGraphQL.
 	 *
-	 * @throws Exception
+	 * @param string                           $post_type The post type.
+	 * @param string[]                         $block_names The list of allowed block names.
+	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry The TypeRegistry.
 	 */
 	public static function register_type( string $post_type, $block_names, TypeRegistry $type_registry ) {
 		register_graphql_interface_type(

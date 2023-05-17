@@ -1,4 +1,9 @@
 <?php
+/**
+ * Used to resolve content blocks from a node.
+ *
+ * @package WPGraphQL\ContentBlocks\Data
+ */
 
 namespace WPGraphQL\ContentBlocks\Data;
 
@@ -6,8 +11,6 @@ use WPGraphQL\Model\Post;
 
 /**
  * Class ContentBlocksResolver
- *
- * @package WPGraphQL\ContentBlocks
  */
 final class ContentBlocksResolver {
 	/**
