@@ -71,7 +71,7 @@ final class WPHelpers {
 		$post->post_status    = '';
 		$post->comment_status = 'closed';
 		$post->ping_status    = 'closed';
-		$post->post_name      = 'fake-post-' . rand( 1, 99999 );
+		$post->post_name      = 'fake-post-' . wp_rand( 1, 99999 );
 
 		$post->post_type      = $post_type;
 		$post->filter         = 'raw';
