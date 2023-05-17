@@ -24,10 +24,11 @@ final class Scalar {
 			)
 		);
 	}
+
 	/**
 	 * Return type name of BlockAttributesObject.
 	 */
-	public static function BlockAttributesObject() {
+	public static function get_block_attributes_object_type_name() {
 		return 'BlockAttributesObject';
 	}
 }

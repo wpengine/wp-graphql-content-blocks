@@ -162,7 +162,7 @@ class Block {
 						break;
 					case 'array':
 					case 'object':
-						$graphql_type = Scalar::BlockAttributesObject();
+						$graphql_type = Scalar::get_block_attributes_object_type_name();
 						break;
 				}
 
