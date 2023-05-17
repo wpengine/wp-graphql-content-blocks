@@ -5,6 +5,7 @@
   "prefer-stable": true,
   "minimum-stability": "dev",
   "require": {
+		"php": "^7.2",
     "imangazaliev/didom": "^2.0"
   },
   "require-dev": {
@@ -29,7 +30,13 @@
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
-    }
+    },
+		"platform": {
+			"php": "7.3"
+		},
+		"preferred-install": "dist",
+		"process-timeout": 0,
+		"optimize-autoloader": true
   },
   "autoload": {
     "psr-4": {

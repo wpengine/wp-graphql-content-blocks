@@ -1,16 +1,23 @@
 <?php
-
 /**
  * Setup WPGraphQLContentBlocks
  *
  * @package WPGraphQL\ContentBlocks
  * @since   0.0.1
  */
+
 // Global. - namespace WPGraphQL\ContentBlocks
 
+/**
+ * Main WPGraphQLContentBlocks Class.
+ */
 final class WPGraphQLContentBlocks {
 
-
+	/**
+	 * The one true WPGraphQLContentBlocks
+	 *
+	 * @var ?self
+	 */
 	private static $instance;
 
 	/**
@@ -154,8 +161,18 @@ final class WPGraphQLContentBlocks {
 		add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
 	}
 
+	/**
+	 * Load required filters.
+	 *
+	 * @since 0.0.1
+	 */
 	public function filters() {     }
 
+	/**
+	 * Initialize the Block Editor Registry
+	 *
+	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry Type Registry.
+	 */
 	public function init_block_editor_registry( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
 		$block_editor_registry = new \WPGraphQL\ContentBlocks\Registry\Registry( $type_registry, \WP_Block_Type_Registry::get_instance() );
 		$block_editor_registry->init();
