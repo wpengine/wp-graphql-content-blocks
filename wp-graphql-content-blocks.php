@@ -9,7 +9,7 @@
  * Text Domain: wp-graphql-content-blocks
  * Domain Path: /languages
  * Version: 0.2.1
- * Requires PHP: 7.2
+ * Requires PHP: 7.4
  * Requires at least: 5.7
  *
  * @package WPGraphQL\ContentBlocks
