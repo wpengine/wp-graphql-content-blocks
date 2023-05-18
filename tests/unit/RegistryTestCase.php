@@ -113,9 +113,8 @@ final class RegistryTestCase extends PluginTestCase {
 		);
 		$contains_interface = array(
 			'name'        => 'NodeWithPostEditorBlocks',
-			'description' => 'Node that has post content blocks associated with it',
+			'description' => 'Node that has Post content blocks associated with it',
 		);
-
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
 		$this->assertTrue( in_array( $contains_interface, $response['data']['__type']['interfaces'] ) );
