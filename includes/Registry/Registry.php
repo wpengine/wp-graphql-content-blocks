@@ -236,8 +236,6 @@ final class Registry {
 		 * a path to their class for registering a field to the Schema
 		 */
 		$class_name = apply_filters( 'wpgraphql_content_blocks_block_class', $class_name, $block, $this );
-		$current = "$class_name\n";
-		file_put_contents("data.txt", $current, FILE_APPEND);
 		if ( class_exists( $class_name ) ) {
 			new $class_name( $block, $this );
 		} else {
