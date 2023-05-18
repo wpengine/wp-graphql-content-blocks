@@ -16,8 +16,11 @@ jobs:
         working-directory: ./
         run: docker-compose up -d
 
-      - name: Sleep 15 seconds
-        run: sleep 15
+      - name: Wait for db
+        run: |
+          while ! mysqladmin ping --host=127.0.0.1 --port=33066 --password=$MYSQL_ROOT_PASSWORD --silent; do
+            sleep 1
+          done
 
       - name: Setup testing framework
         working-directory: ./
