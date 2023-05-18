@@ -107,7 +107,11 @@ class Block {
 			register_graphql_object_type(
 				$block_attribute_type_name,
 				array(
-					'description' => __( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+					'description' => sprintf(
+						// translators: %s is the block type name.
+						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+						$this->type_name
+					),
 					'fields'      => $block_attribute_fields,
 				)
 			);
@@ -117,7 +121,11 @@ class Block {
 				'attributes',
 				array(
 					'type'        => $block_attribute_type_name,
-					'description' => __( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+					'description' => sprintf(
+						// translators: %s is the block type name.
+						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+						$this->type_name
+					),
 					'resolve'     => function ( $block ) {
 						return $block;
 					},
@@ -172,8 +180,13 @@ class Block {
 
 				$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = array(
 					'type'        => $graphql_type,
-					'description' => __( sprintf( 'The "%1$s" field on the "%2$s" block', $attribute_name, $this->type_name ), 'wp-graphql' ),
-					'resolve'     => function ( $block, $args, $context, $info ) use ( $attribute_name, $attribute_config ) {
+					'description' => sprintf(
+						// translators: %1$s is the attribute name, %2$s is the block name.
+						__( 'The "%1$s" field on the "%2$s" block', 'wp-graphql-content-blocks' ),
+						$attribute_name,
+						$this->type_name
+					),
+					'resolve'     => function ( $block ) use ( $attribute_name, $attribute_config ) {
 						return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
 					},
 				);
@@ -282,7 +295,7 @@ class Block {
 			}//end switch
 
 			// if type is set to integer, get the integer value of the attribute.
-			if ( $attribute_config['type'] === 'integer' ) {
+			if ( 'integer' === $attribute_config['type'] ) {
 				$value = intval( $value );
 			}
 
