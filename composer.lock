@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b52203da82dfff194a1d82757f9cac9",
+    "content-hash": "bd0580e5bd2b21de0d479af4947ffaf3",
     "packages": [
         {
             "name": "imangazaliev/didom",
@@ -2712,7 +2712,7 @@
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "7.3"
+        "php": "7.4"
     },
     "plugin-api-version": "2.3.0"
 }
