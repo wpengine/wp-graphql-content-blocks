@@ -13,6 +13,7 @@ use WPGraphQL\ContentBlocks\Blocks\Block;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\PostTypeBlockInterface;
+use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPHelpers;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
@@ -90,7 +91,6 @@ final class Registry {
 		}
 
 		$all_registered_blocks = \WP_Block_Type_Registry::get_instance()->get_all_registered();
-
 		// Get a list of Gutenberg and GraphQL enabled post types
 		$block_and_graphql_enabled_post_types = WPHelpers::get_supported_post_types();
 
@@ -164,14 +164,12 @@ final class Registry {
 			},
 			$supported_post_types
 		);
-
 		register_graphql_interfaces_to_types( array( 'NodeWithEditorBlocks' ), $type_names );
 		$post_id = -1;
-
 		// For each Post type
 		foreach ( $supported_post_types as $post_type ) {
 			// Normalize the post type name
-			$type_name = strtolower( $post_type->name );
+			$type_name = WPGraphQLHelpers::format_type_name( $post_type->name );
 
 			// retrieve a block_editor_context for the current post type
 			$block_editor_context = WPHelpers::get_block_editor_context( $type_name, $post_id-- );
@@ -215,7 +213,6 @@ final class Registry {
 		if ( empty( $this->registered_blocks ) || ! is_array( $this->registered_blocks ) ) {
 			return;
 		}
-
 		foreach ( $this->registered_blocks as $block ) {
 			$this->register_block_type( $block );
 		}
@@ -231,7 +228,6 @@ final class Registry {
 
 		$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $block_name, '/' ) ) );
 		$type_name = Utils::format_type_name( $type_name );
-
 		$class_name = Utils::format_type_name( $type_name );
 		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $class_name;
 
@@ -240,6 +236,8 @@ final class Registry {
 		 * a path to their class for registering a field to the Schema
 		 */
 		$class_name = apply_filters( 'wpgraphql_content_blocks_block_class', $class_name, $block, $this );
+		$current = "$class_name\n";
+		file_put_contents("data.txt", $current, FILE_APPEND);
 		if ( class_exists( $class_name ) ) {
 			new $class_name( $block, $this );
 		} else {
