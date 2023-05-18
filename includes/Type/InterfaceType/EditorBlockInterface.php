@@ -7,7 +7,6 @@
 
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
-use Exception;
 use WP_Block_Type_Registry;
 use WPGraphQL\AppContext;
 use WPGraphQL\Registry\TypeRegistry;
@@ -21,12 +20,20 @@ final class EditorBlockInterface {
 	/**
 	 * Gets the block from the Block Registry.
 	 *
-	 * @param array      $block   The block being resolved.
-	 * @param AppContext $context The AppContext.
+	 * @param array $block The block being resolved.
+	 * @param null  $context Deprecated.
 	 *
 	 * @return \WP_Block_Type|null
 	 */
-	public static function get_block( array $block, AppContext $context ) {
+	public static function get_block( array $block, $context = null ) {
+		if ( null !== $context ) {
+			_deprecated_argument(
+				__METHOD__,
+				'@todo',
+				esc_html__( 'The $context argument is no longer used and will be removed in a future version.', 'wp-graphql-content-blocks' )
+			);
+		}
+
 		$registered_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
 
 		if ( ! isset( $block['blockName'] ) ) {
@@ -98,22 +105,22 @@ final class EditorBlockInterface {
 					'blockEditorCategoryName' => array(
 						'type'        => 'String',
 						'description' => __( 'The name of the category the Block belongs to', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, $args, AppContext $context ) {
-							return isset( self::get_block( $block, $context )->category ) ? self::get_block( $block, $context )->category : null;
+						'resolve'     => function ( $block ) {
+							return isset( self::get_block( $block )->category ) ? self::get_block( $block )->category : null;
 						},
 					),
 					'isDynamic'               => array(
 						'type'        => array( 'non_null' => 'Boolean' ),
 						'description' => __( 'Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, $args, AppContext $context ) {
-							return isset( self::get_block( $block, $context )->render_callback ) && ! empty( self::get_block( $block, $context )->render_callback );
+						'resolve'     => function ( $block ) {
+							return isset( self::get_block( $block )->render_callback ) && ! empty( self::get_block( $block )->render_callback );
 						},
 					),
 					'apiVersion'              => array(
 						'type'        => 'Integer',
 						'description' => __( 'The API version of the Gutenberg Block', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, $args, AppContext $context ) {
-							return isset( self::get_block( $block, $context )->api_version ) && absint( self::get_block( $block, $context )->api_version ) ? absint( self::get_block( $block, $context )->api_version ) : 2;
+						'resolve'     => function ( $block ) {
+							return isset( self::get_block( $block )->api_version ) && absint( self::get_block( $block )->api_version ) ? absint( self::get_block( $block )->api_version ) : 2;
 						},
 					),
 					'innerBlocks'             => array(
