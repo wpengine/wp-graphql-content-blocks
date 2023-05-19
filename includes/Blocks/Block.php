@@ -59,8 +59,8 @@ class Block {
 	/**
 	 * Block constructor.
 	 *
-	 * @param \WP_Block_Type                            $block The Block Type.
-	 * @param WPGraphQL\ContentBlocks\Registry\Registry $block_registry The instance of the WPGraphQL block registry.
+	 * @param \WP_Block_Type                             $block The Block Type.
+	 * @param \WPGraphQL\ContentBlocks\Registry\Registry $block_registry The instance of the WPGraphQL block registry.
 	 */
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		$this->block            = $block;

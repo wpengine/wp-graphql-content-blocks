@@ -26,7 +26,7 @@ final class Registry {
 	/**
 	 * The instance of the WPGraphQL type registry.
 	 *
-	 * @var WPGraphQL\Registry\TypeRegistry
+	 * @var \WPGraphQL\Registry\TypeRegistry
 	 */
 	public $type_registry;
 
@@ -54,8 +54,8 @@ final class Registry {
 	/**
 	 * Registry constructor.
 	 *
-	 * @param WPGraphQL\Registry\TypeRegistry $type_registry .
-	 * @param \WP_Block_Type_Registry         $block_type_registry .
+	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry .
+	 * @param \WP_Block_Type_Registry          $block_type_registry .
 	 */
 	public function __construct( TypeRegistry $type_registry, $block_type_registry ) {
 		$this->type_registry       = $type_registry;
