@@ -224,7 +224,7 @@ final class Registry {
 	 * @param \WP_Block_Type $block The block type to register.
 	 */
 	protected function register_block_type( WP_Block_Type $block ) {
-		$block_name = isset( $block->name ) && ! empty( $block->name ) ? $block->name : 'Core/HTML';
+		$block_name = ! empty( $block->name ) ? $block->name : 'Core/HTML';
 
 		$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $block_name, '/' ) ) );
 		$type_name = Utils::format_type_name( $type_name );
