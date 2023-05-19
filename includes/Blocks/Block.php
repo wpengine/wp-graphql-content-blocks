@@ -144,11 +144,12 @@ class Block {
 	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
-	 * @param array $block_attributes The block attributes.
+	 * @param ?array $block_attributes The block attributes.
 	 */
-	private function get_block_attribute_fields( $block_attributes ) {
+	private function get_block_attribute_fields( ?array $block_attributes ) {
 		$block_attribute_fields = array();
-		if ( isset( $block_attributes ) ) {
+
+		if ( null !== $block_attributes ) {
 			foreach ( $block_attributes as $attribute_name => $attribute_config ) {
 				$graphql_type = null;
 				if ( ! isset( $attribute_config['type'] ) ) {
