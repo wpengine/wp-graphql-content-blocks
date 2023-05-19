@@ -26,6 +26,7 @@ final class EditorBlockInterface {
 	 * @return \WP_Block_Type|null
 	 */
 	public static function get_block( array $block, $context = null ) {
+		// @phpstan-ignore-next-line
 		if ( null !== $context ) {
 			_deprecated_argument(
 				__METHOD__,
