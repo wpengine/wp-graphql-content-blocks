@@ -204,15 +204,15 @@ final class Registry {
 
 	/**
 	 * Register Block Types to the GraphQL Schema
-	 *
-	 * @return void
 	 */
-	protected function register_block_types() {
+	protected function register_block_types(): void {
 		$this->registered_blocks = $this->block_type_registry->get_all_registered();
 
-		if ( empty( $this->registered_blocks ) || ! is_array( $this->registered_blocks ) ) {
+		// Bail early if there are no registered blocks.
+		if ( empty( $this->registered_blocks ) ) {
 			return;
 		}
+
 		foreach ( $this->registered_blocks as $block ) {
 			$this->register_block_type( $block );
 		}
