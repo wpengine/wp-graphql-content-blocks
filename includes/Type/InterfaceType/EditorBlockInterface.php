@@ -8,8 +8,6 @@
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
 use WP_Block_Type_Registry;
-use WPGraphQL\AppContext;
-use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
 
@@ -49,10 +47,8 @@ final class EditorBlockInterface {
 
 	/**
 	 * Registers the types to WPGraphQL.
-	 *
-	 * @param WPGraphQL\Registry\TypeRegistry $type_registry The TypeRegistry.
 	 */
-	public static function register_type( TypeRegistry $type_registry ) {
+	public static function register_type() {
 		register_graphql_interface_type(
 			'NodeWithEditorBlocks',
 			array(
@@ -151,7 +147,7 @@ final class EditorBlockInterface {
 						},
 					),
 				),
-				'resolveType'     => function ( $block ) use ( $type_registry ) {
+				'resolveType'     => function ( $block ) {
 					if ( empty( $block['blockName'] ) ) {
 						$block['blockName'] = 'core/freeform';
 					}
