@@ -86,7 +86,7 @@ final class WPGraphQLContentBlocks {
 		// Whether to autoload the files or not.
 		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD', true );
 		// The minimum version of PHP this plugin requires to work properly
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', '7.1' );
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', '7.4' );
 	}
 
 	/**
