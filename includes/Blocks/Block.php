@@ -223,8 +223,8 @@ class Block {
 					'name' => array(
 						'type'        => 'String',
 						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, array $args, AppContext $context, ResolveInfo $info ) {
-							return $this->resolve( $block, $args, $context, $info );
+						'resolve'     => function ( $block ) {
+							return $this->resolve( $block );
 						},
 					),
 				),
@@ -235,12 +235,9 @@ class Block {
 	/**
 	 * Returns the necessary block data to resolve the block field.
 	 *
-	 * @param mixed                                $block   The block data passed to the resolver.
-	 * @param array                                $args    The arguments passed to the resolver.
-	 * @param \WPGraphQL\AppContext                $context The AppContext instance passed to the resolver.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info    The ResolveInfo instance passed to the resolver.
+	 * @param mixed $block The block data passed to the resolver.
 	 */
-	private function resolve( $block, array $args, AppContext $context, ResolveInfo $info ) {
+	private function resolve( $block ) {
 		return isset( $block['blockName'] ) ? $block['blockName'] : '';
 	}
 
