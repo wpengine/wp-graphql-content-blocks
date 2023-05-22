@@ -7,9 +7,7 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use WP_Block_Type;
-use WPGraphQL\AppContext;
 use WPGraphQL\ContentBlocks\Registry\Registry;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
@@ -95,7 +93,8 @@ class Block {
 	 */
 	private function register_block_attributes_as_fields(): void {
 		if ( isset( $this->additional_block_attributes ) ) {
-			$block_attribute_fields = $this->get_block_attribute_fields( array_merge( $this->block_attributes, $this->additional_block_attributes ) );
+			$block_attributes       = ! empty( $this->block_attributes ) ? array_merge( $this->block_attributes, $this->additional_block_attributes ) : $this->additional_block_attributes;
+			$block_attribute_fields = $this->get_block_attribute_fields( $block_attributes );
 		} else {
 			$block_attribute_fields = $this->get_block_attribute_fields( $this->block_attributes );
 		}
@@ -278,7 +277,7 @@ class Block {
 				case 'html':
 					$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $default );
 
-					if ( isset( $attribute_config['multiline'] ) ) {
+					if ( isset( $attribute_config['multiline'] ) && ! empty( $value ) ) {
 						$value = DOMHelpers::getElementsFromHTML( $value, $attribute_config['multiline'] );
 					}
 
