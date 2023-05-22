@@ -32,13 +32,13 @@ final class ContentBlocksResolver {
 			// determining what fields should/should not be
 			// allowed to be returned?
 			$post    = get_post( $node->databaseId );
-			$content = $post->post_content;
+			$content = ! empty( $post->post_content ) ? $post->post_content : null;
 		}
 
 		/**
 		 * Filters the content retrieved from the node used to parse the blocks.
 		 *
-		 * @param string                 $content The content to parse.
+		 * @param ?string                $content The content to parse.
 		 * @param \WPGraphQL\Model\Model $node    The node we are resolving.
 		 * @param array                  $args    GraphQL query args to pass to the connection resolver.
 		 */
@@ -58,7 +58,8 @@ final class ContentBlocksResolver {
 			$parsed_blocks,
 			function ( $parsed_block ) {
 				// Strip empty comments and spaces
-				return ! empty( trim( preg_replace( '/<!--(.*)-->/Uis', '', render_block( $parsed_block ) ) ) );
+				$stripped = preg_replace( '/<!--(.*)-->/Uis', '', render_block( $parsed_block ) );
+				return ! empty( trim( $stripped ?? '' ) );
 			},
 			ARRAY_FILTER_USE_BOTH
 		);
