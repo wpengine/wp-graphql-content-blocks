@@ -20,7 +20,7 @@ class Anchor {
 	 *
 	 * @param \WP_Block_Type $block_spec .
 	 */
-	public static function register( \WP_Block_Type $block_spec ) {
+	public static function register( \WP_Block_Type $block_spec ): void {
 		if ( isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
 			register_graphql_interface_type(
 				'BlockWithSupportsAnchor',
