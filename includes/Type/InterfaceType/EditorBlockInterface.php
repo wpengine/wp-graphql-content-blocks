@@ -24,6 +24,7 @@ final class EditorBlockInterface {
 	 * @return \WP_Block_Type|null
 	 */
 	public static function get_block( array $block, $context = null ) {
+		// @phpstan-ignore-next-line
 		if ( null !== $context ) {
 			_deprecated_argument(
 				__METHOD__,
@@ -109,7 +110,7 @@ final class EditorBlockInterface {
 						'type'        => array( 'non_null' => 'Boolean' ),
 						'description' => __( 'Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
-							return isset( self::get_block( $block )->render_callback ) && ! empty( self::get_block( $block )->render_callback );
+							return isset( self::get_block( $block )->render_callback );
 						},
 					),
 					'apiVersion'              => array(

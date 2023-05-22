@@ -18,10 +18,10 @@ class Anchor {
 	/**
 	 * Registers an Anchor field on a block if it supports it.
 	 *
-	 * @param WP_Block_Type $block_spec .
+	 * @param \WP_Block_Type $block_spec .
 	 */
-	public static function register( WP_Block_Type $block_spec ) {
-		if ( isset( $block_spec->supports ) && is_array( $block_spec->supports ) && array_key_exists( 'anchor', $block_spec->supports ) && true === $block_spec->supports['anchor'] ) {
+	public static function register( \WP_Block_Type $block_spec ) {
+		if ( isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
 			register_graphql_interface_type(
 				'BlockWithSupportsAnchor',
 				array(
