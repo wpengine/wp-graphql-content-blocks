@@ -225,8 +225,7 @@ final class Registry {
 	protected function register_block_type( WP_Block_Type $block ): void {
 		$block_name = ! empty( $block->name ) ? $block->name : 'Core/HTML';
 
-		$type_name  = preg_replace( '/\//', '', lcfirst( ucwords( $block_name, '/' ) ) );
-		$type_name  = Utils::format_type_name( $type_name );
+		$type_name  = WPGraphQLHelpers::format_type_name( $block_name );
 		$class_name = Utils::format_type_name( $type_name );
 		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $class_name;
 

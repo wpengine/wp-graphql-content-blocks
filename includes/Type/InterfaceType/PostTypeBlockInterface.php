@@ -8,7 +8,7 @@
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
-use WPGraphQL\Utils\Utils;
+use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 
 /**
  * Class PostTypeBlockInterface
@@ -20,7 +20,7 @@ final class PostTypeBlockInterface {
 	 * @param string   $post_type The post type.
 	 * @param string[] $block_names The list of allowed block names.
 	 */
-	public static function register_type( string $post_type, $block_names ) {
+	public static function register_type( string $post_type, $block_names ): void {
 		register_graphql_interface_type(
 			ucfirst( $post_type ) . 'EditorBlock',
 			array(
@@ -36,8 +36,8 @@ final class PostTypeBlockInterface {
 					}
 
 					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
-					$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
-					return Utils::format_type_name( $type_name );
+
+					return WPGraphQLHelpers::format_type_name( $type_name );
 				},
 			)
 		);
