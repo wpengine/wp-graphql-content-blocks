@@ -20,7 +20,7 @@ final class ContentBlocksResolver {
 	 * @param array $args GraphQL query args to pass to the connection resolver.
 	 * @param array $allowed_block_names The list of allowed block names to filter.
 	 */
-	public static function resolve_content_blocks( $node, $args, $allowed_block_names = array() ) {
+	public static function resolve_content_blocks( $node, $args, $allowed_block_names = array() ): array {
 		$content = null;
 		if ( $node instanceof Post ) {
 
@@ -78,7 +78,7 @@ final class ContentBlocksResolver {
 		);
 
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
-		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) {
+		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
 		}
 
@@ -98,9 +98,9 @@ final class ContentBlocksResolver {
 	/**
 	 * Flattens a list blocks into a single array
 	 *
-	 * @param mixed $blocks A list of blocks to flatten.
+	 * @param array $blocks A list of blocks to flatten.
 	 */
-	private static function flatten_block_list( $blocks ) {
+	private static function flatten_block_list( $blocks ): array {
 		$result = array();
 		foreach ( $blocks as $block ) {
 			$result = array_merge( $result, self::flatten_inner_blocks( $block ) );
@@ -113,7 +113,7 @@ final class ContentBlocksResolver {
 	 *
 	 * @param mixed $block A block.
 	 */
-	private static function flatten_inner_blocks( $block ) {
+	private static function flatten_inner_blocks( $block ): array {
 		$result            = array();
 		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 		array_push( $result, $block );

@@ -33,12 +33,18 @@
 	<!-- https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties -->
 	<config name="minimum_supported_wp_version" value="5.3" />
 
+	<rule ref="WordPress">
+		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
+	</rule>
+
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="wpgraphql\content_blocks" />
 				<element value="WPGRAPHQL\CONTENT_BLOCKS" />
 				<element value="WPGraphQL\ContentBlocks" />
+				<element value="wpgraphql_content_blocks_" />
+				<element value="WPGraphQLContentBlocks" />
 			</property>
 		</properties>
 	</rule>
@@ -94,6 +100,10 @@
 	<!-- Multiple assignments are used as part of test setup. -->
 	<rule ref="Squiz.PHP.DisallowMultipleAssignments.Found">
 		<exclude-pattern>/tests/</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions">
+		<exclude-pattern>/includes/utilities/DomHelpers.php</exclude-pattern>
 	</rule>
 
 	<!-- We follow the Codeception class name convention instead of the WordPress one. -->

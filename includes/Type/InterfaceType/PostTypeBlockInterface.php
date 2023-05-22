@@ -7,9 +7,7 @@
 
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
-use Exception;
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
-use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
 
 /**
@@ -19,11 +17,10 @@ final class PostTypeBlockInterface {
 	/**
 	 * Registers the types to WPGraphQL.
 	 *
-	 * @param string                           $post_type The post type.
-	 * @param string[]                         $block_names The list of allowed block names.
-	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry The TypeRegistry.
+	 * @param string   $post_type The post type.
+	 * @param string[] $block_names The list of allowed block names.
 	 */
-	public static function register_type( string $post_type, $block_names, TypeRegistry $type_registry ) {
+	public static function register_type( string $post_type, $block_names ) {
 		register_graphql_interface_type(
 			ucfirst( $post_type ) . 'EditorBlock',
 			array(
@@ -33,7 +30,7 @@ final class PostTypeBlockInterface {
 						'type' => 'String',
 					),
 				),
-				'resolveType' => function ( $block ) use ( $type_registry ) {
+				'resolveType' => function ( $block ) {
 					if ( empty( $block['blockName'] ) ) {
 						$block['blockName'] = 'core/freeform';
 					}

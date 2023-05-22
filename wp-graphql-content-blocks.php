@@ -30,14 +30,11 @@ if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
 	/**
 	 * The main function that returns the WPGraphQLContentBlocks class
 	 *
-	 * @since 1.0.0
-	 * @return object|WPGraphQLContentBlocks
+	 * @since 0.0.1
 	 */
-	function wpgraphql_content_blocks_init() {
-		/**
-		 * Return an instance of the action
-		 */
-		return \WPGraphQLContentBlocks::instance();
+	function wpgraphql_content_blocks_init(): void {
+		// Instantiate the plugin class.
+		WPGraphQLContentBlocks::instance();
 	}
 }
 

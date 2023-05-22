@@ -18,17 +18,18 @@ final class WPHelpers {
 	/**
 	 * Gets Block Editor supported post types
 	 *
-	 * @return array<string>
+	 * @return \WP_Post_Type[]
 	 */
-	public static function get_supported_post_types() {
+	public static function get_supported_post_types(): array {
 		$supported_post_types = array();
 		// Get Post Types that are set to Show in GraphQL and Show in REST
 		// If it doesn't show in REST, it's not block-editor enabled
 		$block_editor_post_types = \WPGraphQL::get_allowed_post_types( 'objects' );
 
 		if ( empty( $block_editor_post_types ) || ! is_array( $block_editor_post_types ) ) {
-			return;
+			return $supported_post_types;
 		}
+
 		// Iterate over the post types
 		foreach ( $block_editor_post_types as $block_editor_post_type ) {
 			// If the post type doesn't support the editor, it's not block-editor enabled

@@ -14,7 +14,7 @@ final class Scalar {
 	/**
 	 * Scalar init procedure.
 	 */
-	public function init() {
+	public function init(): void {
 		register_graphql_scalar(
 			'BlockAttributesObject',
 			array(
@@ -28,7 +28,7 @@ final class Scalar {
 	/**
 	 * Return type name of BlockAttributesObject.
 	 */
-	public static function get_block_attributes_object_type_name() {
+	public static function get_block_attributes_object_type_name(): string {
 		return 'BlockAttributesObject';
 	}
 }

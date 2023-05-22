@@ -59,8 +59,8 @@ class Block {
 	/**
 	 * Block constructor.
 	 *
-	 * @param \WP_Block_Type                            $block The Block Type.
-	 * @param WPGraphQL\ContentBlocks\Registry\Registry $block_registry The instance of the WPGraphQL block registry.
+	 * @param \WP_Block_Type                             $block The Block Type.
+	 * @param \WPGraphQL\ContentBlocks\Registry\Registry $block_registry The instance of the WPGraphQL block registry.
 	 */
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		$this->block            = $block;
@@ -92,10 +92,8 @@ class Block {
 
 	/**
 	 * Registers the block attributes GraphQL type and adds it as a field on the Block.
-	 *
-	 * @return void
 	 */
-	private function register_block_attributes_as_fields() {
+	private function register_block_attributes_as_fields(): void {
 		if ( isset( $this->additional_block_attributes ) ) {
 			$block_attribute_fields = $this->get_block_attribute_fields( array_merge( $this->block_attributes, $this->additional_block_attributes ) );
 		} else {
@@ -137,7 +135,7 @@ class Block {
 	/**
 	 * Registers fields for the block supports.
 	 */
-	private function register_block_support_fields() {
+	private function register_block_support_fields(): void {
 		Anchor::register( $this->block );
 	}
 
@@ -146,7 +144,7 @@ class Block {
 	 *
 	 * @param ?array $block_attributes The block attributes.
 	 */
-	private function get_block_attribute_fields( ?array $block_attributes ) {
+	private function get_block_attribute_fields( ?array $block_attributes ): array {
 		$block_attribute_fields = array();
 
 		// Bail early if no attributes are defined.
@@ -231,8 +229,8 @@ class Block {
 					'name' => array(
 						'type'        => 'String',
 						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block, array $args, AppContext $context, ResolveInfo $info ) {
-							return $this->resolve( $block, $args, $context, $info );
+						'resolve'     => function ( $block ) {
+							return $this->resolve( $block );
 						},
 					),
 				),
@@ -243,12 +241,9 @@ class Block {
 	/**
 	 * Returns the necessary block data to resolve the block field.
 	 *
-	 * @param mixed                                $block   The block data passed to the resolver.
-	 * @param array                                $args    The arguments passed to the resolver.
-	 * @param \WPGraphQL\AppContext                $context The AppContext instance passed to the resolver.
-	 * @param \GraphQL\Type\Definition\ResolveInfo $info    The ResolveInfo instance passed to the resolver.
+	 * @param mixed $block The block data passed to the resolver.
 	 */
-	private function resolve( $block, array $args, AppContext $context, ResolveInfo $info ) {
+	private function resolve( $block ) {
 		return isset( $block['blockName'] ) ? $block['blockName'] : '';
 	}
 

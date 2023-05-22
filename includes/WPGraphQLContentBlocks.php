@@ -86,7 +86,7 @@ final class WPGraphQLContentBlocks {
 		// Whether to autoload the files or not.
 		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD', true );
 		// The minimum version of PHP this plugin requires to work properly
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', '7.1' );
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', '7.4' );
 	}
 
 	/**
@@ -119,7 +119,9 @@ final class WPGraphQLContentBlocks {
 							'<div class="notice notice-error">' .
 								'<p>%s</p>' .
 							'</div>',
-							wp_kses_post( 'WPGraphQL Content Blocks appears to have been installed without its dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wp-graphql-content-blocks' )
+							wp_kses_post(
+								__( 'WPGraphQL Content Blocks appears to have been installed without its dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wp-graphql-content-blocks' )
+							)
 						);
 					}
 				);
@@ -157,7 +159,7 @@ final class WPGraphQLContentBlocks {
 	 *
 	 * @since 0.0.1
 	 */
-	public function actions() {
+	public function actions(): void {
 		add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
 	}
 
@@ -166,14 +168,14 @@ final class WPGraphQLContentBlocks {
 	 *
 	 * @since 0.0.1
 	 */
-	public function filters() {     }
+	public function filters(): void {     }
 
 	/**
 	 * Initialize the Block Editor Registry
 	 *
 	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry Type Registry.
 	 */
-	public function init_block_editor_registry( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
+	public function init_block_editor_registry( \WPGraphQL\Registry\TypeRegistry $type_registry ): void {
 		$block_editor_registry = new \WPGraphQL\ContentBlocks\Registry\Registry( $type_registry, \WP_Block_Type_Registry::get_instance() );
 		$block_editor_registry->init();
 	}
@@ -186,7 +188,7 @@ final class WPGraphQLContentBlocks {
 	 * @param string      $name  Constant name.
 	 * @param string|bool $value Constant value.
 	 */
-	private function define( $name, $value ) {
+	private function define( $name, $value ): void {
 		if ( ! defined( $name ) ) {
 			// phpcs:ignore
 			define($name, $value);

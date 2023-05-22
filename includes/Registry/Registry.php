@@ -7,7 +7,6 @@
 
 namespace WPGraphQL\ContentBlocks\Registry;
 
-use Exception;
 use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
@@ -26,7 +25,7 @@ final class Registry {
 	/**
 	 * The instance of the WPGraphQL type registry.
 	 *
-	 * @var WPGraphQL\Registry\TypeRegistry
+	 * @var \WPGraphQL\Registry\TypeRegistry
 	 */
 	public $type_registry;
 
@@ -54,8 +53,8 @@ final class Registry {
 	/**
 	 * Registry constructor.
 	 *
-	 * @param WPGraphQL\Registry\TypeRegistry $type_registry .
-	 * @param \WP_Block_Type_Registry         $block_type_registry .
+	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry .
+	 * @param \WP_Block_Type_Registry          $block_type_registry .
 	 */
 	public function __construct( TypeRegistry $type_registry, $block_type_registry ) {
 		$this->type_registry       = $type_registry;
@@ -150,7 +149,7 @@ final class Registry {
 	 */
 	protected function register_interface_types(): void {
 		// First register the NodeWithEditorBlocks interface by default
-		EditorBlockInterface::register_type( $this->type_registry );
+		EditorBlockInterface::register_type();
 
 		// Then try to register both NodeWithEditorBlocks and NodeWith[PostType]Blocks per post type
 		$supported_post_types = WPHelpers::get_supported_post_types();
@@ -185,7 +184,7 @@ final class Registry {
 			// If there is a list of supported blocks for current post type
 			if ( is_array( $supported_blocks_for_post_type ) ) {
 				// Register an [PostType]Block type for the blocks using that post type
-				PostTypeBlockInterface::register_type( $type_name, $supported_blocks_for_post_type, $this->type_registry );
+				PostTypeBlockInterface::register_type( $type_name, $supported_blocks_for_post_type );
 
 				// Register the `NodeWith[PostType]Blocks` Interface to the post type
 				register_graphql_interfaces_to_types( array( 'NodeWith' . Utils::format_type_name( $post_type->graphql_single_name ) . 'EditorBlocks' ), array( $type_name ) );
@@ -204,15 +203,15 @@ final class Registry {
 
 	/**
 	 * Register Block Types to the GraphQL Schema
-	 *
-	 * @return void
 	 */
-	protected function register_block_types() {
+	protected function register_block_types(): void {
 		$this->registered_blocks = $this->block_type_registry->get_all_registered();
 
-		if ( empty( $this->registered_blocks ) || ! is_array( $this->registered_blocks ) ) {
+		// Bail early if there are no registered blocks.
+		if ( empty( $this->registered_blocks ) ) {
 			return;
 		}
+
 		foreach ( $this->registered_blocks as $block ) {
 			$this->register_block_type( $block );
 		}
@@ -223,11 +222,11 @@ final class Registry {
 	 *
 	 * @param \WP_Block_Type $block The block type to register.
 	 */
-	protected function register_block_type( WP_Block_Type $block ) {
-		$block_name = isset( $block->name ) && ! empty( $block->name ) ? $block->name : 'Core/HTML';
+	protected function register_block_type( WP_Block_Type $block ): void {
+		$block_name = ! empty( $block->name ) ? $block->name : 'Core/HTML';
 
-		$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $block_name, '/' ) ) );
-		$type_name = Utils::format_type_name( $type_name );
+		$type_name  = preg_replace( '/\//', '', lcfirst( ucwords( $block_name, '/' ) ) );
+		$type_name  = Utils::format_type_name( $type_name );
 		$class_name = Utils::format_type_name( $type_name );
 		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $class_name;
 
