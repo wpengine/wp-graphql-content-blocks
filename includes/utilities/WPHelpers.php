@@ -22,8 +22,12 @@ final class WPHelpers {
 	 */
 	public static function get_supported_post_types(): array {
 		$supported_post_types = array();
-		// Get Post Types that are set to Show in GraphQL and Show in REST
-		// If it doesn't show in REST, it's not block-editor enabled
+		/**
+		 * Get Post Types that are set to Show in GraphQL and Show in REST.
+		 * If it doesn't show in REST, it's not block-editor.
+		 *
+		 * @var \WP_Post_Type[] $block_editor_post_types
+		 */
 		$block_editor_post_types = \WPGraphQL::get_allowed_post_types( 'objects' );
 
 		if ( empty( $block_editor_post_types ) || ! is_array( $block_editor_post_types ) ) {

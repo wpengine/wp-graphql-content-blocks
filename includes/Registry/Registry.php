@@ -226,10 +226,9 @@ final class Registry {
 	protected function register_block_type( WP_Block_Type $block ) {
 		$block_name = ! empty( $block->name ) ? $block->name : 'Core/HTML';
 
-		$type_name  = preg_replace( '/\//', '', lcfirst( ucwords( $block_name, '/' ) ) );
-		$type_name  = Utils::format_type_name( $type_name );
+		$type_name  = WPGraphQLHelpers::format_type_name( $block_name );
 		$class_name = Utils::format_type_name( $type_name );
-		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $class_name;
+		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $type_name;
 
 		/**
 		 * This allows 3rd party extensions to hook and and provide

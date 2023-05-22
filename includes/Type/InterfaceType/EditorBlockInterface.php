@@ -8,8 +8,8 @@
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
 use WP_Block_Type_Registry;
-use WPGraphQL\Utils\Utils;
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
+use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 
 /**
  * Class EditorBlockInterface
@@ -154,8 +154,8 @@ final class EditorBlockInterface {
 					}
 
 					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
-					$type_name = preg_replace( '/\//', '', lcfirst( ucwords( $type_name, '/' ) ) );
-					return Utils::format_type_name( $type_name );
+
+					return WPGraphQLHelpers::format_type_name( $type_name );
 				},
 			)
 		);
