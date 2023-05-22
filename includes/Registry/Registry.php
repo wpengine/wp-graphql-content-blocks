@@ -228,7 +228,7 @@ final class Registry {
 
 		$type_name  = WPGraphQLHelpers::format_type_name( $block_name );
 		$class_name = Utils::format_type_name( $type_name );
-		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $type_name;
+		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $class_name;
 
 		/**
 		 * This allows 3rd party extensions to hook and and provide
