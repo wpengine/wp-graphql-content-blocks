@@ -150,7 +150,7 @@ final class Registry {
 	 */
 	protected function register_interface_types(): void {
 		// First register the NodeWithEditorBlocks interface by default
-		EditorBlockInterface::register_type( $this->type_registry );
+		EditorBlockInterface::register_type();
 
 		// Then try to register both NodeWithEditorBlocks and NodeWith[PostType]Blocks per post type
 		$supported_post_types = WPHelpers::get_supported_post_types();
@@ -185,7 +185,7 @@ final class Registry {
 			// If there is a list of supported blocks for current post type
 			if ( is_array( $supported_blocks_for_post_type ) ) {
 				// Register an [PostType]Block type for the blocks using that post type
-				PostTypeBlockInterface::register_type( $type_name, $supported_blocks_for_post_type, $this->type_registry );
+				PostTypeBlockInterface::register_type( $type_name, $supported_blocks_for_post_type );
 
 				// Register the `NodeWith[PostType]Blocks` Interface to the post type
 				register_graphql_interfaces_to_types( array( 'NodeWith' . Utils::format_type_name( $post_type->graphql_single_name ) . 'EditorBlocks' ), array( $type_name ) );
