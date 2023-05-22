@@ -141,54 +141,62 @@ class Block {
 	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
-	 * @param array $block_attributes The block attributes.
+	 * @param ?array $block_attributes The block attributes.
 	 */
-	private function get_block_attribute_fields( $block_attributes ): array {
+	private function get_block_attribute_fields( ?array $block_attributes ): array {
 		$block_attribute_fields = array();
-		if ( isset( $block_attributes ) ) {
-			foreach ( $block_attributes as $attribute_name => $attribute_config ) {
-				$graphql_type = null;
-				if ( ! isset( $attribute_config['type'] ) ) {
-					return $block_attribute_fields;
-				}
 
-				switch ( $attribute_config['type'] ) {
-					case 'string':
-						$graphql_type = 'String';
-						break;
-					case 'number':
-						$graphql_type = 'Float';
-						break;
-					case 'integer':
-						$graphql_type = 'Int';
-						break;
-					case 'boolean':
-						$graphql_type = 'Boolean';
-						break;
-					case 'array':
-					case 'object':
-						$graphql_type = Scalar::get_block_attributes_object_type_name();
-						break;
-				}
+		// Bail early if no attributes are defined.
+		if ( null === $block_attributes ) {
+			return $block_attribute_fields;
+		}
 
-				if ( empty( $graphql_type ) ) {
-					continue;
-				}
+		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
+			$graphql_type = null;
 
-				$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = array(
-					'type'        => $graphql_type,
-					'description' => sprintf(
-						// translators: %1$s is the attribute name, %2$s is the block name.
-						__( 'The "%1$s" field on the "%2$s" block', 'wp-graphql-content-blocks' ),
-						$attribute_name,
-						$this->type_name
-					),
-					'resolve'     => function ( $block ) use ( $attribute_name, $attribute_config ) {
-						return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
-					},
-				);
-			}//end foreach
-		}//end if
+			if ( ! isset( $attribute_config['type'] ) ) {
+				return $block_attribute_fields;
+			}
+
+			switch ( $attribute_config['type'] ) {
+				case 'string':
+					$graphql_type = 'String';
+					break;
+				case 'number':
+					$graphql_type = 'Float';
+					break;
+				case 'integer':
+					$graphql_type = 'Int';
+					break;
+				case 'boolean':
+					$graphql_type = 'Boolean';
+					break;
+				case 'array':
+				case 'object':
+					$graphql_type = Scalar::get_block_attributes_object_type_name();
+					break;
+			}
+
+			// Skip if there's no valid type.
+			if ( empty( $graphql_type ) ) {
+				continue;
+			}
+
+			// Create the field config.
+			$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = array(
+				'type'        => $graphql_type,
+				'description' => sprintf(
+					// translators: %1$s is the attribute name, %2$s is the block name.
+					__( 'The "%1$s" field on the "%2$s" block', 'wp-graphql-content-blocks' ),
+					$attribute_name,
+					$this->type_name
+				),
+				'resolve'     => function ( $block ) use ( $attribute_name, $attribute_config ) {
+					return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
+				},
+			);
+		}//end foreach
+
 		return $block_attribute_fields;
 	}
 
