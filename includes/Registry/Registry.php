@@ -7,7 +7,6 @@
 
 namespace WPGraphQL\ContentBlocks\Registry;
 
-use Exception;
 use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
@@ -223,7 +222,7 @@ final class Registry {
 	 *
 	 * @param \WP_Block_Type $block The block type to register.
 	 */
-	protected function register_block_type( WP_Block_Type $block ) {
+	protected function register_block_type( WP_Block_Type $block ): void {
 		$block_name = ! empty( $block->name ) ? $block->name : 'Core/HTML';
 
 		$type_name  = preg_replace( '/\//', '', lcfirst( ucwords( $block_name, '/' ) ) );

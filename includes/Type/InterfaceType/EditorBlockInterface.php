@@ -49,7 +49,7 @@ final class EditorBlockInterface {
 	/**
 	 * Registers the types to WPGraphQL.
 	 */
-	public static function register_type() {
+	public static function register_type(): void {
 		register_graphql_interface_type(
 			'NodeWithEditorBlocks',
 			array(

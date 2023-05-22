@@ -159,7 +159,7 @@ final class WPGraphQLContentBlocks {
 	 *
 	 * @since 0.0.1
 	 */
-	public function actions() {
+	public function actions(): void {
 		add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
 	}
 
@@ -168,14 +168,14 @@ final class WPGraphQLContentBlocks {
 	 *
 	 * @since 0.0.1
 	 */
-	public function filters() {     }
+	public function filters(): void {     }
 
 	/**
 	 * Initialize the Block Editor Registry
 	 *
 	 * @param \WPGraphQL\Registry\TypeRegistry $type_registry Type Registry.
 	 */
-	public function init_block_editor_registry( \WPGraphQL\Registry\TypeRegistry $type_registry ) {
+	public function init_block_editor_registry( \WPGraphQL\Registry\TypeRegistry $type_registry ): void {
 		$block_editor_registry = new \WPGraphQL\ContentBlocks\Registry\Registry( $type_registry, \WP_Block_Type_Registry::get_instance() );
 		$block_editor_registry->init();
 	}
@@ -188,7 +188,7 @@ final class WPGraphQLContentBlocks {
 	 * @param string      $name  Constant name.
 	 * @param string|bool $value Constant value.
 	 */
-	private function define( $name, $value ) {
+	private function define( $name, $value ): void {
 		if ( ! defined( $name ) ) {
 			// phpcs:ignore
 			define($name, $value);
