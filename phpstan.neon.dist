@@ -1,0 +1,11 @@
+parameters:
+		level: 0 # Gotta start somewhere
+		inferPrivatePropertyTypeFromConstructor: true
+		checkMissingIterableValueType: false
+		bootstrapFiles:
+			- phpstan/constants.php
+		paths:
+			- wp-graphql-content-blocks.php
+			- includes/
+		scanFiles:
+			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
