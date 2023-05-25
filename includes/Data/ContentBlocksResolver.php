@@ -57,6 +57,10 @@ final class ContentBlocksResolver {
 		$parsed_blocks = array_filter(
 			$parsed_blocks,
 			function ( $parsed_block ) {
+				if (! empty( $parsed_block['blockName'] )) {
+					return true;
+				}
+
 				// Strip empty comments and spaces
 				$stripped = preg_replace( '/<!--(.*)-->/Uis', '', render_block( $parsed_block ) );
 				return ! empty( trim( $stripped ?? '' ) );
