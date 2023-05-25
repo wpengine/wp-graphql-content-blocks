@@ -9,6 +9,7 @@ namespace WPGraphQL\ContentBlocks\Registry;
 
 use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
+use WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\PostTypeBlockInterface;
@@ -70,6 +71,7 @@ final class Registry {
 		$this->register_interface_types();
 		$this->register_scalar_types();
 		$this->register_block_types();
+		$this->register_support_block_types();
 	}
 
 	/**
@@ -239,5 +241,10 @@ final class Registry {
 		} else {
 			new Block( $block, $this );
 		}
+	}
+
+	protected function register_support_block_types()
+	{
+		Anchor::register();
 	}
 }

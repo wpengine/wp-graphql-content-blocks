@@ -135,7 +135,7 @@ class Block {
 	 * Registers fields for the block supports.
 	 */
 	private function register_block_support_fields(): void {
-		Anchor::register( $this->block );
+		Anchor::register_to_block( $this->block );
 	}
 
 	/**
