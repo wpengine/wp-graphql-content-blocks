@@ -62,15 +62,15 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$post_model = new Post( get_post( $this->post_id ) );
 		$actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
 		// There should return only the non-empty blocks
-		$this->assertEquals( count( $actual ), 6 );
-		$this->assertEquals( $actual[0]['blockName'], 'core/columns' );
+		$this->assertEquals( 6, count( $actual ) );
+		$this->assertEquals( 'core/columns', $actual[0]['blockName'] );
 	}
 
 	public function test_resolve_content_blocks_resolves_classic_blocks() {
 		$post_model = new Post( get_post( $this->post_id ) );
 		$actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
 
-		$this->assertEquals( $actual[5]['blockName'], 'core/freeform' );
+		$this->assertEquals( 'core/freeform', $actual[5]['blockName'] );
 	}
 
 	public function test_resolve_content_blocks_filters_blocks_not_from_allow_list() {
@@ -88,7 +88,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 			)
 		);
 		// There should return only blocks from the allow list
-		$this->assertEquals( count( $parsed_blocks ), 4 );
-		$this->assertEquals( $actual_block_names, $allowed );
+		$this->assertEquals( 4, count( $parsed_blocks ) );
+		$this->assertEquals( $allowed, $actual_block_names  );
 	}
 }
