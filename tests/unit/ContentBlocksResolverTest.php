@@ -8,9 +8,36 @@ use WPGraphQL\Model\Post;
 final class ContentBlocksResolverTest extends PluginTestCase {
 	public $instance;
 	public $post_id;
+	public $reusable_post_id;
 
 	public function setUp(): void {
 		parent::setUp();
+		$reusable_id = wp_insert_post(
+			array(
+				'post_title' => 'Reusable Block',
+				'post_type' => 'wp_block',
+				'post_content' => preg_replace(
+					'/\s+/',
+					' ',
+					trim('
+				<!-- wp:columns -->
+				<div class="wp-block-columns"><!-- wp:column -->
+				<div class="wp-block-column"><!-- wp:paragraph -->
+				<p>Example paragraph in Column 1</p>
+				<!-- /wp:paragraph --></div>
+				<!-- /wp:column -->'
+					)
+				)
+			)
+		);
+
+        $this->reusable_post_id = wp_insert_post(
+            array(
+                'post_title' => 'Post Title',
+                'post_content' => '<!-- wp:block {"ref":' . $reusable_id . '} /-->'
+            )
+        );
+
 		$this->post_id  = wp_insert_post(
 			array(
 				'post_title'   => 'Post Title',
@@ -57,6 +84,14 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		parent::tearDown();
 		wp_delete_post( $this->post_id, true );
 	}
+
+    public function test_resolve_content_blocks_resolves_reusable_blocks() {
+        $post_model = new Post( get_post( $this->reusable_post_id ) );
+        $actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
+        // There should return only the non-empty blocks
+		$this->assertEquals( 3, count( $actual ) );
+		$this->assertEquals( 'core/columns', $actual[0]['blockName'] );
+    }
 
 	public function test_resolve_content_blocks_filters_empty_blocks() {
 		$post_model = new Post( get_post( $this->post_id ) );
