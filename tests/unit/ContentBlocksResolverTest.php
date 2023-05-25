@@ -20,13 +20,15 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 				'post_content' => preg_replace(
 					'/\s+/',
 					' ',
-					trim('
+					trim(
+						'
 				<!-- wp:columns -->
 				<div class="wp-block-columns"><!-- wp:column -->
 				<div class="wp-block-column"><!-- wp:paragraph -->
 				<p>Example paragraph in Column 1</p>
 				<!-- /wp:paragraph --></div>
-				<!-- /wp:column -->'
+				<!-- /wp:column -->
+				'
 					)
 				)
 			)
