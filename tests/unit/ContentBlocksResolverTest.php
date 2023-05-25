@@ -9,10 +9,11 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	public $instance;
 	public $post_id;
 	public $reusable_post_id;
+	public $reusable_block_id;
 
 	public function setUp(): void {
 		parent::setUp();
-		$reusable_id = wp_insert_post(
+		$this->reusable_block_id = wp_insert_post(
 			array(
 				'post_title' => 'Reusable Block',
 				'post_type' => 'wp_block',
@@ -31,12 +32,13 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 			)
 		);
 
-        $this->reusable_post_id = wp_insert_post(
-            array(
-                'post_title' => 'Post Title',
-                'post_content' => '<!-- wp:block {"ref":' . $reusable_id . '} /-->'
-            )
-        );
+		$this->reusable_post_id  = wp_insert_post(
+			array(
+				'post_title'   => 'Post Title',
+				'post_content' => '<!-- wp:block {"ref":' . $this->reusable_block_id . '} /-->',
+				'post_status'  => 'publish',
+			)
+		);
 
 		$this->post_id  = wp_insert_post(
 			array(
@@ -50,7 +52,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
                 <!--  -->
                 <!-- wp -->
                 <!-- /wp -->
-
+                
                 <!-- wp: -->
                 <!-- /wp: -->
 
@@ -76,6 +78,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 				'post_status'  => 'publish',
 			)
 		);
+
 		$this->instance = new ContentBlocksResolver();
 	}
 
@@ -83,11 +86,14 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		// your tear down methods here
 		parent::tearDown();
 		wp_delete_post( $this->post_id, true );
+		wp_delete_post( $this->reusable_post_id, true );
+		wp_delete_post( $this->reusable_block_id, true );
 	}
 
     public function test_resolve_content_blocks_resolves_reusable_blocks() {
         $post_model = new Post( get_post( $this->reusable_post_id ) );
         $actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
+
         // There should return only the non-empty blocks
 		$this->assertEquals( 3, count( $actual ) );
 		$this->assertEquals( 'core/columns', $actual[0]['blockName'] );
