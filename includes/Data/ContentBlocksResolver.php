@@ -57,7 +57,7 @@ final class ContentBlocksResolver {
 		$parsed_blocks = array_filter(
 			$parsed_blocks,
 			function ( $parsed_block ) {
-				if (! empty( $parsed_block['blockName'] )) {
+				if ( ! empty( $parsed_block['blockName'] ) ) {
 					return true;
 				}
 
