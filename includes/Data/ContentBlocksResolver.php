@@ -54,20 +54,20 @@ final class ContentBlocksResolver {
 			return array();
 		}
 
-        // Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
-        $new_parsed_blocks = [];
-        foreach ($parsed_blocks as $block) {
-            if ($block['blockName'] === 'core/block' && $block['attrs']['ref']) {
-                $reusable_blocks = parse_blocks( get_post( $block['attrs']['ref'] )->post_content );
-                if (!empty($reusable_blocks)) {
-                    array_push($new_parsed_blocks, ...$reusable_blocks);
-                }
-            } else {
-                $new_parsed_blocks[] = $block;
-            }
-        }
+		// Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
+		$new_parsed_blocks = array();
+		foreach ( $parsed_blocks as $block ) {
+			if ( 'core/block' === $block['blockName'] && $block['attrs']['ref'] ) {
+				$reusable_blocks = parse_blocks( get_post( $block['attrs']['ref'] )->post_content );
+				if ( ! empty( $reusable_blocks ) ) {
+					array_push( $new_parsed_blocks, ...$reusable_blocks );
+				}
+			} else {
+				$new_parsed_blocks[] = $block;
+			}
+		}
 
-        $parsed_blocks = $new_parsed_blocks;
+		$parsed_blocks = $new_parsed_blocks;
 
 		// 1st Level filtering of blocks that are empty
 		$parsed_blocks = array_filter(
