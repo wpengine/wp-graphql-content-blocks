@@ -243,8 +243,12 @@ final class Registry {
 		}
 	}
 
-	protected function register_support_block_types()
-	{
+	/**
+	 * Register supporting block types
+	 *
+	 * @return void
+	 */
+	protected function register_support_block_types() {
 		Anchor::register();
 	}
 }
