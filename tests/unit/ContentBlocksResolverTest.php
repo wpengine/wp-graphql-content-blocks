@@ -8,9 +8,40 @@ use WPGraphQL\Model\Post;
 final class ContentBlocksResolverTest extends PluginTestCase {
 	public $instance;
 	public $post_id;
+	public $reusable_post_id;
+	public $reusable_block_id;
 
 	public function setUp(): void {
 		parent::setUp();
+		$this->reusable_block_id = wp_insert_post(
+			array(
+				'post_title' => 'Reusable Block',
+				'post_type' => 'wp_block',
+				'post_content' => preg_replace(
+					'/\s+/',
+					' ',
+					trim(
+						'
+				<!-- wp:columns -->
+				<div class="wp-block-columns"><!-- wp:column -->
+				<div class="wp-block-column"><!-- wp:paragraph -->
+				<p>Example paragraph in Column 1</p>
+				<!-- /wp:paragraph --></div>
+				<!-- /wp:column -->
+				'
+					)
+				)
+			)
+		);
+
+		$this->reusable_post_id  = wp_insert_post(
+			array(
+				'post_title'   => 'Post Title',
+				'post_content' => '<!-- wp:block {"ref":' . $this->reusable_block_id . '} /-->',
+				'post_status'  => 'publish',
+			)
+		);
+
 		$this->post_id  = wp_insert_post(
 			array(
 				'post_title'   => 'Post Title',
@@ -23,7 +54,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
                 <!--  -->
                 <!-- wp -->
                 <!-- /wp -->
-
+                
                 <!-- wp: -->
                 <!-- /wp: -->
 
@@ -49,6 +80,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 				'post_status'  => 'publish',
 			)
 		);
+
 		$this->instance = new ContentBlocksResolver();
 	}
 
@@ -56,21 +88,32 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		// your tear down methods here
 		parent::tearDown();
 		wp_delete_post( $this->post_id, true );
+		wp_delete_post( $this->reusable_post_id, true );
+		wp_delete_post( $this->reusable_block_id, true );
 	}
+
+    public function test_resolve_content_blocks_resolves_reusable_blocks() {
+        $post_model = new Post( get_post( $this->reusable_post_id ) );
+        $actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
+
+        // There should return only the non-empty blocks
+		$this->assertEquals( 3, count( $actual ) );
+		$this->assertEquals( 'core/columns', $actual[0]['blockName'] );
+    }
 
 	public function test_resolve_content_blocks_filters_empty_blocks() {
 		$post_model = new Post( get_post( $this->post_id ) );
 		$actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
 		// There should return only the non-empty blocks
-		$this->assertEquals( count( $actual ), 6 );
-		$this->assertEquals( $actual[0]['blockName'], 'core/columns' );
+		$this->assertEquals( 6, count( $actual ) );
+		$this->assertEquals( 'core/columns', $actual[0]['blockName'] );
 	}
 
 	public function test_resolve_content_blocks_resolves_classic_blocks() {
 		$post_model = new Post( get_post( $this->post_id ) );
 		$actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
 
-		$this->assertEquals( $actual[5]['blockName'], 'core/freeform' );
+		$this->assertEquals( 'core/freeform', $actual[5]['blockName'] );
 	}
 
 	public function test_resolve_content_blocks_filters_blocks_not_from_allow_list() {
@@ -88,7 +131,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 			)
 		);
 		// There should return only blocks from the allow list
-		$this->assertEquals( count( $parsed_blocks ), 4 );
-		$this->assertEquals( $actual_block_names, $allowed );
+		$this->assertEquals( 4, count( $parsed_blocks ) );
+		$this->assertEquals( $allowed, $actual_block_names  );
 	}
 }

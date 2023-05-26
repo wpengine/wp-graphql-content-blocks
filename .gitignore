@@ -21,6 +21,7 @@ artifacts
 # docker
 .docker/plugins/
 !.docker/plugins/test-cpt
+docker-compose.override.yml
 
 # Built Zip
 @wpengine
