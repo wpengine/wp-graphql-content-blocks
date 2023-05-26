@@ -83,9 +83,9 @@ class Block {
 	 */
 	private function register_block_type() {
 		$this->register_block_attributes_as_fields();
-		$this->register_block_support_fields();
 		$this->register_fields();
 		$this->register_type();
+		$this->register_block_support_fields();
 	}
 
 	/**
@@ -135,7 +135,7 @@ class Block {
 	 * Registers fields for the block supports.
 	 */
 	private function register_block_support_fields(): void {
-		Anchor::register( $this->block );
+		Anchor::register_to_block( $this->block );
 	}
 
 	/**
