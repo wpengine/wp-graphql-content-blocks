@@ -18,7 +18,8 @@
     "phpstan/phpstan": "^1.10",
     "phpstan/extension-installer": "^1.3",
     "szepeviktor/phpstan-wordpress": "^1.3",
-    "axepress/wp-graphql-stubs": "^1.14"
+    "axepress/wp-graphql-stubs": "^1.14",
+    "roave/security-advisories": "dev-latest"
   },
   "scripts": {
     "lint": "parallel-lint -e php --no-colors --exclude vendor .",
