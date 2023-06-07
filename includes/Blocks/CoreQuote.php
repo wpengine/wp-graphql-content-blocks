@@ -19,7 +19,7 @@ class CoreQuote extends Block {
 	protected ?array $additional_block_attributes = array(
 		'cssClassName' => array(
 			'type'      => 'string',
-			'selector'  => 'pre',
+			'selector'  => 'blockquote',
 			'source'    => 'attribute',
 			'attribute' => 'class',
 		),
