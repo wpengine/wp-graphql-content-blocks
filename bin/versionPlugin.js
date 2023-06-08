@@ -51,8 +51,8 @@ async function bumpPluginHeader(pluginFile, version) {
 /**
  * Updates the stable tag found in a given WordPress plugin's readme.txt file.
  *
- * @param {String} pluginFile Full path to a file containing a WordPress
- *                            plugin header comment.
+ * @param {String} readmeTxt Full path to a file containing a WordPress
+ *                            readme.txt file.
  * @param {String} version    The new version number.
  */
 async function bumpStableTag(readmeTxt, version) {
