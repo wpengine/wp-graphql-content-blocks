@@ -19,20 +19,10 @@ final class EditorBlockInterface {
 	 * Gets the block from the Block Registry.
 	 *
 	 * @param array $block The block being resolved.
-	 * @param null  $context Deprecated.
 	 *
 	 * @return \WP_Block_Type|null
 	 */
-	public static function get_block( array $block, $context = null ) {
-		// @phpstan-ignore-next-line
-		if ( null !== $context ) {
-			_deprecated_argument(
-				__METHOD__,
-				'@todo',
-				esc_html__( 'The $context argument is no longer used and will be removed in a future version.', 'wp-graphql-content-blocks' )
-			);
-		}
-
+	public static function get_block( array $block ) {
 		$registered_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
 
 		if ( ! isset( $block['blockName'] ) ) {
