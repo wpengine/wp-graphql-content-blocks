@@ -20,7 +20,7 @@ final class PostTypeBlockInterface {
 	 * @param string   $post_type The post type.
 	 * @param string[] $block_names The list of allowed block names.
 	 */
-	public static function register_type( string $post_type, $block_names ): void {
+	public static function register_type( string $post_type, array $block_names = array() ): void {
 		register_graphql_interface_type(
 			ucfirst( $post_type ) . 'EditorBlock',
 			array(

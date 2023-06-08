@@ -232,7 +232,7 @@ final class Registry {
 		$class_name = '\\WPGraphQL\\ContentBlocks\\Blocks\\' . $class_name;
 
 		/**
-		 * This allows 3rd party extensions to hook and and provide
+		 * This allows 3rd party extensions to hook and provide
 		 * a path to their class for registering a field to the Schema
 		 */
 		$class_name = apply_filters( 'wpgraphql_content_blocks_block_class', $class_name, $block, $this );
