@@ -130,7 +130,7 @@ final class ContentBlocksResolver {
 	}
 
 	/**
-	 * Flattens a block and it's inner blocks into a single while attaching unique clientId's
+	 * Flattens a block and its inner blocks into a single while attaching unique clientId's
 	 *
 	 * @param mixed $block A block.
 	 */
