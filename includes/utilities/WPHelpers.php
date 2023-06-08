@@ -78,9 +78,9 @@ final class WPHelpers {
 		$post->ping_status    = 'closed';
 		$post->post_name      = 'fake-post-' . wp_rand( 1, 99999 );
 
-		$post->post_type      = $post_type;
-		$post->filter         = 'raw';
-		$block_editor_context = new WP_Block_Editor_Context( array( 'post' => new WP_Post( $post ) ) );
-		return $block_editor_context;
+		$post->post_type = $post_type;
+		$post->filter    = 'raw';
+
+		return new WP_Block_Editor_Context( array( 'post' => new WP_Post( $post ) ) );
 	}
 }
