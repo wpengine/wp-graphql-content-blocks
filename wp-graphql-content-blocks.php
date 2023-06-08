@@ -40,4 +40,3 @@ if ( ! function_exists( 'wpgraphql_content_blocks_init' ) ) {
 
 // Get the plugin running.
 add_action( 'plugins_loaded', 'wpgraphql_content_blocks_init', 15 );
-require WPGRAPHQL_CONTENT_BLOCKS_DIR . '/includes/utilities/functions.php';
