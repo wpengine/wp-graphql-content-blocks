@@ -87,14 +87,14 @@ final class DOMHelpers {
 	 * Parses the given HTML string and extracts the specified elements.
 	 *
 	 * @param string $html The HTML string to parse.
-	 * @param string $element The element (selector) to extract.
+	 * @param string $selector The element (selector) to extract.
 	 *
 	 * @return string|null the HTML string of the extracted elements
 	 */
-	public static function getElementsFromHTML( $html, $element ) {
+	public static function getElementsFromHTML( $html, $selector ) {
 		$doc = new Document();
 		$doc->loadHTML( $html );
-		$elements = $doc->find( $element );
+		$elements = $doc->find( $selector );
 
 		$output = '';
 
