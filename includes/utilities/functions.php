@@ -15,13 +15,9 @@ namespace WPGraphQL\ContentBlocks\Utilities;
  *
  * @credit http://www.mendoweb.be/blog/php-convert-string-to-camelcase-string/
  *
- * @return string|null camelCase'd string
+ * @return string camelCase'd string
  */
-function camelcase( $str, $preserved_chars = array() ) {
-	if ( ! is_string( $str ) ) {
-		return null;
-	}
-
+function camelcase( string $str, array $preserved_chars = array() ): string {
 	/* Convert non-alpha and non-numeric characters to spaces. */
 	$str = preg_replace( '/[^a-z0-9' . implode( '', $preserved_chars ) . ']+/i', ' ', $str );
 	$str = trim( $str ?? '' );
