@@ -22,7 +22,7 @@ class Block {
 	/**
 	 * The Block Type
 	 *
-	 * @var \WP_Block_Type
+	 * @var WP_Block_Type
 	 */
 	protected WP_Block_Type $block;
 
@@ -57,7 +57,7 @@ class Block {
 	/**
 	 * Block constructor.
 	 *
-	 * @param \WP_Block_Type                             $block The Block Type.
+	 * @param WP_Block_Type                             $block The Block Type.
 	 * @param \WPGraphQL\ContentBlocks\Registry\Registry $block_registry The instance of the WPGraphQL block registry.
 	 */
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
