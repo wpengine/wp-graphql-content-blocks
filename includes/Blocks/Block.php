@@ -69,21 +69,12 @@ class Block {
 	}
 
 	/**
-	 * Template Method to Register fields to the Block
-	 *
-	 * @return void
-	 */
-	public function register_fields() {     }
-
-
-	/**
 	 * Registers the Block Type to WPGraphQL.
 	 *
 	 * @return void
 	 */
 	private function register_block_type() {
 		$this->register_block_attributes_as_fields();
-		$this->register_fields();
 		$this->register_type();
 		$this->register_block_support_fields();
 	}

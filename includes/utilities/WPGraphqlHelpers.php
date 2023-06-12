@@ -18,7 +18,7 @@ final class WPGraphQLHelpers {
 	 *
 	 * @param string $name The name of the block.
 	 */
-	public static function format_type_name( $name ): string {
+	public static function format_type_name( string $name ): string {
 		// No need to string-replace if there's no string.
 		if ( empty( $name ) ) {
 			return '';

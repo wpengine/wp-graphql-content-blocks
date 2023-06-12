@@ -7,7 +7,7 @@ use \WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 final class DOMHelpersTest extends PluginTestCase {
 	public function testParseAttribute(): void {
 		$html                 = '<p id="foo-id" class="foo-class" data="foo-data"><span >Bar</span></p>';
-		$no_existant_selector = '#foo';
+		$no_existent_selector = '#foo';
 		$id_selector          = '#foo-id';
 		$class_selector       = '.foo-class';
 		$element_selector     = 'p';
@@ -15,8 +15,8 @@ final class DOMHelpersTest extends PluginTestCase {
 		$class_attribute      = 'class';
 		$id_attribute         = 'id';
 
-		$this->assertNull( DOMHelpers::parseAttribute( $html, $no_existant_selector, $data_attribute ) );
-		$this->assertEquals( DOMHelpers::parseAttribute( $html, $no_existant_selector, $data_attribute, 'Bar' ), 'Bar' );
+		$this->assertNull( DOMHelpers::parseAttribute( $html, $no_existent_selector, $data_attribute ) );
+		$this->assertEquals( DOMHelpers::parseAttribute( $html, $no_existent_selector, $data_attribute, 'Bar' ), 'Bar' );
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $id_selector, $data_attribute ), 'foo-data' );
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $id_selector, $class_attribute ), 'foo-class' );
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $id_selector, $id_attribute ), 'foo-id' );
@@ -30,13 +30,13 @@ final class DOMHelpersTest extends PluginTestCase {
 
 	public function testParseHTML(): void {
 		$html                 = '<p id="foo-id" class="foo-class" data="foo-data"><span >Bar</span></p>';
-		$no_existant_selector = '#foo';
+		$no_existent_selector = '#foo';
 		$id_selector          = '#foo-id';
 		$class_selector       = '.foo-class';
 		$element_selector     = 'p';
 
-		$this->assertEmpty( DOMHelpers::parseHTML( $html, $no_existant_selector ) );
-		$this->assertEquals( DOMHelpers::parseHTML( $html, $no_existant_selector, 'Bar' ), 'Bar' );
+		$this->assertEmpty( DOMHelpers::parseHTML( $html, $no_existent_selector ) );
+		$this->assertEquals( DOMHelpers::parseHTML( $html, $no_existent_selector, 'Bar' ), 'Bar' );
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $id_selector ), '<span>Bar</span>' );
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $class_selector ), '<span>Bar</span>' );
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $element_selector ), '<span>Bar</span>' );
@@ -45,10 +45,10 @@ final class DOMHelpersTest extends PluginTestCase {
 	public function testGetElementsFromHTML(): void {
 		$html                 = '<blockquote><p>First paragraph</p><div>My div</div><p>Second paragraph</p></blockquote>';
 		$element_selector     = 'p';
-		$no_existant_selector = 'span';
+		$no_existent_selector = 'span';
 
 		$this->assertEquals( DOMHelpers::getElementsFromHTML( $html, $element_selector ), '<p>First paragraph</p><p>Second paragraph</p>' );
-		$this->assertEmpty( DOMHelpers::getElementsFromHTML( $html, $no_existant_selector ) );
+		$this->assertEmpty( DOMHelpers::getElementsFromHTML( $html, $no_existent_selector ) );
 	}
 
 	public function getTextFromSelector(): void {
@@ -57,7 +57,7 @@ final class DOMHelpersTest extends PluginTestCase {
 		$blockquote_element   = 'blockquote';
 		$p_element            = 'p';
 		$div_element          = 'div';
-		$no_existant_selector = 'span';
+		$no_existent_selector = 'span';
 
 		// getTextFromSelector should get all text (even descendents) according to "textContent"
 		// https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
@@ -65,6 +65,6 @@ final class DOMHelpersTest extends PluginTestCase {
 
 		$this->assertEquals( DOMHelpers::getTextFromSelector( $html, $p_element ), 'First paragraph' );
 		$this->assertEquals( DOMHelpers::getTextFromSelector( $html, $div_element ), 'My div' );
-		$this->assertEmpty( DOMHelpers::getElementsFromHTML( $html, $no_existant_selector ) );
+		$this->assertEmpty( DOMHelpers::getElementsFromHTML( $html, $no_existent_selector ) );
 	}
 }

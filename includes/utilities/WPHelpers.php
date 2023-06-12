@@ -60,11 +60,11 @@ final class WPHelpers {
 	 * Gets the get_block_editor_context of a specific Post Type
 	 *
 	 * @param string $post_type The Post Type to use.
-	 * @param int    $id The Post Id to use.
+	 * @param int    $id The Post ID to use.
 	 *
 	 * @return WP_Block_Editor_Context The Block Editor Context
 	 */
-	public static function get_block_editor_context( $post_type, $id = -99 ) {
+	public static function get_block_editor_context( string $post_type, $id = -99 ): WP_Block_Editor_Context {
 		$post_id              = $id;
 		$post                 = new stdClass();
 		$post->ID             = $post_id;
@@ -78,9 +78,9 @@ final class WPHelpers {
 		$post->ping_status    = 'closed';
 		$post->post_name      = 'fake-post-' . wp_rand( 1, 99999 );
 
-		$post->post_type      = $post_type;
-		$post->filter         = 'raw';
-		$block_editor_context = new WP_Block_Editor_Context( array( 'post' => new WP_Post( $post ) ) );
-		return $block_editor_context;
+		$post->post_type = $post_type;
+		$post->filter    = 'raw';
+
+		return new WP_Block_Editor_Context( array( 'post' => new WP_Post( $post ) ) );
 	}
 }

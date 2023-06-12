@@ -18,7 +18,7 @@ final class WPGraphQLContentBlocks {
 	 *
 	 * @var ?self
 	 */
-	private static $instance;
+	private static ?WPGraphQLContentBlocks $instance;
 
 	/**
 	 * The instance of the WPGraphQLContentBlocks object
@@ -72,7 +72,7 @@ final class WPGraphQLContentBlocks {
 	 * @since  0.0.1
 	 * @return void
 	 */
-	private function setup_constants() {
+	private function setup_constants(): void {
 
 		// Set main file path.
 		$main_file_path = dirname( __DIR__ ) . '/wp-graphql.php';
@@ -96,7 +96,7 @@ final class WPGraphQLContentBlocks {
 	 * @since  0.0.1
 	 * @return bool
 	 */
-	private function includes() {
+	private function includes(): bool {
 		/**
 		 * WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD can be set to "false" to prevent the autoloader from running.
 		 * In most cases, this is not something that should be disabled, but some environments
@@ -128,7 +128,7 @@ final class WPGraphQLContentBlocks {
 			}//end if
 
 			// If GraphQL class doesn't exist, then dependencies cannot be
-			// detected. This likely means the user cloned the repo from Github
+			// detected. This likely means the user cloned the repo from GitHub
 			// but did not run `composer install`
 			if ( ! class_exists( 'WPGraphQL' ) ) {
 				add_action(
@@ -183,12 +183,12 @@ final class WPGraphQLContentBlocks {
 	/**
 	 * Define constant if not already set.
 	 *
-	 * @since 1.4.0
-	 *
 	 * @param string      $name  Constant name.
 	 * @param string|bool $value Constant value.
+	 *
+	 * @since 1.4.0
 	 */
-	private function define( $name, $value ): void {
+	private function define( string $name, $value ): void {
 		if ( ! defined( $name ) ) {
 			// phpcs:ignore
 			define($name, $value);
