@@ -1,5 +1,15 @@
 # WPGraphQL Content Blocks
 
+## 1.0.0
+
+### Major Changes
+
+- 44f075b: Transitioned to [Semantic Versioning](https://semver.org). There are no breaking changes in this release.
+
+### Patch Changes
+
+- aeeb613: Added support for cssClassName attribute in CoreSeparator
+
 ## 0.3.0
 
 ### Minor Changes
