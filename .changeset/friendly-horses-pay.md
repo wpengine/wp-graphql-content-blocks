@@ -2,4 +2,4 @@
 "@wpengine/wp-graphql-content-blocks": patch
 ---
 
-Chore: Changeset
+Added support for cssClassName attribute in CoreSeparator
