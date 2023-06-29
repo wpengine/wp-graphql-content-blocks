@@ -1,5 +1,16 @@
 # WPGraphQL Content Blocks
 
+## 1.1.0
+
+### Minor Changes
+
+- cbcb430: Feat: Add CoreButton and CoreButtons block extra attributes.
+- 2e4ac46: Adds the `cssClassName` attribute to the `CoreList` block. This allows you to query for the proper class names that WordPress assigns to the Core List block.
+
+### Patch Changes
+
+- 135252e: Adds cssClassName attribute in CoreHeading.
+
 ## 1.0.0
 
 ### Major Changes
