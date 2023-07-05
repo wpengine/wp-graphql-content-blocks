@@ -1,8 +1,10 @@
 name: Upload Schema Artifact
 
 on:
-  release:
-    types: [ published ]
+  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   run:
@@ -20,7 +22,7 @@ jobs:
     steps:
       - name: Setup WordPress
         uses: ./.github/actions/setup-wordpress
-        
+
       - name: Generate the Static Schema
         run: |
           cd /tmp/wordpress
