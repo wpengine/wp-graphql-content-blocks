@@ -45,6 +45,8 @@ jobs:
       - name: Upload schema as release artifact
         uses: actions/upload-artifact@v3
         with:
+          name: schema.graphql
+          path: /tmp/schema.graphql
           files: /tmp/schema.graphql
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
