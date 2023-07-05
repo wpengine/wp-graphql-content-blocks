@@ -25,6 +25,7 @@ final class PostTypeBlockInterface {
 			ucfirst( $post_type ) . 'EditorBlock',
 			array(
 				'description' => sprintf(
+					// translators: EditorBlock Interface for %s Block Type.
 					__( 'EditorBlock Interface for %s Block Type', 'wp-graphql-content-blocks' ),
 					ucfirst( $post_type )
 				),
