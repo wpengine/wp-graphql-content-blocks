@@ -43,7 +43,7 @@ jobs:
           wp graphql generate-static-schema
 
       - name: Upload schema as release artifact
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v3
         with:
           files: /tmp/schema.graphql
         env:
