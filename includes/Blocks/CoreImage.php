@@ -16,18 +16,18 @@ class CoreImage extends Block {
 	 *
 	 * @var array|null
 	 */
-	protected ?array $additional_block_attributes = array(
-		'cssClassName' => array(
+	protected ?array $additional_block_attributes = [
+		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'figure',
 			'source'    => 'attribute',
 			'attribute' => 'class',
-		),
-		'src'          => array(
+		],
+		'src'          => [
 			'type'      => 'string',
 			'selector'  => 'img',
 			'source'    => 'attribute',
 			'attribute' => 'src',
-		),
-	);
+		],
+	];
 }

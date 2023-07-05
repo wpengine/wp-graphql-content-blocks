@@ -20,7 +20,7 @@ final class ContentBlocksResolver {
 	 * @param array $args GraphQL query args to pass to the connection resolver.
 	 * @param array $allowed_block_names The list of allowed block names to filter.
 	 */
-	public static function resolve_content_blocks( $node, $args, $allowed_block_names = array() ): array {
+	public static function resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
 		$content = null;
 		if ( $node instanceof Post ) {
 
@@ -45,17 +45,17 @@ final class ContentBlocksResolver {
 		$content = apply_filters( 'wpgraphql_content_blocks_resolver_content', $content, $node, $args );
 
 		if ( empty( $content ) ) {
-			return array();
+			return [];
 		}
 
 		// Parse the blocks from HTML comments to an array of blocks
 		$parsed_blocks = parse_blocks( $content );
 		if ( empty( $parsed_blocks ) ) {
-			return array();
+			return [];
 		}
 
 		// Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
-		$new_parsed_blocks = array();
+		$new_parsed_blocks = [];
 		foreach ( $parsed_blocks as $block ) {
 			if ( 'core/block' === $block['blockName'] && $block['attrs']['ref'] ) {
 				$reusable_blocks = parse_blocks( get_post( $block['attrs']['ref'] )->post_content );
@@ -122,7 +122,7 @@ final class ContentBlocksResolver {
 	 * @param array $blocks A list of blocks to flatten.
 	 */
 	private static function flatten_block_list( $blocks ): array {
-		$result = array();
+		$result = [];
 		foreach ( $blocks as $block ) {
 			$result = array_merge( $result, self::flatten_inner_blocks( $block ) );
 		}
@@ -135,7 +135,7 @@ final class ContentBlocksResolver {
 	 * @param mixed $block A block.
 	 */
 	private static function flatten_inner_blocks( $block ): array {
-		$result            = array();
+		$result            = [];
 		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 		array_push( $result, $block );
 		foreach ( $block['innerBlocks'] as $child ) {

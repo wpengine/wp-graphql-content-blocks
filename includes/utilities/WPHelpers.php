@@ -21,7 +21,7 @@ final class WPHelpers {
 	 * @return \WP_Post_Type[]
 	 */
 	public static function get_supported_post_types(): array {
-		$supported_post_types = array();
+		$supported_post_types = [];
 		/**
 		 * Get Post Types that are set to Show in GraphQL and Show in REST.
 		 * If it doesn't show in REST, it's not block-editor.
@@ -62,7 +62,7 @@ final class WPHelpers {
 	 * @param string $post_type The Post Type to use.
 	 * @param int    $id The Post ID to use.
 	 *
-	 * @return WP_Block_Editor_Context The Block Editor Context
+	 * @return \WP_Block_Editor_Context The Block Editor Context
 	 */
 	public static function get_block_editor_context( string $post_type, $id = -99 ): WP_Block_Editor_Context {
 		$post_id              = $id;
@@ -81,6 +81,6 @@ final class WPHelpers {
 		$post->post_type = $post_type;
 		$post->filter    = 'raw';
 
-		return new WP_Block_Editor_Context( array( 'post' => new WP_Post( $post ) ) );
+		return new WP_Block_Editor_Context( [ 'post' => new WP_Post( $post ) ] );
 	}
 }

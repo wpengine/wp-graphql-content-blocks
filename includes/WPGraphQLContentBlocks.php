@@ -23,7 +23,7 @@ final class WPGraphQLContentBlocks {
 	/**
 	 * The instance of the WPGraphQLContentBlocks object
 	 *
-	 * @return object|WPGraphQLContentBlocks
+	 * @return object|\WPGraphQLContentBlocks
 	 * @since  0.0.1
 	 */
 	public static function instance() {
@@ -160,7 +160,7 @@ final class WPGraphQLContentBlocks {
 	 * @since 0.0.1
 	 */
 	public function actions(): void {
-		add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
+		add_action( 'graphql_register_types', [ $this, 'init_block_editor_registry' ] );
 	}
 
 	/**

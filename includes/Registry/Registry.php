@@ -49,7 +49,7 @@ final class Registry {
 	 *
 	 * @var array
 	 */
-	public $block_interfaces = array();
+	public $block_interfaces = [];
 
 	/**
 	 * Registry constructor.
@@ -96,7 +96,7 @@ final class Registry {
 		$block_and_graphql_enabled_post_types = WPHelpers::get_supported_post_types();
 
 		if ( empty( $block_and_graphql_enabled_post_types ) ) {
-			return array();
+			return [];
 		}
 
 		$post_id = -1;
@@ -125,7 +125,7 @@ final class Registry {
 			}
 		}//end foreach
 
-		return ! empty( $this->block_interfaces[ $block_name ] ) ? $this->block_interfaces[ $block_name ] : array();
+		return ! empty( $this->block_interfaces[ $block_name ] ) ? $this->block_interfaces[ $block_name ] : [];
 	}
 
 	/**
@@ -141,7 +141,7 @@ final class Registry {
 		$context_interfaces = $this->get_block_context_interfaces( $block_name );
 
 		// @todo: if blocks need to implement other interfaces (i.e. "BlockSupports" interfaces, that could be handled here as well)
-		return array_merge( array( 'EditorBlock' ), $context_interfaces );
+		return array_merge( [ 'EditorBlock' ], $context_interfaces );
 	}
 
 	/**
@@ -160,12 +160,12 @@ final class Registry {
 		}
 
 		$type_names = array_map(
-			function( $post_type ) {
+			function ( $post_type ) {
 				return $post_type->graphql_single_name ?? null;
 			},
 			$supported_post_types
 		);
-		register_graphql_interfaces_to_types( array( 'NodeWithEditorBlocks' ), $type_names );
+		register_graphql_interfaces_to_types( [ 'NodeWithEditorBlocks' ], $type_names );
 		$post_id = -1;
 		// For each Post type
 		foreach ( $supported_post_types as $post_type ) {
@@ -189,7 +189,7 @@ final class Registry {
 				PostTypeBlockInterface::register_type( $type_name, $supported_blocks_for_post_type );
 
 				// Register the `NodeWith[PostType]Blocks` Interface to the post type
-				register_graphql_interfaces_to_types( array( 'NodeWith' . Utils::format_type_name( $post_type->graphql_single_name ) . 'EditorBlocks' ), array( $type_name ) );
+				register_graphql_interfaces_to_types( [ 'NodeWith' . Utils::format_type_name( $post_type->graphql_single_name ) . 'EditorBlocks' ], [ $type_name ] );
 			}
 		}//end foreach
 	}

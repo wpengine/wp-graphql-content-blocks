@@ -16,12 +16,12 @@ class CoreHeading extends Block {
 	 *
 	 * @var array|null
 	 */
-	protected ?array $additional_block_attributes = array(
-		'cssClassName' => array(
+	protected ?array $additional_block_attributes = [
+		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'h1, h2, h3, h4, h5, h6',
 			'source'    => 'attribute',
 			'attribute' => 'class',
-		),
-	);
+		],
+	];
 }

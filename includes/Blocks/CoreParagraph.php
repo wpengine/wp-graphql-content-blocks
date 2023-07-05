@@ -16,17 +16,17 @@ class CoreParagraph extends Block {
 	 *
 	 * @var array|null
 	 */
-	protected ?array $additional_block_attributes = array(
-		'cssClassName' => array(
+	protected ?array $additional_block_attributes = [
+		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'p',
 			'source'    => 'attribute',
 			'attribute' => 'class',
-		),
-		'content'      => array(
+		],
+		'content'      => [
 			'type'     => 'string',
 			'selector' => 'p',
 			'source'   => 'html',
-		),
-	);
+		],
+	];
 }

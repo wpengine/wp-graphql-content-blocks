@@ -21,22 +21,22 @@ class Anchor {
 	public static function register(): void {
 		register_graphql_interface_type(
 			'BlockWithSupportsAnchor',
-			array(
+			[
 				'description' => __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
-				'fields'      => array(
-					'anchor' => array(
+				'fields'      => [
+					'anchor' => [
 						'type'        => 'string',
 						'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
-							$rendered_block   = wp_unslash( render_block( $block ) );
+							$rendered_block = wp_unslash( render_block( $block ) );
 							if ( empty( $rendered_block ) ) {
 								return null;
 							}
 							return DOMHelpers::parseFirstNodeAttribute( $rendered_block, 'id' );
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 
@@ -48,8 +48,8 @@ class Anchor {
 	 */
 	public static function register_to_block( \WP_Block_Type $block_spec ): void {
 		if ( isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
-			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', array( WPGraphQLHelpers::format_type_name( $block_spec->name ) . 'Attributes' ) );
-			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', array( WPGraphQLHelpers::format_type_name( $block_spec->name ) ) );
+			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', [ WPGraphQLHelpers::format_type_name( $block_spec->name ) . 'Attributes' ] );
+			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', [ WPGraphQLHelpers::format_type_name( $block_spec->name ) ] );
 		}
 	}
 }
