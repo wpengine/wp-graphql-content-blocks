@@ -24,7 +24,10 @@ final class PostTypeBlockInterface {
 		register_graphql_interface_type(
 			ucfirst( $post_type ) . 'EditorBlock',
 			array(
-				'description' => __( 'EditorBlock Interface for ' . ucfirst( $post_type ) . ' type.', 'wp-graphql-content-blocks' ),
+				'description' => sprintf(
+					__( 'EditorBlock Interface for %s Block Type', 'wp-graphql-content-blocks' ),
+					ucfirst( $post_type )
+				),
 				'interfaces'  => array( 'EditorBlock' ),
 				'fields'      => array(
 					'name' => array(
