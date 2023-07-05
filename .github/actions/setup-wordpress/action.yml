@@ -16,11 +16,13 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version: 18.x
-      
+
     - name: Install dependencies
+      shell: bash
       run: composer install --no-dev
 
     - name: Setup WordPress
+      shell: bash
       run: |
         cp .env.dist .env
         composer run install-test-env
