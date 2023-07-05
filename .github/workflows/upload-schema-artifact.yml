@@ -34,6 +34,7 @@ jobs:
       - name: Setup WordPress
         run: |
           composer run install-test-env
+          composer install --no-dev
 
       - name: Generate the Static Schema
         run: |
