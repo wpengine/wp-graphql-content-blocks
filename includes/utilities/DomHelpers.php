@@ -32,8 +32,7 @@ final class DOMHelpers {
 		}
 		$node          = $doc->find( $selector );
 		$default_value = isset( $default_value ) ? $default_value : null;
-		$value         = ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default_value;
-		return $value;
+		return ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default_value;
 	}
 
 	/**

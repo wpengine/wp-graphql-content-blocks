@@ -7,22 +7,21 @@
 
 namespace WPGraphQL\ContentBlocks\Registry;
 
-use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Blocks\Block;
 use WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
-use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 use WPGraphQL\ContentBlocks\Type\InterfaceType\PostTypeBlockInterface;
+use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPHelpers;
 use WPGraphQL\Registry\TypeRegistry;
 use WPGraphQL\Utils\Utils;
+use WP_Block_Type;
 
 /**
  * Class Registry
  */
 final class Registry {
-
 	/**
 	 * The instance of the WPGraphQL type registry.
 	 *
@@ -64,8 +63,6 @@ final class Registry {
 
 	/**
 	 * Registry init procedure.
-	 *
-	 * @return void
 	 */
 	public function init(): void {
 		$this->register_interface_types();
@@ -146,8 +143,6 @@ final class Registry {
 
 	/**
 	 * Register Interface types to the GraphQL Schema
-	 *
-	 * @return void
 	 */
 	protected function register_interface_types(): void {
 		// First register the NodeWithEditorBlocks interface by default

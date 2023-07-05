@@ -7,13 +7,13 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
-use WP_Block_Type;
+use WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
 use WPGraphQL\ContentBlocks\Registry\Registry;
+use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
-use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
-use WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
 use WPGraphQL\Utils\Utils;
+use WP_Block_Type;
 
 /**
  * Class Block
@@ -202,8 +202,6 @@ class Block {
 
 	/**
 	 * Register the Type for the block
-	 *
-	 * @return void
 	 */
 	private function register_type(): void {
 		/**

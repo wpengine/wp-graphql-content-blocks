@@ -12,7 +12,6 @@
  * Main WPGraphQLContentBlocks Class.
  */
 final class WPGraphQLContentBlocks {
-
 	/**
 	 * The one true WPGraphQLContentBlocks
 	 *
@@ -70,7 +69,6 @@ final class WPGraphQLContentBlocks {
 	 * Setup plugin constants.
 	 *
 	 * @since  0.0.1
-	 * @return void
 	 */
 	private function setup_constants(): void {
 
@@ -94,7 +92,6 @@ final class WPGraphQLContentBlocks {
 	 * Uses composer's autoload
 	 *
 	 * @since  0.0.1
-	 * @return bool
 	 */
 	private function includes(): bool {
 		/**

@@ -43,7 +43,6 @@ class Anchor {
 	 * Registers an Anchor field on a block if it supports it.
 	 *
 	 * @param \WP_Block_Type $block_spec The block type to register the anchor field against.
-	 * @return void
 	 */
 	public static function register_to_block( \WP_Block_Type $block_spec ): void {
 		if ( isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {

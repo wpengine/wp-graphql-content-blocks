@@ -7,9 +7,9 @@
 
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
-use WP_Block_Type_Registry;
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
+use WP_Block_Type_Registry;
 
 /**
  * Class EditorBlockInterface

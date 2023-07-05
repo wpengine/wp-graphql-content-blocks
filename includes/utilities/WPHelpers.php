@@ -7,9 +7,9 @@
 
 namespace WPGraphQL\ContentBlocks\Utilities;
 
-use stdClass;
-use WP_Post;
 use WP_Block_Editor_Context;
+use WP_Post;
+use stdClass;
 
 /**
  * Class WPHelpers
