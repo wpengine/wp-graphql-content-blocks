@@ -30,7 +30,7 @@ final class PostTypeBlockInterface {
 						'type' => 'String',
 					],
 				],
-				'resolveType' => function ( $block ) {
+				'resolveType' => static function ( $block ) {
 					if ( empty( $block['blockName'] ) ) {
 						$block['blockName'] = 'core/freeform';
 					}
@@ -67,7 +67,7 @@ final class PostTypeBlockInterface {
 							__( 'List of %s editor blocks', 'wp-graphql-content-blocks' ),
 							$post_type
 						),
-						'resolve'     => function ( $node, $args ) use ( $block_names ) {
+						'resolve'     => static function ( $node, $args ) use ( $block_names ) {
 							return ContentBlocksResolver::resolve_content_blocks( $node, $args, $block_names );
 						},
 					],

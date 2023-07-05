@@ -114,7 +114,7 @@ class Block {
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 						$this->type_name
 					),
-					'resolve'     => function ( $block ) {
+					'resolve'     => static function ( $block ) {
 						return $block;
 					},
 				]

@@ -18,7 +18,7 @@ final class WPGraphQLContentBlocks {
 	 *
 	 * @var ?self
 	 */
-	private static ?WPGraphQLContentBlocks $instance;
+	private static ?self $instance;
 
 	/**
 	 * The instance of the WPGraphQLContentBlocks object
@@ -27,8 +27,8 @@ final class WPGraphQLContentBlocks {
 	 * @since  0.0.1
 	 */
 	public static function instance() {
-		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof WPGraphQLContentBlocks ) ) {
-			self::$instance = new WPGraphQLContentBlocks();
+		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof self ) ) {
+			self::$instance = new self();
 			self::$instance->setup_constants();
 			if ( self::$instance->includes() ) {
 				self::$instance->actions();
@@ -110,7 +110,7 @@ final class WPGraphQLContentBlocks {
 			} else {
 				add_action(
 					'admin_notices',
-					function () {
+					static function () {
 						if ( ! current_user_can( 'manage_options' ) ) {
 							return;
 						}
@@ -133,7 +133,7 @@ final class WPGraphQLContentBlocks {
 			if ( ! class_exists( 'WPGraphQL' ) ) {
 				add_action(
 					'admin_notices',
-					function () {
+					static function () {
 						if ( ! current_user_can( 'manage_options' ) ) {
 							return;
 						}

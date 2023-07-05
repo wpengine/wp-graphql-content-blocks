@@ -18,7 +18,7 @@ final class Scalar {
 		register_graphql_scalar(
 			'BlockAttributesObject',
 			[
-				'serialize' => function ( $value ) {
+				'serialize' => static function ( $value ) {
 					return wp_json_encode( $value );
 				},
 			]

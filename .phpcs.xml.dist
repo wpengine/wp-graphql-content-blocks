@@ -44,7 +44,7 @@
 
 	<!-- Rules: WPGraphQL Coding Standards -->
 	<!-- https://github.com/AxeWP/WPGraphQL-Coding-Standards/WPGraphQL/ruleset.xml -->
-	<rule ref="WPGraphQL-Minimum">
+	<rule ref="WPGraphQL-Strict">
 		<!-- The is the only thing missing from WPEngine-Strict -->
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
 		<!-- This should be excluded upstream in the ruleset-->

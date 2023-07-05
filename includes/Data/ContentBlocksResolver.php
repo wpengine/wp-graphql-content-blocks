@@ -72,7 +72,7 @@ final class ContentBlocksResolver {
 		// 1st Level filtering of blocks that are empty
 		$parsed_blocks = array_filter(
 			$parsed_blocks,
-			function ( $parsed_block ) {
+			static function ( $parsed_block ) {
 				if ( ! empty( $parsed_block['blockName'] ) ) {
 					return true;
 				}
@@ -86,7 +86,7 @@ final class ContentBlocksResolver {
 
 		// 1st Level assigning of unique id's and missing blockNames
 		$parsed_blocks = array_map(
-			function ( $parsed_block ) {
+			static function ( $parsed_block ) {
 				$parsed_block['clientId'] = uniqid();
 				// Since Gutenberg assigns an empty blockName for Classic block
 				// we define the name here
@@ -107,7 +107,7 @@ final class ContentBlocksResolver {
 		if ( ! empty( $allowed_block_names ) ) {
 			$parsed_blocks = array_filter(
 				$parsed_blocks,
-				function ( $parsed_block ) use ( $allowed_block_names ) {
+				static function ( $parsed_block ) use ( $allowed_block_names ) {
 					return in_array( $parsed_block['blockName'], $allowed_block_names, true );
 				},
 				ARRAY_FILTER_USE_BOTH

@@ -160,7 +160,7 @@ final class Registry {
 		}
 
 		$type_names = array_map(
-			function ( $post_type ) {
+			static function ( $post_type ) {
 				return $post_type->graphql_single_name ?? null;
 			},
 			$supported_post_types

@@ -7,7 +7,6 @@
 
 namespace WPGraphQL\ContentBlocks\Field\BlockSupports;
 
-use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 
@@ -27,7 +26,7 @@ class Anchor {
 					'anchor' => [
 						'type'        => 'string',
 						'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block ) {
+						'resolve'     => static function ( $block ) {
 							$rendered_block = wp_unslash( render_block( $block ) );
 							if ( empty( $rendered_block ) ) {
 								return null;
