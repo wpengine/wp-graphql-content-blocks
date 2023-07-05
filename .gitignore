@@ -23,5 +23,8 @@ artifacts
 !.docker/plugins/test-cpt
 docker-compose.override.yml
 
+# phpcs cache
+/tests/_output/cache.json
+
 # Built Zip
 @wpengine
