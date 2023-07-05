@@ -37,7 +37,7 @@ jobs:
 
       - name: Generate the Static Schema
         run: |
-          cd /tmp/wordpress/
+          cd $(WP_CORE_DIR)
           # Output: /tmp/schema.graphql
           wp graphql generate-static-schema
 
