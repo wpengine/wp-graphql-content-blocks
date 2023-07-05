@@ -47,6 +47,5 @@ jobs:
         with:
           name: schema.graphql
           path: /tmp/schema.graphql
-          files: /tmp/schema.graphql
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
