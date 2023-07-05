@@ -31,32 +31,11 @@ jobs:
         if: ${{ github.event_name == 'pull_request_target' }}
         uses: styfle/cancel-workflow-action@0.11.0
 
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Setup PHP w/ Composer & WP-CLI
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.0
-          extensions: mbstring, intl, bcmath, exif, gd, mysqli, opcache, zip, pdo_mysql
-          coverage: none
-          tools: composer:v2, wp-cli
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-
+      - name: Setup WordPress
+        uses: ./.github/actions/setup-wordpress
+        
       - name: Setup GraphQL Schema Linter
         run: npm install -g graphql-schema-linter@^3.0 graphql@^16
-
-      - name: Setup WordPress
-        run: |
-          cp .env.dist .env
-          composer run install-test-env
-          composer install --no-dev
 
       - name: Generate the Static Schema
         run: |
