@@ -31,9 +31,14 @@ jobs:
         if: ${{ github.event_name == 'pull_request_target' }}
         uses: styfle/cancel-workflow-action@0.11.0
 
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Setup WordPress
         uses: ./.github/actions/setup-wordpress
-        
+
       - name: Setup GraphQL Schema Linter
         run: npm install -g graphql-schema-linter@^3.0 graphql@^16
 
