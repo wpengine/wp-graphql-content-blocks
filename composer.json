@@ -22,7 +22,7 @@
     "roave/security-advisories": "dev-latest"
   },
   "scripts": {
-    "install-test-env": "bash .docker/scripts/init-testing-environment.sh",
+    "install-test-env": "bash bin/install-test-env.sh",
     "lint": "parallel-lint -e php --no-colors --exclude vendor .",
     "phpcs": "phpcs",
     "phpcs:fix": "phpcbf",
