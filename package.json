@@ -39,6 +39,6 @@
         "rimraf": "^4.4.0"
     },
     "overrides": {
-        "jest": "28.1.2"
+        "semver": "~7.5.2"
     }
 }
