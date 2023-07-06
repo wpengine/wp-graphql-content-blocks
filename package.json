@@ -40,6 +40,7 @@
   },
   "overrides": {
     "jest": "28.1.2",
-    "semver": "~7.5.2"
+    "semver": "~7.5.2",
+    "optionator": "0.9.3"
   }
 }
