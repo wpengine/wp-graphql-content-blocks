@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set +u
 
 export WP_CLI_ALLOW_ROOT=1
@@ -21,10 +20,10 @@ install_wordpress() {
 	mkdir -p $WP_CORE_DIR
 
 	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
-		mkdir -p $TMPDIR/wordpress-nightly
-		download https://wordpress.org/nightly-builds/wordpress-latest.zip	$TMPDIR/wordpress-nightly/wordpress-nightly.zip
-		unzip -q $TMPDIR/wordpress-nightly/wordpress-nightly.zip -d $TMPDIR/wordpress-nightly/
-		mv $TMPDIR/wordpress-nightly/wordpress/* $WP_CORE_DIR
+		mkdir -p $TMPDIR/wordpress-trunk
+		rm -rf $TMPDIR/wordpress-trunk/*
+		svn export --quiet https://core.svn.wordpress.org/trunk $TMPDIR/wordpress-trunk/wordpress
+		mv $TMPDIR/wordpress-trunk/wordpress/* $WP_CORE_DIR
 	else
 		if [ $WP_VERSION == 'latest' ]; then
 			local ARCHIVE_NAME='latest'
@@ -47,38 +46,60 @@ install_wordpress() {
 		else
 			local ARCHIVE_NAME="wordpress-$WP_VERSION"
 		fi
-		download https://wordpress.org/${ARCHIVE_NAME}.tar.gz	$TMPDIR/wordpress.tar.gz
+		download https://wordpress.org/${ARCHIVE_NAME}.tar.gz  $TMPDIR/wordpress.tar.gz
 		tar --strip-components=1 -zxmf $TMPDIR/wordpress.tar.gz -C $WP_CORE_DIR
 	fi
 
 	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
 }
 
+recreate_db() {
+	shopt -s nocasematch
+	if [[ $1 =~ ^(y|yes)$ ]]
+	then
+		mysqladmin drop $DB_NAME -f --user="$DB_USER" --password="$DB_PASS"$EXTRA
+		create_db
+		echo "Recreated the database ($DB_NAME)."
+	else
+		echo "Leaving the existing database ($DB_NAME) in place."
+	fi
+	shopt -u nocasematch
+}
+
+create_db() {
+	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
+}
+
 install_db() {
+
 	if [ ${SKIP_DB_CREATE} = "true" ]; then
 		return 0
 	fi
 
 	# parse DB_HOST for port or socket references
 	local PARTS=(${DB_HOST//\:/ })
-	local DB_HOSTNAME=${PARTS[0]}
-	local DB_SOCK_OR_PORT=${PARTS[1]}
+	local DB_HOSTNAME=${PARTS[0]};
+	local DB_SOCK_OR_PORT=${PARTS[1]};
 	local EXTRA=""
 
-	if ! [ -z $DB_HOSTNAME ]; then
+	if ! [ -z $DB_HOSTNAME ] ; then
 		if [ $(echo $DB_SOCK_OR_PORT | grep -e '^[0-9]\{1,\}$') ]; then
 			EXTRA=" --host=$DB_HOSTNAME --port=$DB_SOCK_OR_PORT --protocol=tcp"
-		elif ! [ -z $DB_SOCK_OR_PORT ]; then
+		elif ! [ -z $DB_SOCK_OR_PORT ] ; then
 			EXTRA=" --socket=$DB_SOCK_OR_PORT"
-		elif ! [ -z $DB_HOSTNAME ]; then
+		elif ! [ -z $DB_HOSTNAME ] ; then
 			EXTRA=" --host=$DB_HOSTNAME --protocol=tcp"
 		fi
 	fi
 
 	# create database
-	RESULT=$(mysql -u $DB_USER --password="$DB_PASS" --skip-column-names -e "SHOW DATABASES LIKE '$DB_NAME'"$EXTRA)
-	if [ "$RESULT" != $DB_NAME ]; then
-		mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
+	if [ $(mysql --user="$DB_USER" --password="$DB_PASS"$EXTRA --execute='show databases;' | grep ^$DB_NAME$) ]
+	then
+		echo "Reinstalling will delete the existing test database ($DB_NAME)"
+		read -p 'Are you sure you want to proceed? [y/N]: ' DELETE_EXISTING_DB
+		recreate_db $DELETE_EXISTING_DB
+	else
+		create_db
 	fi
 }
 
