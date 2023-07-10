@@ -1,5 +1,12 @@
 # WPGraphQL Content Blocks
 
+## 1.1.1
+
+### Patch Changes
+
+- 6259405: Fix semver overrides to v7.5.2
+- b2ddbcb: Fix optionator (for word-wrap vln.) overrides to v0.9.3
+
 ## 1.1.0
 
 ### Minor Changes
