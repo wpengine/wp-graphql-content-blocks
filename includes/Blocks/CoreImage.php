@@ -29,5 +29,6 @@ class CoreImage extends Block {
 			'source'    => 'attribute',
 			'attribute' => 'src',
 		),
+		'width'        => array( 'type' => 'string' ),
 	);
 }
