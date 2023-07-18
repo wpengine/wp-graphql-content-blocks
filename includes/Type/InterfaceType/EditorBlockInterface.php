@@ -52,7 +52,8 @@ final class EditorBlockInterface {
 						),
 						'args'        => array(
 							'flat' => array(
-								'type' => 'Boolean',
+								'description' => __( 'Returns the list of blocks as a flat list if true', 'wp-graphql-content-blocks' ),
+								'type'        => 'Boolean',
 							),
 						),
 						'description' => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
