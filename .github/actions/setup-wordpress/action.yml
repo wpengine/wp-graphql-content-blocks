@@ -1,5 +1,5 @@
-name: Setup Wordpress
-description: Setup Wordpress. Assumes mariadb is available as a service.
+name: Set up WordPress
+description: Sets up WordPress. Assumes mariadb is available as a service.
 
 runs:
   using: 'composite'
