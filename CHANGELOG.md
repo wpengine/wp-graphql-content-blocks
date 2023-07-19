@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 1.1.2
+
+### Patch Changes
+
+- 28fca4a: Bug Fix: CoreImage `width` attribute throws error.
+
 ## 1.1.1
 
 ### Patch Changes

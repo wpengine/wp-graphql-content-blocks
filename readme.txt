@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 1.1.2 =
+
+### Patch Changes
+
+- 28fca4a: Bug Fix: CoreImage `width` attribute throws error.
+
 = 1.1.1 =
 
 ### Patch Changes
@@ -42,15 +48,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 ### Patch Changes
 
 - 135252e: Adds cssClassName attribute in CoreHeading.
-
-= 1.0.0 =
-
-### Major Changes
-
-- 44f075b: Transitioned to [Semantic Versioning](https://semver.org). There are no breaking changes in this release.
-
-### Patch Changes
-
-- aeeb613: Added support for cssClassName attribute in CoreSeparator
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
