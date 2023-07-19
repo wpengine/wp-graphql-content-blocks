@@ -27,11 +27,7 @@ jobs:
           docker-compose build \
             --build-arg WP_VERSION=${{ matrix.wordpress }} \
             --build-arg PHP_VERSION=${{ matrix.php }}
-          docker-compose run \
-            -e PHP_VERSION=${{ matrix.php }} \
-            -e WP_VERSION=${{ matrix.wordpress }} \
-            -e COVERAGE=1
-            wordpress
+          docker-compose up -d
 
       - name: Wait for db
         run: |
