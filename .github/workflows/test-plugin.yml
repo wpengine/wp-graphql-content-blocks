@@ -11,10 +11,12 @@ jobs:
     strategy:
       matrix:
         php: [ '8.2', '7.4' ]
-        wordpress: [ '6.2', '5.9' ]
+        wordpress: [ '6.1', '6.2', '5.9' ]
         exclude:
         - php: 8.2
           wordpress: 5.9
+        - php: 7.4
+          wordpress: 6.2
       fail-fast: false
     name: WordPress ${{ matrix.wordpress }}, PHP ${{ matrix.php }}
     steps:
