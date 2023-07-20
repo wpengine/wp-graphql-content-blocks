@@ -4,13 +4,15 @@ services:
   wordpress:
     build:
       context: ./.docker
-    image: wp-graphql-content-blocks:latest-wp-${WP_VERSION-latest}
+    image: wp-graphql-content-blocks:latest-wp-${WP_VERSION-latest}-php${PHP_VERSION}
     restart: always
     ports:
       - 8080:80
     links:
       - db
     environment:
+      PHP_VERSION: ${PHP_VERSION:-8.2}
+      WP_VERSION: ${WP_VERSION:-6.2}
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: root
@@ -24,7 +26,7 @@ services:
       - ./:/var/www/html/wp-content/plugins/wp-graphql-content-blocks
 
   db:
-    image: mysql:5.7
+    image: mysql:8
     restart: always
     ports:
       - 33066:3306
