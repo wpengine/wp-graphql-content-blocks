@@ -12,7 +12,7 @@ services:
       - db
     environment:
       PHP_VERSION: ${PHP_VERSION:-8.2}
-      WP_VERSION: ${WP_VERSION:-6.1}
+      WP_VERSION: ${WP_VERSION:-6.2}
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: root
