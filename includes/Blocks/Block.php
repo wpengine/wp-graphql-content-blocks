@@ -292,8 +292,12 @@ class Block {
 					$value = intval( $value );
 					break;
 				case 'boolean':
-					// Only false when value is not null or actually false
-					$value = ! ( false === $value || is_null( $value ) );
+					// If the value is empty or false return
+					if ( is_null( $value ) || false === $value ) {
+						break;
+					}
+					// Otherwise it's truthy
+					$value = true;
 					break;
 			}
 

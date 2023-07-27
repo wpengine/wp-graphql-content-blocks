@@ -19,7 +19,7 @@ final class CoreVideoTest extends PluginTestCase {
 					trim(
 						'
                         <!-- wp:video {"id":1636} -->
-                        <figure class="wp-block-video"><video autoplay controls loop poster="http://mysite.local/wp-content/uploads/2023/05/pexels-egor-komarov-14420089-scaled.jpg" preload="auto" src="http://mysite.local/wp-content/uploads/2023/07/pexels_videos_1860684-1440p.mp4" playsinline></video></figure>
+                        <figure class="wp-block-video"><video autoplay loop poster="http://mysite.local/wp-content/uploads/2023/05/pexels-egor-komarov-14420089-scaled.jpg" preload="auto" src="http://mysite.local/wp-content/uploads/2023/07/pexels_videos_1860684-1440p.mp4" playsinline></video></figure>
                         <!-- /wp:video -->
                         '
 					)
@@ -86,7 +86,7 @@ final class CoreVideoTest extends PluginTestCase {
             'preload' => 'auto',
             'src' => 'http://mysite.local/wp-content/uploads/2023/07/pexels_videos_1860684-1440p.mp4',
             'playsInline' => true,
-            'controls' => true,
+            'controls' => null,
             'loop' => true,
             'poster' => 'http://mysite.local/wp-content/uploads/2023/05/pexels-egor-komarov-14420089-scaled.jpg',
             'id' => 1636.0,
