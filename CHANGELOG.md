@@ -1,5 +1,12 @@
 # WPGraphQL Content Blocks
 
+## 1.1.3
+
+### Patch Changes
+
+- db52dac: Rename `utilities` folder to `Utilities`
+- 748d846: Bug Fix. Boolean block attributes no longer always resolve as false.
+
 ## 1.1.2
 
 ### Patch Changes
