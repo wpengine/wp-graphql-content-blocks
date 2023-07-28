@@ -286,10 +286,19 @@ class Block {
 
 					break;
 			}//end switch
-
-			// if type is set to integer, get the integer value of the attribute.
-			if ( 'integer' === $attribute_config['type'] ) {
-				$value = intval( $value );
+			// Post processing of return value based on configured type
+			switch ( $attribute_config['type'] ) {
+				case 'integer':
+					$value = intval( $value );
+					break;
+				case 'boolean':
+					// If the value is empty or false return
+					if ( is_null( $value ) || false === $value ) {
+						break;
+					}
+					// Otherwise it's truthy
+					$value = true;
+					break;
 			}
 
 			return $value;
