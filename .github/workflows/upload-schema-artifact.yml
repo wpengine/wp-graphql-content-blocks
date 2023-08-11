@@ -1,8 +1,10 @@
 name: Upload Schema Artifact
 
 on:
-  release:
-    types: [ published ]
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
 
 jobs:
   run:
