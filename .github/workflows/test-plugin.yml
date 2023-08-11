@@ -17,6 +17,8 @@ jobs:
           wordpress: 5.9
         - php: 7.4
           wordpress: 6.2
+        - php: 7.4
+          wordpress: 6.3
       fail-fast: false
     name: WordPress ${{ matrix.wordpress }}, PHP ${{ matrix.php }}
     steps:
