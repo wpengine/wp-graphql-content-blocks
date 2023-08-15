@@ -154,7 +154,6 @@ final class Registry {
 	 * @return string[]
 	 */
 	public function get_block_additional_interfaces( string $block_name ): array {
-
 		$block_spec       = $this->block_type_registry->get_registered( $block_name );
 		$block_interfaces = array();
 		// NOTE: Using add_filter here creates a performance penalty sadly
