@@ -76,7 +76,6 @@ class Block {
 	private function register_block_type() {
 		$this->register_block_attributes_as_fields();
 		$this->register_type();
-		$this->register_block_support_fields();
 	}
 
 	/**
@@ -100,6 +99,7 @@ class Block {
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 						$this->type_name
 					),
+					'interfaces'  => $this->get_block_attributes_interfaces(),
 					'fields'      => $block_attribute_fields,
 				)
 			);
@@ -120,13 +120,6 @@ class Block {
 				)
 			);
 		}//end if
-	}
-
-	/**
-	 * Registers fields for the block supports.
-	 */
-	private function register_block_support_fields(): void {
-		Anchor::register_to_block( $this->block );
 	}
 
 	/**
@@ -198,6 +191,15 @@ class Block {
 	 */
 	private function get_block_interfaces(): array {
 		return $this->block_registry->get_block_interfaces( $this->block->name );
+	}
+
+	/**
+	 * Gets the GraphQL interfaces that should be implemented by the block attributes object.
+	 *
+	 * @return string[]
+	 */
+	private function get_block_attributes_interfaces(): array {
+		return $this->block_registry->get_block_attributes_interfaces( $this->block->name );
 	}
 
 	/**
