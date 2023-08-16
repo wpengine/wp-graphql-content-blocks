@@ -156,7 +156,7 @@ final class Registry {
 	public function get_block_additional_interfaces( string $block_name ): array {
 		$block_spec       = $this->block_type_registry->get_registered( $block_name );
 		$block_interfaces = array();
-		// NOTE: Using add_filter here creates a performance penalty sadly
+		// NOTE: Using add_filter here creates a performance penalty.
 		$block_interfaces = Anchor::get_block_interfaces( $block_interfaces, $block_spec );
 		return $block_interfaces;
 	}
@@ -171,7 +171,7 @@ final class Registry {
 	public function get_block_attributes_interfaces( string $block_name ): array {
 		$block_spec       = $this->block_type_registry->get_registered( $block_name );
 		$block_interfaces = array();
-		// NOTE: Using add_filter here creates a performance penalty sadly
+		// NOTE: Using add_filter here creates a performance penalty.
 		$block_interfaces = Anchor::get_block_attributes_interfaces( $block_interfaces, $block_spec );
 		return $block_interfaces;
 	}
