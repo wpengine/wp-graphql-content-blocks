@@ -113,16 +113,16 @@ final class Registry {
 			 * Filter before applying per-post_type Interfaces to blocks. This allows 3rd parties to control
 			 * whether the interface(s) should or should not be applied based on custom logic.
 			 *
-			 * @param bool $should                                          Whether to apply the ${PostType}EditorBlock Interface. If the filter returns false, the default
-			 *                                                              logic will not execute and the ${PostType}EditorBlock will not be applied.
-			 * @param string.                                               The name of the block Interfaces will be applied to
-			 * @param \WP_Block_Editor_Context                              The context of the Block Editor
-			 * @param \WP_Post_Type $post_type                              The Post Type an Interface might be applied to the block for
-			 * @param array         $all_registered_blocks                  Array of all registered blocks
-			 * @param array         $supported_blocks_for_post_type_context Array of all supported blocks for the context
-			 * @param array         $block_and_graphql_enabled_post_types   Array of Post Types that have block editor and GraphQL support
+			 * @param bool                     $should                                 Whether to apply the ${PostType}EditorBlock Interface. If the filter returns false, the default
+			 *                                                                         logic will not execute and the ${PostType}EditorBlock will not be applied.
+			 * @param string                   $block_name                             The name of the block Interfaces will be applied to
+			 * @param \WP_Block_Editor_Context $block_editor_context                   The context of the Block Editor
+			 * @param \WP_Post_Type            $post_type                              The Post Type an Interface might be applied to the block for
+			 * @param array                    $all_registered_blocks                  Array of all registered blocks
+			 * @param array                    $supported_blocks_for_post_type_context Array of all supported blocks for the context
+			 * @param array                    $block_and_graphql_enabled_post_types   Array of Post Types that have block editor and GraphQL support
 			 */
-			$should_apply_post_type_editor_block_interface = apply_filters( 'wpgraphql_content_blocks_should_apply_post_type_editor_blocks_interfaces', true, $block_name, $block_editor_context, $post_type, $all_registered_blocks, $block_and_graphql_enabled_post_types );
+			$should_apply_post_type_editor_block_interface = apply_filters( 'wpgraphql_content_blocks_should_apply_post_type_editor_blocks_interfaces', true, $block_name, $block_editor_context, $post_type, $all_registered_blocks, $supported_blocks_for_post_type_context, $block_and_graphql_enabled_post_types );
 
 			if ( true !== $should_apply_post_type_editor_block_interface ) {
 				continue;
