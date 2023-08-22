@@ -76,6 +76,7 @@ class Anchor {
 	 * @deprecated 1.1.4 No longer used by internal code and not recommended.
 	 */
 	public static function register_to_block( \WP_Block_Type $block_spec ): void {
+		_deprecated_function( __METHOD__, '1.1.4' );
 		if ( isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
 			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', array( WPGraphQLHelpers::format_type_name( $block_spec->name ) . 'Attributes' ) );
 			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', array( WPGraphQLHelpers::format_type_name( $block_spec->name ) ) );
