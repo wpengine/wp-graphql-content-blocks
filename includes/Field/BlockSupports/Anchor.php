@@ -41,12 +41,42 @@ class Anchor {
 	}
 
 	/**
+	 * Checks if the block spec supports the anchor field and returns the relevant interface
+	 *
+	 * @param array          $existing An existing list of a block interfaces.
+	 * @param \WP_Block_Type $block_spec The block type to register the anchor field against.
+	 *
+	 * @return string[]
+	 */
+	public static function get_block_interfaces( $existing, \WP_Block_Type $block_spec ): array {
+		if ( isset( $block_spec ) && isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
+			$existing[] = 'BlockWithSupportsAnchor';
+		}
+		return $existing;
+	}
+
+	/**
+	 * Checks if the block spec supports the anchor field and returns the relevant interface
+	 *
+	 * @param array          $existing An existing list of a block attribute interfaces.
+	 * @param \WP_Block_Type $block_spec The block type to register the anchor field against.
+	 *
+	 * @return string[]
+	 */
+	public static function get_block_attributes_interfaces( $existing, \WP_Block_Type $block_spec ): array {
+		return self::get_block_interfaces( $existing, $block_spec );
+	}
+
+	/**
 	 * Registers an Anchor field on a block if it supports it.
 	 *
 	 * @param \WP_Block_Type $block_spec The block type to register the anchor field against.
 	 * @return void
+	 *
+	 * @deprecated 1.1.4 No longer used by internal code and not recommended.
 	 */
 	public static function register_to_block( \WP_Block_Type $block_spec ): void {
+		_deprecated_function( __METHOD__, '1.1.4' );
 		if ( isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
 			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', array( WPGraphQLHelpers::format_type_name( $block_spec->name ) . 'Attributes' ) );
 			register_graphql_interfaces_to_types( 'BlockWithSupportsAnchor', array( WPGraphQLHelpers::format_type_name( $block_spec->name ) ) );

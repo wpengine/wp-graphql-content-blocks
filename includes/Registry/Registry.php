@@ -70,8 +70,8 @@ final class Registry {
 	public function init(): void {
 		$this->register_interface_types();
 		$this->register_scalar_types();
-		$this->register_block_types();
 		$this->register_support_block_types();
+		$this->register_block_types();
 	}
 
 	/**
@@ -140,8 +140,40 @@ final class Registry {
 		// Get the interfaces a block should implement based on the context a block is available to be accessed from.
 		$context_interfaces = $this->get_block_context_interfaces( $block_name );
 
-		// @todo: if blocks need to implement other interfaces (i.e. "BlockSupports" interfaces, that could be handled here as well)
-		return array_merge( array( 'EditorBlock' ), $context_interfaces );
+		// Get additional interfaces a block should implement.
+		$additional_interfaces = $this->get_block_additional_interfaces( $block_name );
+
+		return array_merge( array( 'EditorBlock' ), $context_interfaces, $additional_interfaces );
+	}
+
+	/**
+	 * Given the name of a Block, return interfaces the Block object should implement.
+	 *
+	 * @param string $block_name The name of the block to get the interfaces for.
+	 *
+	 * @return string[]
+	 */
+	public function get_block_additional_interfaces( string $block_name ): array {
+		$block_spec       = $this->block_type_registry->get_registered( $block_name );
+		$block_interfaces = array();
+		// NOTE: Using add_filter here creates a performance penalty.
+		$block_interfaces = Anchor::get_block_interfaces( $block_interfaces, $block_spec );
+		return $block_interfaces;
+	}
+
+	/**
+	 * Given the name of a Block, return interfaces the Block attributes object should implement.
+	 *
+	 * @param string $block_name The name of the block to get the interfaces for.
+	 *
+	 * @return string[]
+	 */
+	public function get_block_attributes_interfaces( string $block_name ): array {
+		$block_spec       = $this->block_type_registry->get_registered( $block_name );
+		$block_interfaces = array();
+		// NOTE: Using add_filter here creates a performance penalty.
+		$block_interfaces = Anchor::get_block_attributes_interfaces( $block_interfaces, $block_spec );
+		return $block_interfaces;
 	}
 
 	/**
