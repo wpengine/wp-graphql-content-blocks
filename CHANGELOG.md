@@ -1,5 +1,17 @@
 # WPGraphQL Content Blocks
 
+## 1.2.0
+
+### Minor Changes
+
+- a118662: Added new `wpgraphql_content_blocks_should_apply_post_type_editor_blocks_interfaces` filter to allow controlling whether ${PostType}EditorBlock interfaces should be applied.
+
+### Patch Changes
+
+- 2e7f2e8: Refactored `register_block_types` to remove usages of `register_graphql_interfaces_to_types` to improve performance.
+
+  Deprecated `Anchor::register_to_block` public static method.
+
 ## 1.1.3
 
 ### Patch Changes
