@@ -12,7 +12,6 @@ use WPGraphQL\ContentBlocks\Registry\Registry;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
-use WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
 use WPGraphQL\Utils\Utils;
 
 /**
