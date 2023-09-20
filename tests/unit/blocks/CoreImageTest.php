@@ -37,7 +37,7 @@ final class CoreImageTest extends PluginTestCase {
 		wp_delete_post( $this->post_id, true );
 	}
 
-	public function test_retrieve_core_image_medial_details() {
+	public function test_retrieve_core_image_media_details() {
 		$query  = '
 		  fragment CoreImageBlockFragment on CoreImage {
 			attributes {
