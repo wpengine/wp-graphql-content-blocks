@@ -38,7 +38,6 @@ final class CoreImageTest extends PluginTestCase {
 	}
 
 	public function test_retrieve_core_image_medial_details() {
-		$this->assertTrue(true);
 		$query  = '
 		  fragment CoreImageBlockFragment on CoreImage {
 			attributes {
