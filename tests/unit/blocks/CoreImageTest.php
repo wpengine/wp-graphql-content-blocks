@@ -5,10 +5,12 @@ namespace WPGraphQL\ContentBlocks\Unit;
 final class CoreImageTest extends PluginTestCase {
     public $instance;
 	public $post_id;
+	public $attachment_id;
     
     public function setUp(): void {
 		parent::setUp();
 		global $wpdb;
+		$this->attachment_id = $this->factory->attachment->create_upload_object( WP_TEST_DATA_DIR . '/images/test-image.jpg' );
 
 		$this->post_id = wp_insert_post(
 			array(
@@ -18,7 +20,7 @@ final class CoreImageTest extends PluginTestCase {
 					' ',
 					trim(
 						'
-                        <!-- wp:image {"width":500,"height":500,"sizeSlug":"full","linkDestination":"none"} -->
+                        <!-- wp:image {"width":500,"height":500,"sizeSlug":"full","linkDestination":"none", "id":' . $this->attachment_id . '} -->
                         <figure class="wp-block-image size-full is-resized"><img src="http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg" alt="" class="wp-image-1432" width="500" height="500"/></figure>
                         <!-- /wp:image -->
                         '
@@ -35,6 +37,38 @@ final class CoreImageTest extends PluginTestCase {
 		wp_delete_post( $this->post_id, true );
 	}
 
+	public function test_retrieve_core_image_media_details() {
+		$query  = '
+		  fragment CoreImageBlockFragment on CoreImage {
+			attributes {
+			  id
+			}
+			mediaDetails {
+			  height
+			  width
+			}
+		  }
+		  
+		  query GetPosts {
+			posts(first: 1) {
+			  nodes {
+				editorBlocks {
+				  ...CoreImageBlockFragment
+				}
+			  }
+			}
+		  }
+		';
+		$actual = graphql( array( 'query' => $query ) );
+		$node   = $actual['data']['posts']['nodes'][0];
+
+		$this->assertEquals( $node['editorBlocks'][0]['mediaDetails'], [
+			"width" => 50,
+			"height" => 50,
+		]);
+	}
+
+
     public function test_retrieve_core_image_attributes() {
 		$query  = '
 		fragment CoreColumnBlockFragment on CoreColumn {
@@ -45,6 +79,7 @@ final class CoreImageTest extends PluginTestCase {
 		  
 		  fragment CoreImageBlockFragment on CoreImage {
 			attributes {
+			  id
 			  width
 			  height
 			  alt
@@ -86,6 +121,7 @@ final class CoreImageTest extends PluginTestCase {
 			"width" => "500",
 			"height" => 500.0,
 			"alt" => "",
+			"id" => $this->attachment_id,
 			"src" => "http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg",
 			"style" => NULL,
 			"sizeSlug" => "full",
