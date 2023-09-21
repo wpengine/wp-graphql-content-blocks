@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,34 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 1.2.1 =
+
+### Patch Changes
+
+- 54affda: Adds mediaDetails field in CoreImage block:
+
+  ```graphql
+  {
+    posts {
+      nodes {
+        editorBlocks {
+          ... on CoreImage {
+            mediaDetails {
+              file
+              sizes {
+                name
+                fileSize
+                height
+                width
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
 = 1.2.0 =
 
 ### Minor Changes
@@ -43,11 +71,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 - db52dac: Rename `utilities` folder to `Utilities`
 - 748d846: Bug Fix. Boolean block attributes no longer always resolve as false.
-
-= 1.1.2 =
-
-### Patch Changes
-
-- 28fca4a: Bug Fix: CoreImage `width` attribute throws error.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
