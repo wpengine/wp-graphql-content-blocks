@@ -1,5 +1,33 @@
 # WPGraphQL Content Blocks
 
+## 1.2.1
+
+### Patch Changes
+
+- 54affda: Adds mediaDetails field in CoreImage block:
+
+  ```graphql
+  {
+    posts {
+      nodes {
+        editorBlocks {
+          ... on CoreImage {
+            mediaDetails {
+              file
+              sizes {
+                name
+                fileSize
+                height
+                width
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
 ## 1.2.0
 
 ### Minor Changes
