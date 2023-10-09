@@ -71,6 +71,11 @@ jobs:
       - name: Install Schema Inspector
         run: |
           npm install @graphql-inspector/config @graphql-inspector/cli graphql
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: schema.graphql
+          path: /tmp/schema.graphql
 
       - name: Run Schema Inspector
         run: |
