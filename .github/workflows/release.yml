@@ -1,16 +1,14 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: ["Test Plugin", "End-to-End Tests"]
-    branches: [main]
-    types:
-      - completed
+  release:
+    types: [published]
 
 jobs:
+  call-workflow-test-plugin:
+    uses: ./.github/workflows/test-plugin.yml
   release:
     name: Release
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
