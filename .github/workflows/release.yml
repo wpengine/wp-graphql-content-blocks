@@ -6,6 +6,8 @@ on:
       - main
 
 jobs:
+  call-workflow-test-plugin:
+    uses: ./.github/workflows/test-plugin.yml
   release:
     name: Release
     runs-on: ubuntu-latest
