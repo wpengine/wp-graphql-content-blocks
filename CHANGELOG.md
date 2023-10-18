@@ -5,7 +5,8 @@
 ### Major Changes
 
 - 7251fb0: Fix: use `use_block_editor_for_post_type` instead of `post_type_supports` when filtering the post types.
-  **BREAKING**: Potential schema changes on previously exposed blocks that do not support the block editor. Those blocks will no longer inherit the `editorBlocks` field.
+
+**BREAKING**: Potential schema changes for GraphQL Types representing a Post Type that does not use the Block Editor. Each GraphQL Type representing a Post Type that does not have block editor support previously would have had the `editorBlocks` field but that field will no longer exist on those Types.
 
 ## 1.2.1
 
