@@ -221,7 +221,7 @@ final class Registry {
 		// For each Post type
 		foreach ( $supported_post_types as $post_type ) {
 			// Normalize the post type name
-			$type_name = WPGraphQLHelpers::format_type_name( $post_type->name );
+			$type_name = Utils::format_type_name( $post_type->graphql_single_name );
 
 			// retrieve a block_editor_context for the current post type
 			$block_editor_context = WPHelpers::get_block_editor_context( $type_name, $post_id-- );
