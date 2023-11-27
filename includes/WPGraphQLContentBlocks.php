@@ -179,8 +179,7 @@ final class WPGraphQLContentBlocks {
 	 */
 	private function define( string $name, $value ): void {
 		if ( ! defined( $name ) ) {
-			// phpcs:ignore
-			define($name, $value);
+			define( $name, $value ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
 		}
 	}
 }
