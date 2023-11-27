@@ -49,12 +49,13 @@ final class EditorBlockInterface {
 					'editorBlocks' => [
 						'type'        => [
 							'list_of' => 'EditorBlock',
-						],
-						'args'        => [
-							'flat' => [
-								'type' => 'Boolean',
-							],
-						],
+						),
+						'args'        => array(
+							'flat' => array(
+								'description' => __( 'Returns the list of blocks as a flat list if true', 'wp-graphql-content-blocks' ),
+								'type'        => 'Boolean',
+							),
+						),
 						'description' => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $node, $args ) {
 							return ContentBlocksResolver::resolve_content_blocks( $node, $args );

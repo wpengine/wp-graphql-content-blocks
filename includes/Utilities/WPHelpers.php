@@ -33,11 +33,10 @@ final class WPHelpers {
 		if ( empty( $block_editor_post_types ) || ! is_array( $block_editor_post_types ) ) {
 			return $supported_post_types;
 		}
-
 		// Iterate over the post types
 		foreach ( $block_editor_post_types as $block_editor_post_type ) {
 			// If the post type doesn't support the editor, it's not block-editor enabled
-			if ( ! post_type_supports( $block_editor_post_type->name, 'editor' ) ) {
+			if ( ! use_block_editor_for_post_type( $block_editor_post_type->name ) ) {
 				continue;
 			}
 

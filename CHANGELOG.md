@@ -1,5 +1,84 @@
 # WPGraphQL Content Blocks
 
+## 2.0.0
+
+### Major Changes
+
+- 7251fb0: Fix: use `use_block_editor_for_post_type` instead of `post_type_supports` when filtering the post types.
+
+**BREAKING**: Potential schema changes for GraphQL Types representing a Post Type that does not use the Block Editor. Each GraphQL Type representing a Post Type that does not have block editor support previously would have had the `editorBlocks` field but that field will no longer exist on those Types.
+
+## 1.2.1
+
+### Patch Changes
+
+- 54affda: Adds mediaDetails field in CoreImage block:
+
+  ```graphql
+  {
+    posts {
+      nodes {
+        editorBlocks {
+          ... on CoreImage {
+            mediaDetails {
+              file
+              sizes {
+                name
+                fileSize
+                height
+                width
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
+## 1.2.0
+
+### Minor Changes
+
+- a118662: Added new `wpgraphql_content_blocks_should_apply_post_type_editor_blocks_interfaces` filter to allow controlling whether ${PostType}EditorBlock interfaces should be applied.
+
+### Patch Changes
+
+- 2e7f2e8: Refactored `register_block_types` to remove usages of `register_graphql_interfaces_to_types` to improve performance.
+
+  Deprecated `Anchor::register_to_block` public static method.
+
+## 1.1.3
+
+### Patch Changes
+
+- db52dac: Rename `utilities` folder to `Utilities`
+- 748d846: Bug Fix. Boolean block attributes no longer always resolve as false.
+
+## 1.1.2
+
+### Patch Changes
+
+- 28fca4a: Bug Fix: CoreImage `width` attribute throws error.
+
+## 1.1.1
+
+### Patch Changes
+
+- 6259405: Fix semver overrides to v7.5.2
+- b2ddbcb: Fix optionator (for word-wrap vln.) overrides to v0.9.3
+
+## 1.1.0
+
+### Minor Changes
+
+- cbcb430: Feat: Add CoreButton and CoreButtons block extra attributes.
+- 2e4ac46: Adds the `cssClassName` attribute to the `CoreList` block. This allows you to query for the proper class names that WordPress assigns to the Core List block.
+
+### Patch Changes
+
+- 135252e: Adds cssClassName attribute in CoreHeading.
+
 ## 1.0.0
 
 ### Major Changes

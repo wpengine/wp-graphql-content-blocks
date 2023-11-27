@@ -67,8 +67,8 @@ final class Registry {
 	public function init(): void {
 		$this->register_interface_types();
 		$this->register_scalar_types();
-		$this->register_block_types();
 		$this->register_support_block_types();
+		$this->register_block_types();
 	}
 
 	/**
@@ -106,6 +106,25 @@ final class Registry {
 			// Fetch the list of allowed blocks for the current post type
 			$supported_blocks_for_post_type_context = get_allowed_block_types( $block_editor_context );
 
+			/**
+			 * Filter before applying per-post_type Interfaces to blocks. This allows 3rd parties to control
+			 * whether the interface(s) should or should not be applied based on custom logic.
+			 *
+			 * @param bool                     $should                                 Whether to apply the ${PostType}EditorBlock Interface. If the filter returns false, the default
+			 *                                                                         logic will not execute and the ${PostType}EditorBlock will not be applied.
+			 * @param string                   $block_name                             The name of the block Interfaces will be applied to
+			 * @param \WP_Block_Editor_Context $block_editor_context                   The context of the Block Editor
+			 * @param \WP_Post_Type            $post_type                              The Post Type an Interface might be applied to the block for
+			 * @param array                    $all_registered_blocks                  Array of all registered blocks
+			 * @param array                    $supported_blocks_for_post_type_context Array of all supported blocks for the context
+			 * @param array                    $block_and_graphql_enabled_post_types   Array of Post Types that have block editor and GraphQL support
+			 */
+			$should_apply_post_type_editor_block_interface = apply_filters( 'wpgraphql_content_blocks_should_apply_post_type_editor_blocks_interfaces', true, $block_name, $block_editor_context, $post_type, $all_registered_blocks, $supported_blocks_for_post_type_context, $block_and_graphql_enabled_post_types );
+
+			if ( true !== $should_apply_post_type_editor_block_interface ) {
+				continue;
+			}
+
 			// If all blocks are supported in this context, we need a list of all the blocks
 			if ( true === $supported_blocks_for_post_type_context ) {
 				$supported_blocks_for_post_type_context = $all_registered_blocks;
@@ -137,8 +156,40 @@ final class Registry {
 		// Get the interfaces a block should implement based on the context a block is available to be accessed from.
 		$context_interfaces = $this->get_block_context_interfaces( $block_name );
 
-		// @todo: if blocks need to implement other interfaces (i.e. "BlockSupports" interfaces, that could be handled here as well)
-		return array_merge( [ 'EditorBlock' ], $context_interfaces );
+		// Get additional interfaces a block should implement.
+		$additional_interfaces = $this->get_block_additional_interfaces( $block_name );
+
+		return array_merge( array( 'EditorBlock' ), $context_interfaces, $additional_interfaces );
+	}
+
+	/**
+	 * Given the name of a Block, return interfaces the Block object should implement.
+	 *
+	 * @param string $block_name The name of the block to get the interfaces for.
+	 *
+	 * @return string[]
+	 */
+	public function get_block_additional_interfaces( string $block_name ): array {
+		$block_spec       = $this->block_type_registry->get_registered( $block_name );
+		$block_interfaces = array();
+		// NOTE: Using add_filter here creates a performance penalty.
+		$block_interfaces = Anchor::get_block_interfaces( $block_interfaces, $block_spec );
+		return $block_interfaces;
+	}
+
+	/**
+	 * Given the name of a Block, return interfaces the Block attributes object should implement.
+	 *
+	 * @param string $block_name The name of the block to get the interfaces for.
+	 *
+	 * @return string[]
+	 */
+	public function get_block_attributes_interfaces( string $block_name ): array {
+		$block_spec       = $this->block_type_registry->get_registered( $block_name );
+		$block_interfaces = array();
+		// NOTE: Using add_filter here creates a performance penalty.
+		$block_interfaces = Anchor::get_block_attributes_interfaces( $block_interfaces, $block_spec );
+		return $block_interfaces;
 	}
 
 	/**

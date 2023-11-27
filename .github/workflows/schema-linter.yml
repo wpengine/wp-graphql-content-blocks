@@ -1,0 +1,83 @@
+name: Schema Linter
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    name: Lint WPGraphQL Schema
+    if: contains(github.event.pull_request.labels.*.name, 'safe to test ✔') || github.repository == github.event.repository.full_name || github.event_name == 'push'
+
+    services:
+      mariadb:
+        image: mariadb:10.8.2
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        # Ensure docker waits for mariadb to start
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Cancel previous runs of this workflow (pull requests only)
+        if: ${{ github.event_name == 'pull_request_target' }}
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup WordPress
+        uses: ./.github/actions/setup-wordpress
+
+      - name: Setup GraphQL Schema Linter
+        run: npm install -g graphql-schema-linter@^3.0 graphql@^16
+
+      - name: Generate the Static Schema
+        run: |
+          cd /tmp/wordpress/
+          # Output: /tmp/schema.graphql
+          wp graphql generate-static-schema
+
+      - name: Lint the Static Schema
+        run: |
+          graphql-schema-linter --except=relay-connection-types-spec,relay-page-info-spec /tmp/schema.graphql
+
+      - name: Display ignored linting errors
+        run: |
+          graphql-schema-linter /tmp/schema.graphql || true
+
+      - name: Get Latest tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+
+      - name: Test Schema for breaking changes
+        run: |
+          echo "Previous tagged schema ${{ steps.get-latest-tag.outputs.tag }}"
+
+      - name: Get Previous Released Schema
+        run: curl 'https://github.com/wpengine/wp-graphql-content-blocks/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql' -L  --output /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
+
+      # https://github.com/marketplace/actions/graphql-inspector
+      - name: Install Schema Inspector
+        run: |
+          npm install @graphql-inspector/config @graphql-inspector/cli graphql
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: schema.graphql
+          path: /tmp/schema.graphql
+
+      - name: Run Schema Inspector
+        run: |
+          # This schema and previous release schema
+          node_modules/.bin/graphql-inspector diff /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql /tmp/schema.graphql

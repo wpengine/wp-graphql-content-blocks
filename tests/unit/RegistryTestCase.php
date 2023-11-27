@@ -65,6 +65,42 @@ final class RegistryTestCase extends PluginTestCase {
 	}
 
 	/**
+	 * This test ensures that when disabling the block editor for post types then
+	 * no additional interfaces are included in them.
+	 */
+	public function test_no_additional_interfaces_on_block_editor_disabled_block_types() {
+		add_filter('use_block_editor_for_post_type', '__return_false');
+		$query = '
+		query GetType($name:String!) {
+			__type(name: $name) {
+				interfaces {
+					name
+				}
+			}
+		}
+		';
+
+		$this->instance->init();
+
+		// Verify the response contains what we put in cache
+		$response           = graphql(
+			array(
+				'query'     => $query,
+				'variables' => array(
+					'name' => 'Post',
+				),
+			)
+		);
+		$not_included = array(
+			'name'        => 'NodeWithEditorBlocks',
+		);
+		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
+		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
+		$this->assertNotContains( $not_included, $response['data']['__type']['interfaces'] );
+		remove_filter('use_block_editor_for_post_type', '__return_false');
+	}
+
+	/**
 	 * This test ensures that the `register_interface_types()` method
 	 * works as expected when the get_allowed_block_types is used
 	 */

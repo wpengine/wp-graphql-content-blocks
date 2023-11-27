@@ -1,6 +1,7 @@
 name: Test Plugin
 
 on:
+  workflow_call:
   pull_request:
     paths-ignore:
       - '**/*.md'
@@ -8,13 +9,33 @@ on:
 jobs:
   test_plugin:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ '8.2', '7.4' ]
+        wordpress: [ '6.3', '6.2', '5.9' ]
+        exclude:
+        - php: 8.2
+          wordpress: 5.9
+        - php: 7.4
+          wordpress: 6.2
+        - php: 7.4
+          wordpress: 6.3
+      fail-fast: false
+    name: WordPress ${{ matrix.wordpress }}, PHP ${{ matrix.php }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Create Docker Containers
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+          WP_VERSION: ${{ matrix.wordpress }}
         working-directory: ./
-        run: docker-compose up -d
+        run: |
+          docker-compose build \
+            --build-arg WP_VERSION=${{ matrix.wordpress }} \
+            --build-arg PHP_VERSION=${{ matrix.php }}
+          docker-compose up -d
 
       - name: Wait for db
         run: |
