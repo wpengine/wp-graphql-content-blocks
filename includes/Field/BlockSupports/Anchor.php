@@ -70,7 +70,6 @@ class Anchor {
 	 * Registers an Anchor field on a block if it supports it.
 	 *
 	 * @param \WP_Block_Type $block_spec The block type to register the anchor field against.
-	 * @return void
 	 *
 	 * @deprecated 1.1.4 No longer used by internal code and not recommended.
 	 */

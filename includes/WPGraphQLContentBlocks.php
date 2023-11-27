@@ -13,11 +13,11 @@
  */
 final class WPGraphQLContentBlocks {
 	/**
-	 * The one true WPGraphQLContentBlocks
+	 * Stores the instance of the WPGraphQLContentBlocks class 
 	 *
-	 * @var ?self
+	 * @var ?\WPGraphQLContentBlocks The one true WPGraphQL
 	 */
-	private static ?self $instance;
+	private static $instance;
 
 	/**
 	 * The instance of the WPGraphQLContentBlocks object
@@ -31,7 +31,6 @@ final class WPGraphQLContentBlocks {
 			self::$instance->setup_constants();
 			if ( self::$instance->includes() ) {
 				self::$instance->actions();
-				self::$instance->filters();
 			}
 		}
 
@@ -159,13 +158,6 @@ final class WPGraphQLContentBlocks {
 	public function actions(): void {
 		add_action( 'graphql_register_types', [ $this, 'init_block_editor_registry' ] );
 	}
-
-	/**
-	 * Load required filters.
-	 *
-	 * @since 0.0.1
-	 */
-	public function filters(): void {     }
 
 	/**
 	 * Initialize the Block Editor Registry

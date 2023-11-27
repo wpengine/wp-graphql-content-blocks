@@ -159,7 +159,7 @@ final class Registry {
 		// Get additional interfaces a block should implement.
 		$additional_interfaces = $this->get_block_additional_interfaces( $block_name );
 
-		return array_merge( array( 'EditorBlock' ), $context_interfaces, $additional_interfaces );
+		return array_merge( [ 'EditorBlock' ], $context_interfaces, $additional_interfaces );
 	}
 
 	/**
@@ -171,7 +171,7 @@ final class Registry {
 	 */
 	public function get_block_additional_interfaces( string $block_name ): array {
 		$block_spec       = $this->block_type_registry->get_registered( $block_name );
-		$block_interfaces = array();
+		$block_interfaces = [];
 		// NOTE: Using add_filter here creates a performance penalty.
 		$block_interfaces = Anchor::get_block_interfaces( $block_interfaces, $block_spec );
 		return $block_interfaces;
@@ -186,7 +186,7 @@ final class Registry {
 	 */
 	public function get_block_attributes_interfaces( string $block_name ): array {
 		$block_spec       = $this->block_type_registry->get_registered( $block_name );
-		$block_interfaces = array();
+		$block_interfaces = [];
 		// NOTE: Using add_filter here creates a performance penalty.
 		$block_interfaces = Anchor::get_block_attributes_interfaces( $block_interfaces, $block_spec );
 		return $block_interfaces;
