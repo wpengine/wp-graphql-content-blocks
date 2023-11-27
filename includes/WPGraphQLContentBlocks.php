@@ -111,7 +111,7 @@ final class WPGraphQLContentBlocks {
 							return;
 						}
 
-						echo sprintf(
+						printf(
 							'<div class="notice notice-error">' .
 								'<p>%s</p>' .
 							'</div>',
@@ -134,7 +134,7 @@ final class WPGraphQLContentBlocks {
 							return;
 						}
 
-						echo sprintf(
+						printf(
 							'<div class="notice notice-error is-dismissible">' .
 								'<p>%s</p>' .
 							'</div>',
