@@ -7,8 +7,8 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
-use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Registry\Registry;
+use WP_Block_Type;
 
 /**
  * Class CoreImage
@@ -19,21 +19,21 @@ class CoreImage extends Block {
 	 *
 	 * @var array|null
 	 */
-	protected ?array $additional_block_attributes = array(
-		'cssClassName' => array(
+	protected ?array $additional_block_attributes = [
+		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'figure',
 			'source'    => 'attribute',
 			'attribute' => 'class',
-		),
-		'src'          => array(
+		],
+		'src'          => [
 			'type'      => 'string',
 			'selector'  => 'img',
 			'source'    => 'attribute',
 			'attribute' => 'src',
-		),
-		'width'        => array( 'type' => 'string' ),
-	);
+		],
+		'width'        => [ 'type' => 'string' ],
+	];
 
 	/**
 	 * Block constructor.
@@ -43,19 +43,20 @@ class CoreImage extends Block {
 	 */
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		parent::__construct( $block, $block_registry );
+
 		register_graphql_field(
 			$this->type_name,
 			'mediaDetails',
-			array(
+			[
 				'type'        => 'MediaDetails',
 				'description' => sprintf(
 					// translators: %s is the block type name.
 					__( 'Media Details of the %s Block Type', 'wp-graphql-content-blocks' ),
 					$this->type_name
 				),
-				'resolve'     => function ( $block ) {
+				'resolve'     => static function ( $block ) {
 					$attrs = $block['attrs'];
-					$id = $attrs['id'] ?? null;
+					$id    = $attrs['id'] ?? null;
 					if ( $id ) {
 						$media_details = wp_get_attachment_metadata( $id );
 						if ( ! empty( $media_details ) ) {
@@ -66,7 +67,7 @@ class CoreImage extends Block {
 					}
 					return null;
 				},
-			)
+			]
 		);
 	}
 }

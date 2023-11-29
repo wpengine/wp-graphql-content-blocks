@@ -7,12 +7,12 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
-use WP_Block_Type;
 use WPGraphQL\ContentBlocks\Registry\Registry;
+use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
-use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\Utils\Utils;
+use WP_Block_Type;
 
 /**
  * Class Block
@@ -92,7 +92,7 @@ class Block {
 			$block_attribute_type_name = $this->type_name . 'Attributes';
 			register_graphql_object_type(
 				$block_attribute_type_name,
-				array(
+				[
 					'description' => sprintf(
 						// translators: %s is the block type name.
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
@@ -100,23 +100,23 @@ class Block {
 					),
 					'interfaces'  => $this->get_block_attributes_interfaces(),
 					'fields'      => $block_attribute_fields,
-				)
+				]
 			);
 
 			register_graphql_field(
 				$this->type_name,
 				'attributes',
-				array(
+				[
 					'type'        => $block_attribute_type_name,
 					'description' => sprintf(
 						// translators: %s is the block type name.
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 						$this->type_name
 					),
-					'resolve'     => function ( $block ) {
+					'resolve'     => static function ( $block ) {
 						return $block;
 					},
-				)
+				]
 			);
 		}//end if
 	}
@@ -127,7 +127,7 @@ class Block {
 	 * @param ?array $block_attributes The block attributes.
 	 */
 	private function get_block_attribute_fields( ?array $block_attributes ): array {
-		$block_attribute_fields = array();
+		$block_attribute_fields = [];
 
 		// Bail early if no attributes are defined.
 		if ( null === $block_attributes ) {
@@ -166,7 +166,7 @@ class Block {
 			}
 
 			// Create the field config.
-			$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = array(
+			$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = [
 				'type'        => $graphql_type,
 				'description' => sprintf(
 					// translators: %1$s is the attribute name, %2$s is the block name.
@@ -177,7 +177,7 @@ class Block {
 				'resolve'     => function ( $block ) use ( $attribute_name, $attribute_config ) {
 					return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
 				},
-			);
+			];
 		}//end foreach
 
 		return $block_attribute_fields;
@@ -203,8 +203,6 @@ class Block {
 
 	/**
 	 * Register the Type for the block
-	 *
-	 * @return void
 	 */
 	private function register_type(): void {
 		/**
@@ -212,20 +210,20 @@ class Block {
 		 */
 		register_graphql_object_type(
 			$this->type_name,
-			array(
+			[
 				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
 				'interfaces'      => $this->get_block_interfaces(),
 				'eagerlyLoadType' => true,
-				'fields'          => array(
-					'name' => array(
+				'fields'          => [
+					'name' => [
 						'type'        => 'String',
 						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
 							return $this->resolve( $block );
 						},
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 

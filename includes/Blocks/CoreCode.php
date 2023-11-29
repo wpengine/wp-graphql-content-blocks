@@ -16,12 +16,12 @@ class CoreCode extends Block {
 	 *
 	 * @var array|null
 	 */
-	protected ?array $additional_block_attributes = array(
-		'cssClassName' => array(
+	protected ?array $additional_block_attributes = [
+		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'pre',
 			'source'    => 'attribute',
 			'attribute' => 'class',
-		),
-	);
+		],
+	];
 }

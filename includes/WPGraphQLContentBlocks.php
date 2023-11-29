@@ -12,27 +12,25 @@
  * Main WPGraphQLContentBlocks Class.
  */
 final class WPGraphQLContentBlocks {
-
 	/**
-	 * The one true WPGraphQLContentBlocks
+	 * Stores the instance of the WPGraphQLContentBlocks class 
 	 *
-	 * @var ?self
+	 * @var ?\WPGraphQLContentBlocks The one true WPGraphQL
 	 */
-	private static ?WPGraphQLContentBlocks $instance;
+	private static $instance;
 
 	/**
 	 * The instance of the WPGraphQLContentBlocks object
 	 *
-	 * @return object|WPGraphQLContentBlocks
+	 * @return object|\WPGraphQLContentBlocks
 	 * @since  0.0.1
 	 */
 	public static function instance() {
-		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof WPGraphQLContentBlocks ) ) {
-			self::$instance = new WPGraphQLContentBlocks();
+		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof self ) ) {
+			self::$instance = new self();
 			self::$instance->setup_constants();
 			if ( self::$instance->includes() ) {
 				self::$instance->actions();
-				self::$instance->filters();
 			}
 		}
 
@@ -70,7 +68,6 @@ final class WPGraphQLContentBlocks {
 	 * Setup plugin constants.
 	 *
 	 * @since  0.0.1
-	 * @return void
 	 */
 	private function setup_constants(): void {
 
@@ -94,7 +91,6 @@ final class WPGraphQLContentBlocks {
 	 * Uses composer's autoload
 	 *
 	 * @since  0.0.1
-	 * @return bool
 	 */
 	private function includes(): bool {
 		/**
@@ -110,7 +106,7 @@ final class WPGraphQLContentBlocks {
 			} else {
 				add_action(
 					'admin_notices',
-					function () {
+					static function () {
 						if ( ! current_user_can( 'manage_options' ) ) {
 							return;
 						}
@@ -133,7 +129,7 @@ final class WPGraphQLContentBlocks {
 			if ( ! class_exists( 'WPGraphQL' ) ) {
 				add_action(
 					'admin_notices',
-					function () {
+					static function () {
 						if ( ! current_user_can( 'manage_options' ) ) {
 							return;
 						}
@@ -160,15 +156,8 @@ final class WPGraphQLContentBlocks {
 	 * @since 0.0.1
 	 */
 	public function actions(): void {
-		add_action( 'graphql_register_types', array( $this, 'init_block_editor_registry' ) );
+		add_action( 'graphql_register_types', [ $this, 'init_block_editor_registry' ] );
 	}
-
-	/**
-	 * Load required filters.
-	 *
-	 * @since 0.0.1
-	 */
-	public function filters(): void {     }
 
 	/**
 	 * Initialize the Block Editor Registry

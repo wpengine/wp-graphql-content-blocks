@@ -16,12 +16,12 @@ class CoreQuote extends Block {
 	 *
 	 * @var array|null
 	 */
-	protected ?array $additional_block_attributes = array(
-		'cssClassName' => array(
+	protected ?array $additional_block_attributes = [
+		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'blockquote',
 			'source'    => 'attribute',
 			'attribute' => 'class',
-		),
-	);
+		],
+	];
 }

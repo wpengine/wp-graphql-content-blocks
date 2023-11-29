@@ -24,16 +24,14 @@ final class DOMHelpers {
 	 * @return string|null extracted attribute
 	 */
 	public static function parseAttribute( $html, $selector, $attribute, $default_value = null ): ?string {
-		$value = null;
-		$doc   = new Document();
+		$doc = new Document();
 		$doc->loadHTML( $html );
 		if ( '*' === $selector ) {
 			$selector = '*[' . $attribute . ']';
 		}
 		$node          = $doc->find( $selector );
 		$default_value = isset( $default_value ) ? $default_value : null;
-		$value         = ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default_value;
-		return $value;
+		return ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default_value;
 	}
 
 	/**
