@@ -99,7 +99,7 @@ final class ContentBlocksResolver {
 		);
 
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
-		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
 		}
 

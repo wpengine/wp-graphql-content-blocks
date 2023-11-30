@@ -111,7 +111,7 @@ final class WPGraphQLContentBlocks {
 							return;
 						}
 
-						echo sprintf(
+						printf(
 							'<div class="notice notice-error">' .
 								'<p>%s</p>' .
 							'</div>',
@@ -134,7 +134,7 @@ final class WPGraphQLContentBlocks {
 							return;
 						}
 
-						echo sprintf(
+						printf(
 							'<div class="notice notice-error is-dismissible">' .
 								'<p>%s</p>' .
 							'</div>',
@@ -179,8 +179,7 @@ final class WPGraphQLContentBlocks {
 	 */
 	private function define( string $name, $value ): void {
 		if ( ! defined( $name ) ) {
-			// phpcs:ignore
-			define($name, $value);
+			define( $name, $value ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
 		}
 	}
 }
