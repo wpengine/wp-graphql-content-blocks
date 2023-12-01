@@ -49,6 +49,11 @@
 		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
 		<!-- This should be excluded upstream in the ruleset-->
 		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
+		<!-- These maybe should be added back later -->
+		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification" />
+		<exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingTraversableTypeHintSpecification" />
+		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingTraversableTypeHintSpecification" />
+		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint" />
 	</rule>
 
 	<!-- Individual rule configuration -->
@@ -63,19 +68,6 @@
 				<element value="WPGraphQLContentBlocks" />
 			</property>
 		</properties>
-	</rule>
-
-	<rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
-		<exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification" />
-	</rule>
-
-	<rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
-		<exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingTraversableTypeHintSpecification" />
-	</rule>
-
-	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
-		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingTraversableTypeHintSpecification" />
-		<exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint" />
 	</rule>
 
 	<rule ref="WordPress.WP.I18n">
