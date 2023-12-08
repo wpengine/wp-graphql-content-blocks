@@ -33,7 +33,7 @@
     "@wordpress/env": "^5.6.0",
     "@wordpress/jest-console": "^6.4.0",
     "@wordpress/jest-puppeteer-axe": "^5.4.0",
-    "@wordpress/scripts": "^24.6.0",
+    "@wordpress/scripts": "^26.18.0",
     "expect-puppeteer": "^6.1.1",
     "puppeteer-testing-library": "^0.6.0",
     "rimraf": "^4.4.0"
