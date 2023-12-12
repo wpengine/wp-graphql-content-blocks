@@ -27,7 +27,7 @@ This represents a list of available blocks for that content type:
   posts {
     nodes {
       # editorBlocks field represents array of Block data
-      editorBlocks {
+      editorBlocks(flat: false) {
         # fields from the interface
         renderedHtml
         __typename
@@ -58,7 +58,7 @@ For example, to use `CoreParagraph` attributes you need to use the following que
 {
   posts {
     nodes {
-      editorBlocks {
+      editorBlocks(flat: false) {
         __typename
         name
         ... on CoreParagraph {
