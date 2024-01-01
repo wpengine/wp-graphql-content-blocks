@@ -197,6 +197,7 @@ class Block {
 
 		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
 			$graphql_type = self::get_attribute_type( $attribute_name, $attribute_config, $prefix );
+
 			if ( empty( $graphql_type ) ) {
 				continue;
 			}
@@ -214,6 +215,7 @@ class Block {
 						$attribute_name => $attribute_config,
 					];
 					$result = $this->resolve_block_attributes_recursive( $block['attrs'], wp_unslash( render_block( $block ) ), $config );
+					
 					return $result[ $attribute_name ];
 				},
 			];
