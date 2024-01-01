@@ -84,7 +84,7 @@ final class ContentBlocksResolver {
 			ARRAY_FILTER_USE_BOTH
 		);
 
-		// 1st Level assigning of unique id's and missing blockNames
+		// 2nd Level assigning of unique id's and missing blockNames
 		$parsed_blocks = array_map(
 			static function ( $parsed_block ) {
 				$parsed_block['clientId'] = uniqid();

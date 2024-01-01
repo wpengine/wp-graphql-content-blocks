@@ -81,13 +81,14 @@ class Block {
 	 * Registers the block attributes GraphQL type and adds it as a field on the Block.
 	 */
 	private function register_block_attributes_as_fields(): void {
+		// Grab any additional block attributes attached into the class itself
 		if ( isset( $this->additional_block_attributes ) ) {
-			$block_attributes       = ! empty( $this->block_attributes ) ? array_merge( $this->block_attributes, $this->additional_block_attributes ) : $this->additional_block_attributes;
-			$block_attribute_fields = $this->get_block_attribute_fields( $block_attributes );
+			$block_attributes = ! empty( $this->block_attributes ) ? array_merge( $this->block_attributes, $this->additional_block_attributes ) : $this->additional_block_attributes;
 		} else {
-			$block_attribute_fields = $this->get_block_attribute_fields( $this->block_attributes );
+			$block_attributes = $this->block_attributes;
 		}
-
+		$block_attribute_fields = $this->get_block_attribute_fields( $block_attributes, $this->type_name . 'Attributes' );
+		// For each attribute, register a new object type and attach it to the block type as a field
 		if ( ! empty( $block_attribute_fields ) ) {
 			$block_attribute_type_name = $this->type_name . 'Attributes';
 			register_graphql_object_type(
@@ -122,65 +123,179 @@ class Block {
 	}
 
 	/**
+	 * Returns the type of the block attribute
+	 * 
+	 * @param string $name The block name
+	 * @param object $attribute The block attribute config
+	 * @param string $prefix Current prefix string to use for the get_query_type
+	 */
+	private function get_attribute_type( $name, $attribute, $prefix ) {
+		$type = null;
+
+		if ( isset( $attribute['type'] ) ) {
+			switch ( $attribute['type'] ) {
+				case 'string':
+					$type = 'String';
+					break;
+				case 'boolean':
+					$type = 'Boolean';
+					break;
+				case 'number':
+					$type = 'Float';
+					break;
+				case 'integer':
+					$type = 'Int';
+					break;
+				case 'array':
+					if ( isset( $attribute['query'] ) ) {
+						$type = [ 'list_of' => $this->get_query_type( $name, $attribute['query'], $prefix ) ];
+					} elseif ( isset( $attribute['items'] ) ) {
+						$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
+
+						if ( null !== $of_type ) {
+							$type = [ 'list_of' => $of_type ];
+						} else {
+							$type = Scalar::get_block_attributes_array_type_name();
+						}
+					}
+					else {
+						$type = Scalar::get_block_attributes_array_type_name();
+					}
+					break;
+				case 'object':
+					$type = Scalar::get_block_attributes_object_type_name();
+					break;
+			}
+		} elseif ( isset( $attribute['source'] ) ) {
+			$type = 'String';
+		}
+
+		if ( null !== $type ) {
+			$default_value = $attribute['default'] ?? null;
+
+			if ( isset( $default_value ) ) {
+				$type = [ 'non_null' => $type ];
+			}
+		}
+
+		return $type;
+	}
+
+	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
 	 * @param ?array $block_attributes The block attributes.
+	 * @param string $prefix The current prefix string to use for the get_query_type
 	 */
-	private function get_block_attribute_fields( ?array $block_attributes ): array {
-		$block_attribute_fields = [];
+	private function get_block_attribute_fields( ?array $block_attributes, $prefix = null ): array {
+		$fields = [];
 
 		// Bail early if no attributes are defined.
 		if ( null === $block_attributes ) {
-			return $block_attribute_fields;
+			return $fields;
 		}
 
 		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
-			$graphql_type = null;
-
-			if ( ! isset( $attribute_config['type'] ) ) {
-				return $block_attribute_fields;
-			}
-
-			switch ( $attribute_config['type'] ) {
-				case 'string':
-					$graphql_type = 'String';
-					break;
-				case 'number':
-					$graphql_type = 'Float';
-					break;
-				case 'integer':
-					$graphql_type = 'Int';
-					break;
-				case 'boolean':
-					$graphql_type = 'Boolean';
-					break;
-				case 'array':
-				case 'object':
-					$graphql_type = Scalar::get_block_attributes_object_type_name();
-					break;
-			}
-
-			// Skip if there's no valid type.
+			$graphql_type = self::get_attribute_type( $attribute_name, $attribute_config, $prefix );
 			if ( empty( $graphql_type ) ) {
 				continue;
 			}
-
 			// Create the field config.
-			$block_attribute_fields[ Utils::format_field_name( $attribute_name ) ] = [
+			$fields[ Utils::format_field_name( $attribute_name ) ] = [
 				'type'        => $graphql_type,
 				'description' => sprintf(
 					// translators: %1$s is the attribute name, %2$s is the block name.
-					__( 'The "%1$s" field on the "%2$s" block', 'wp-graphql-content-blocks' ),
+					__( 'The "%1$s" field on the "%2$s" block or block attributes', 'wp-graphql-content-blocks' ),
 					$attribute_name,
-					$this->type_name
+					$prefix
 				),
 				'resolve'     => function ( $block ) use ( $attribute_name, $attribute_config ) {
-					return $this->resolve_block_attributes( $block, $attribute_name, $attribute_config );
+					$config = [
+						$attribute_name => $attribute_config,
+					];
+					$result = $this->resolve_block_attributes_recursive( $block['attrs'], wp_unslash( render_block( $block ) ), $config );
+					return $result[ $attribute_name ];
 				},
 			];
 		}//end foreach
 
-		return $block_attribute_fields;
+		return $fields;
+	}
+	
+	/**
+	 * Returns the type of the block query attribute
+	 * 
+	 * @param string $name The block name
+	 * @param array  $query The block query config
+	 * @param string $prefix The current prefix string to use for registering the new query attribute type
+	 */
+	private function get_query_type( $name, $query, $prefix ) {
+		$type = $prefix . ucfirst( $name );
+
+		$fields = $this->create_attributes_fields( $query, $type );
+	
+		register_graphql_object_type(
+			$type,
+			[
+				'fields'      => $fields,
+				'description' => sprintf(
+					// translators: %1$s is the attribute name, %2$s is the block attributes field.
+					__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
+					$type,
+					$prefix
+				),
+			]
+		);
+
+		return $type;
+	}
+
+	/**
+	 * Creates the new attribute fields for query types
+	 * 
+	 * @param array  $attributes The query attributes config
+	 * @param string $prefix The current prefix string to use for registering the new query attribute type
+	 */
+	private function create_attributes_fields( $attributes, $prefix ) {
+		$fields = [];
+		foreach ( $attributes as $name => $attribute ) {
+			$type = $this->get_attribute_type( $name, $attribute, $prefix );
+
+			if ( isset( $type ) ) {
+				$default_value = $attribute['default'] ?? null;
+
+				$fields[ Utils::format_field_name( $name ) ] = [
+					'type'    => $type,
+					'resolve' => function ( $attributes ) use ( $name, $default_value ) {
+						$value = $attributes[ $name ] ?? $default_value;
+						return $this->normalize_attribute_value( $value, $attributes['__type'][ $name ]['type'] );
+					},
+				];
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Normalizes the value of the attribute
+	 * 
+	 * @param array|string $value The value
+	 * @param string       $type The type of the value
+	 */
+	private function normalize_attribute_value( $value, $type ) {
+		switch ( $type ) {
+			case 'string':
+				return (string) $value;
+			case 'number':
+				return (float) $value;
+			case 'boolean':
+				return (bool) $value;
+			case 'integer':
+				return (int) $value;
+			default:
+				return $value;
+		}
 	}
 
 	/**
@@ -202,7 +317,7 @@ class Block {
 	}
 
 	/**
-	 * Register the Type for the block
+	 * Register the Type for the block. This happens after all other object types are already registered.
 	 */
 	private function register_type(): void {
 		/**
@@ -237,72 +352,91 @@ class Block {
 	}
 
 	/**
-	 * Returns the necessary block data to resolve the block attributes.
-	 *
-	 * @param array  $block            The block data passed to the resolver.
-	 * @param string $attribute_name   The name of the attribute to resolve.
-	 * @param array  $attribute_config The config for the attribute.
+	 * Resolved the value of the block attributes based on the specified config
+	 * 
+	 * @param array  $attributes The block current attributes value
+	 * @param string $html The block rendered html
+	 * @param array  $config The block current attribute configuration
 	 */
-	private function resolve_block_attributes( $block, $attribute_name, $attribute_config ) {
-		// Get default value.
-		$default = isset( $attribute_config['default'] ) ? $attribute_config['default'] : null;
-		// Case when only source defined: Classic Blocks
-		if ( isset( $attribute_config['source'] ) && ! isset( $attribute_config['selector'] ) ) {
-			$rendered_block = wp_unslash( render_block( $block ) );
-			$value          = null;
-			if ( empty( $rendered_block ) ) {
-				return $value;
-			}
-			switch ( $attribute_config['source'] ) {
+	private function resolve_block_attributes_recursive( $attributes, $html, $config ) {
+		$result = [];
+		foreach ( $config as $key => $value ) {
+			// Get default value.
+			$default = isset( $value['default'] ) ? $value['default'] : null;
+			$source  = $value['source'] ?? null;
+			switch ( $source ) {
 				case 'html':
-					$value = $rendered_block;
-					break;
-			}
-			return $value;
-		}
-		// Case when both selector and source are defined
-		if ( isset( $attribute_config['selector'], $attribute_config['source'] ) ) {
-			$rendered_block = wp_unslash( render_block( $block ) );
-			$value          = null;
-			if ( empty( $rendered_block ) ) {
-				return $value;
-			}
-
-			switch ( $attribute_config['source'] ) {
-				case 'attribute':
-					$value = DOMHelpers::parseAttribute( $rendered_block, $attribute_config['selector'], $attribute_config['attribute'], $default );
-					break;
-				case 'html':
-					$value = DOMHelpers::parseHTML( $rendered_block, $attribute_config['selector'], $default );
-
-					if ( isset( $attribute_config['multiline'] ) && ! empty( $value ) ) {
-						$value = DOMHelpers::getElementsFromHTML( $value, $attribute_config['multiline'] );
+					if ( ! isset( $value['selector'] ) ) {
+						$result[ $key ] = $this->parse_single_source( $html, $source );
+					} else {
+						$result[ $key ] = DOMHelpers::parseHTML( $html, $value['selector'] );
+	
+						if ( isset( $value['multiline'] ) && ! empty( $result[ $key ] ) ) {
+							$result[ $key ] = DOMHelpers::getElementsFromHTML( $result[ $key ], $value['multiline'] );
+						}
 					}
-
+					break;
+				case 'attribute':
+					$result[ $key ] = DOMHelpers::parseAttribute( $html, $value['selector'], $value['attribute'], $value );
 					break;
 				case 'text':
-					$value = DOMHelpers::getTextFromSelector( $rendered_block, $attribute_config['selector'], $default );
-
+					$result[ $key ] = DOMHelpers::parseText( $html, $value['selector'] );
 					break;
-			}//end switch
-			// Post processing of return value based on configured type
-			switch ( $attribute_config['type'] ) {
-				case 'integer':
-					$value = intval( $value );
-					break;
-				case 'boolean':
-					// If the value is empty or false return
-					if ( is_null( $value ) || false === $value ) {
-						break;
+				case 'query':
+					$temp = [];
+					foreach ( DOMHelpers::findNodes( $html, $value['selector'] ) as $source_node ) {
+						foreach ( $value['query'] as $q_key => $q_value ) {
+							$temp_config    = [
+								$q_key => $q_value,
+							];
+							$res            = $this->resolve_block_attributes_recursive( $attributes, $source_node->html(), $temp_config );
+							$temp[ $q_key ] = $res[ $q_key ];
+						}
+						$result[ $key ][] = $temp;
 					}
-					// Otherwise it's truthy
-					$value = true;
 					break;
 			}
+			// Post processing of return value based on configured type
+			switch ( $value['type'] ) {
+				case 'integer':
+					$result[ $key ] = intval( $result[ $key ] );
+					break;
+				case 'boolean':
+					if ( false === $result[ $key ] ) {
+						break;
+					}
+					if ( is_null( $result[ $key ] ) ) {
+						$result[ $key ] = false;
+						break;
+					}
+					$result[ $key ] = true;
+					break;
+			}
+			
+			if ( empty( $result[ $key ] ) ) {
+				$result[ $key ] = $attributes[ $key ] ?? $default;
+			}
+		}
+		
+		return $result;
+	}
 
+	/**
+	 * Parses the block content of a source only block type
+	 * 
+	 * @param string $html The html value
+	 * @param string $source The source type
+	 */
+	private function parse_single_source( $html, $source ) {
+		$value = null;
+		if ( empty( $html ) ) {
 			return $value;
-		}//end if
-
-		return $block['attrs'][ $attribute_name ] ?? $default;
+		}
+		switch ( $source ) {
+			case 'html':
+				$value = $html;
+				break;
+		}
+		return $value;
 	}
 }
