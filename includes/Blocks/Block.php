@@ -129,7 +129,7 @@ class Block {
 	 * @param object $attribute The block attribute config
 	 * @param string $prefix Current prefix string to use for the get_query_type
 	 */
-	private function get_attribute_type( $name, $attribute, $prefix ) {
+	private function get_attribute_type( $name, $attribute, $prefix ): mixed {
 		$type = null;
 
 		if ( isset( $attribute['type'] ) ) {
@@ -185,6 +185,8 @@ class Block {
 	 *
 	 * @param ?array $block_attributes The block attributes.
 	 * @param string $prefix The current prefix string to use for the get_query_type
+	 * 
+	 * @return array
 	 */
 	private function get_block_attribute_fields( ?array $block_attributes, $prefix = null ): array {
 		$fields = [];
@@ -193,7 +195,7 @@ class Block {
 		if ( null === $block_attributes ) {
 			return $fields;
 		}
-
+		
 		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
 			$graphql_type = self::get_attribute_type( $attribute_name, $attribute_config, $prefix );
 
@@ -230,7 +232,7 @@ class Block {
 	 * @param array  $query The block query config
 	 * @param string $prefix The current prefix string to use for registering the new query attribute type
 	 */
-	private function get_query_type( $name, $query, $prefix ) {
+	private function get_query_type( $name, $query, $prefix ): string {
 		$type = $prefix . ucfirst( $name );
 
 		$fields = $this->create_attributes_fields( $query, $type );
@@ -256,8 +258,10 @@ class Block {
 	 * 
 	 * @param array  $attributes The query attributes config
 	 * @param string $prefix The current prefix string to use for registering the new query attribute type
+	 * 
+	 * @return array
 	 */
-	private function create_attributes_fields( $attributes, $prefix ) {
+	private function create_attributes_fields( $attributes, $prefix ): array {
 		$fields = [];
 		foreach ( $attributes as $name => $attribute ) {
 			$type = $this->get_attribute_type( $name, $attribute, $prefix );
@@ -284,7 +288,7 @@ class Block {
 	 * @param array|string $value The value
 	 * @param string       $type The type of the value
 	 */
-	private function normalize_attribute_value( $value, $type ) {
+	private function normalize_attribute_value( $value, $type ): mixed {
 		switch ( $type ) {
 			case 'string':
 				return (string) $value;
@@ -358,8 +362,10 @@ class Block {
 	 * @param array  $attributes The block current attributes value
 	 * @param string $html The block rendered html
 	 * @param array  $config The block current attribute configuration
+	 * 
+	 * @return array
 	 */
-	private function resolve_block_attributes_recursive( $attributes, $html, $config ) {
+	private function resolve_block_attributes_recursive( $attributes, $html, $config ): array {
 		$result = [];
 		foreach ( $config as $key => $value ) {
 			// Get default value.
@@ -428,14 +434,14 @@ class Block {
 	 * @param string $html The html value
 	 * @param string $source The source type
 	 */
-	private function parse_single_source( $html, $source ) {
+	private function parse_single_source( $html, $source ): string|null {
 		$value = null;
 		if ( empty( $html ) ) {
 			return $value;
 		}
 		switch ( $source ) {
 			case 'html':
-				$value = $html;
+				$value = DOMHelpers::findNodes( $html )->innerHTML();
 				break;
 		}
 		return $value;
