@@ -45,7 +45,7 @@ final class Scalar {
 	/**
 	 * Return type name of BlockAttributesArray.
 	 */
-	public static function get_block_attributes_array_type_name() {
+	public static function get_block_attributes_array_type_name(): string {
 		return 'BlockAttributesArray';
 	}
 }
