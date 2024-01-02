@@ -157,8 +157,7 @@ class Block {
 						} else {
 							$type = Scalar::get_block_attributes_array_type_name();
 						}
-					}
-					else {
+					} else {
 						$type = Scalar::get_block_attributes_array_type_name();
 					}
 					break;

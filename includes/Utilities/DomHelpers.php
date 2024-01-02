@@ -136,7 +136,7 @@ final class DOMHelpers {
 	 * @param string      $html The HTML string to parse.
 	 * @param string|null $selector The selector to use.
 	 *
-	 * @return \WPGraphQL\ContentBlocks\Utilities\Element[]|\WPGraphQL\ContentBlocks\Utilities\DOMElement[]
+	 * @return \DOMElement[]
 	 */
 	public static function findNodes( $html, $selector = null ) {
 		$value = null;
