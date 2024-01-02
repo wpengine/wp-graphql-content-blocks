@@ -139,12 +139,10 @@ final class DOMHelpers {
 	 * @return \DOMElement[]|\DOMElement
 	 */
 	public static function findNodes( $html, $selector = null ) {
-		$value = null;
 		// Bail early if there's no html to parse.
 		if ( empty( trim( $html ) ) ) {
-			return $value;
+			return null;
 		}
-
 		$doc = new Document( $html );
 		// <html><body>$html</body></html>
 		$elem = $doc->find( '*' )[2];
