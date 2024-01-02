@@ -128,8 +128,10 @@ class Block {
 	 * @param string $name The block name
 	 * @param object $attribute The block attribute config
 	 * @param string $prefix Current prefix string to use for the get_query_type
+	 * 
+	 * @return mixed
 	 */
-	private function get_attribute_type( $name, $attribute, $prefix ): mixed {
+	private function get_attribute_type( $name, $attribute, $prefix ) {
 		$type = null;
 
 		if ( isset( $attribute['type'] ) ) {
@@ -183,8 +185,8 @@ class Block {
 	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
-	 * @param ?array $block_attributes The block attributes.
-	 * @param string $prefix The current prefix string to use for the get_query_type
+	 * @param ?array      $block_attributes The block attributes.
+	 * @param string|null $prefix The current prefix string to use for the get_query_type
 	 * 
 	 * @return array
 	 */
@@ -287,8 +289,10 @@ class Block {
 	 * 
 	 * @param array|string $value The value
 	 * @param string       $type The type of the value
+	 * 
+	 * @return mixed
 	 */
-	private function normalize_attribute_value( $value, $type ): mixed {
+	private function normalize_attribute_value( $value, $type ) {
 		switch ( $type ) {
 			case 'string':
 				return (string) $value;
@@ -433,8 +437,10 @@ class Block {
 	 * 
 	 * @param string $html The html value
 	 * @param string $source The source type
+	 * 
+	 * @return string|null
 	 */
-	private function parse_single_source( $html, $source ): string|null {
+	private function parse_single_source( $html, $source ) {
 		$value = null;
 		if ( empty( $html ) ) {
 			return $value;
