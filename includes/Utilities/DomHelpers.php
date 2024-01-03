@@ -23,7 +23,7 @@ final class DOMHelpers {
 	 *
 	 * @return string|null extracted attribute
 	 */
-	public static function parseAttribute( $html, $selector = null, $attribute, $default_value = null ): ?string {
+	public static function parseAttribute( $html, $selector = '', $attribute, $default_value = null ): ?string {
 		$doc = new Document();
 		$doc->loadHTML( $html );
 		if ( '*' === $selector ) {
