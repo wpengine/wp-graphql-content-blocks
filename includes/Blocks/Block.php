@@ -234,7 +234,7 @@ class Block {
 	 * @param array  $query The block query config
 	 * @param string $prefix The current prefix string to use for registering the new query attribute type
 	 */
-	private function get_query_type( $name, $query, $prefix ): string {
+	private function get_query_type( string $name, array $query, string $prefix ): string {
 		$type = $prefix . ucfirst( $name );
 
 		$fields = $this->create_attributes_fields( $query, $type );
