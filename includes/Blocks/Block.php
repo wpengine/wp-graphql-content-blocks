@@ -373,7 +373,7 @@ class Block {
 		$result = [];
 		foreach ( $config as $key => $value ) {
 			// Get default value.
-			$default = isset( $value['default'] ) ? $value['default'] : null;
+			$default = $value['default'] ?? null;
 			$source  = $value['source'] ?? null;
 			switch ( $source ) {
 				case 'html':
