@@ -190,7 +190,7 @@ class Block {
 	 * 
 	 * @return array
 	 */
-	private function get_block_attribute_fields( ?array $block_attributes, $prefix = null ): array {
+	private function get_block_attribute_fields( ?array $block_attributes, $prefix = '' ): array {
 		$fields = [];
 
 		// Bail early if no attributes are defined.
