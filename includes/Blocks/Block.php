@@ -272,8 +272,14 @@ class Block {
 				$default_value = $attribute['default'] ?? null;
 
 				$fields[ Utils::format_field_name( $name ) ] = [
-					'type'    => $type,
-					'resolve' => function ( $attributes ) use ( $name, $default_value ) {
+					'type'        => $type,
+					'description' => sprintf(
+						// translators: %1$s is the attribute name, %2$s is the block attributes field.
+						__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
+						$name,
+						$prefix
+					),
+					'resolve'     => function ( $attributes ) use ( $name, $default_value ) {
 						$value = $attributes[ $name ] ?? $default_value;
 						return $this->normalize_attribute_value( $value, $attributes['__type'][ $name ]['type'] );
 					},
