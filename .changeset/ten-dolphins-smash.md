@@ -1,5 +1,5 @@
 ---
-"@wpengine/wp-graphql-content-blocks": minor
+"@wpengine/wp-graphql-content-blocks": major
 ---
 
 Feature: Add support for querying array type query data from blocks
