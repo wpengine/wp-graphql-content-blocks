@@ -80,16 +80,16 @@ final class CoreVideoTest extends PluginTestCase {
             'align' => null,
             'anchor' => null,
             'autoplay' => true,
-            'tracks' => '[]',
-            'muted' => false,
-            'caption' => '',
+            'tracks' => [],
+            'muted' => null,
+            'caption' => null,
             'preload' => 'auto',
             'src' => 'http://mysite.local/wp-content/uploads/2023/07/pexels_videos_1860684-1440p.mp4',
             'playsInline' => true,
-            'controls' => null,
+            'controls' => true,
             'loop' => true,
             'poster' => 'http://mysite.local/wp-content/uploads/2023/05/pexels-egor-komarov-14420089-scaled.jpg',
             'id' => 1636.0,
-		]); 
+		]);
 	}
 }

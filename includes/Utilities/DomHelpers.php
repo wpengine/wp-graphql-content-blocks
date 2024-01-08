@@ -29,6 +29,10 @@ final class DOMHelpers {
 		if ( '*' === $selector ) {
 			$selector = '*[' . $attribute . ']';
 		}
+
+		if ( empty( $selector ) ) {
+			$selector = '*';
+		}
 		$node          = $doc->find( $selector );
 		$default_value = isset( $default_value ) ? $default_value : null;
 		return ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default_value;
@@ -112,7 +116,7 @@ final class DOMHelpers {
 	 *
 	 * @return string|null The text content of the selector if found.
 	 */
-	public static function getTextFromSelector( $html, $selector ) {
+	public static function parseText( $html, $selector ) {
 		$doc = new Document();
 		$doc->loadHTML( $html );
 		$nodes = $doc->find( $selector );
@@ -124,5 +128,27 @@ final class DOMHelpers {
 		// Returns the element's "textContent"
 		// https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
 		return $nodes[0]->text();
+	}
+
+	/**
+	 * Parses the html into DOMElement and searches the DOM tree for a given XPath expression or CSS selector.
+	 *
+	 * @param string      $html The HTML string to parse.
+	 * @param string|null $selector The selector to use.
+	 *
+	 * @return \DOMElement[]|\DOMElement
+	 */
+	public static function findNodes( $html, $selector = null ) {
+		// Bail early if there's no html to parse.
+		if ( empty( trim( $html ) ) ) {
+			return null;
+		}
+		$doc = new Document( $html );
+		// <html><body>$html</body></html>
+		$elem = $doc->find( '*' )[2];
+		if ( $selector ) {
+			$elem = $doc->find( $selector );
+		}
+		return $elem;
 	}
 }

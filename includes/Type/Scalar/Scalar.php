@@ -24,6 +24,15 @@ final class Scalar {
 				},
 			]
 		);
+		register_graphql_scalar(
+			'BlockAttributesArray',
+			[
+				'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
+				'serialize'   => static function ( $value ) {
+					return wp_json_encode( $value );
+				},
+			]
+		);
 	}
 
 	/**
@@ -31,5 +40,12 @@ final class Scalar {
 	 */
 	public static function get_block_attributes_object_type_name(): string {
 		return 'BlockAttributesObject';
+	}
+
+	/**
+	 * Return type name of BlockAttributesArray.
+	 */
+	public static function get_block_attributes_array_type_name(): string {
+		return 'BlockAttributesArray';
 	}
 }
