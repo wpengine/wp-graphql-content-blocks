@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function get_plugin_data_from_wpe( $args ) {
 	$product_info = get_remote_plugin_info();
-	if ( empty( $product_info ) || is_wp_error( $product_info ) ) {
+	if ( empty( $product_info ) ) {
 		return $args;
 	}
 
