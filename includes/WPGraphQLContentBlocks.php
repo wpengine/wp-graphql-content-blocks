@@ -147,6 +147,8 @@ final class WPGraphQLContentBlocks {
 			}//end if
 		}//end if
 
+		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/updates/update-functions.php';
+		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/updates/update-callbacks.php';
 		return true;
 	}
 
