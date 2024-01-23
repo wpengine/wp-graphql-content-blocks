@@ -3,6 +3,25 @@
 # - Plugin located at /home/circleci/project/wpgraphql-content-blocks
 
 version: 2.1
+##
+# The `GHA_Event` parameter will be populated with the value `release` when triggered by
+# the GitHub workflow. This can be used in conditional statements to run a specific workflow
+# for a specific event.
+##
+parameters:
+  GHA_Event:
+    type: string
+    default: ""
+  GHA_Actor:
+    type: string
+    default: ""
+  GHA_Action:
+    type: string
+    default: ""
+  GHA_Meta:
+    type: string
+    default: ""
+
 orbs:
   php: circleci/php@1.1.0
   wp-product-orb: wpengine/wp-product-orb@2.0.0
@@ -36,6 +55,7 @@ jobs:
           root: .
           paths:
             - <<parameters.slug>>
+
   plugin-build-json:
     executor: wp-product-orb/parser
     environment:
@@ -83,17 +103,15 @@ jobs:
           version: $BUILD_VERSION
 
 workflows:
-  plugin:
+  deploy:
+    when:
+      equal: [ "release", << pipeline.parameters.GHA_Event >> ]
     jobs:
       - plugin-unzip:
             slug: wpgraphql-content-blocks
             filename: wp-graphql-content-blocks.php
             # Run this job on every commit/PR so the plugin is available as a build artifact
             filters:
-              branches:
-                only:
-                  - main
-                  - canary
               tags:
                 only: /.*/
       - plugin-build-json:
