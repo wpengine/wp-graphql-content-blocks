@@ -16,7 +16,7 @@ describe('example test', () => {
         await visitAdminPage('plugins.php');
 
         // Select the plugin based on slug and active class
-        const activePlugin = await page.$x('//tr[contains(@class, "active") and contains(@data-slug, "wpgraphql-content-blocks")]');
+        const activePlugin = await page.$x('//tr[contains(@class, "active") and not(contains(@class, "plugin-update-tr")) and contains(@data-slug, "wpgraphql-content-blocks")]');
 
         // assert that our plugin is active by checking the HTML
         expect(activePlugin?.length).toBe(1);
