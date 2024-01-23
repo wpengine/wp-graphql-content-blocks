@@ -1,0 +1,358 @@
+# Notes:
+# - Jobs initially start from /home/circleci/project
+# - Plugin located at /home/circleci/project/wpgraphql-content-blocks
+
+version: 2.1
+orbs:
+  php: circleci/php@1.1.0
+  wp-product-orb: wpengine/wp-product-orb@2.0.0
+  node: circleci/node@5.2.0
+
+commands:
+  setup-composer:
+    description: "Install composer and install packages"
+    steps:
+      - php/install-composer
+      - php/install-packages:
+          app-dir: ./wpgraphql-content-blocks
+          install-flags: --no-interaction --prefer-dist --ignore-platform-reqs --no-dev
+  install-wp-cli:
+    description: "Download WP-CLI file"
+    steps:
+      - run:
+          name: "Install WP-CLI"
+          command: |
+            curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+            chmod +x wp-cli.phar
+            ./wp-cli.phar --info
+
+jobs:
+  plugin-checkout:
+    executor: wp-product-orb/default
+    environment:
+      WPE_SESSION_DIR: ./.wpe
+    parameters:
+      slug:
+        type: string
+      filename:
+        type: string
+    steps:
+      - checkout:
+          path: <<parameters.slug>>
+      - run:
+          name: Make artifacts build directory
+          command: |
+            [ ! -d "build" ] && mkdir build &>/dev/null
+      - wp-product-orb/get-version-from-php:
+          filename: <<parameters.slug>>/<<parameters.filename>>
+          return_var: BUILD_VERSION
+      - wp-product-orb/variable:
+          var: BUILD_VERSION
+          value: $BUILD_VERSION
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  plugin-build-json:
+    executor: wp-product-orb/parser
+    environment:
+      WPE_SESSION_DIR: ./.wpe
+    parameters:
+      slug:
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - wp-product-orb/variable-load
+      - wp-product-orb/parse-wp-readme:
+          infile: <<parameters.slug>>/readme.txt
+          outfile: build/<<parameters.slug>>.$BUILD_VERSION.json
+      - store_artifacts:
+          path: build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+  plugin-build-composer:
+    executor: php/default
+    parameters:
+      slug:
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - php/install-composer
+      - php/install-packages:
+          app-dir: <<parameters.slug>>
+          install-flags: --no-interaction --prefer-dist --ignore-platform-reqs
+      - run:
+          name: Remove composer setup file
+          command: |
+            rm -v composer-setup.php
+      - persist_to_workspace:
+          root: .
+          paths:
+            - wpgraphql-content-blocks/vendor
+
+  plugin-build-npm:
+    executor:
+      name: node/default
+      tag: '16.13.0'
+    parameters:
+      slug:
+        type: string
+    working_directory: .
+    steps:
+      - attach_workspace:
+          at: .
+      - node/install-packages:
+          app-dir: <<parameters.slug>>
+      - run:
+          name: NPM build
+          command: |
+            npm run build
+          working_directory: <<parameters.slug>>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  plugin-build-zip:
+    executor: wp-product-orb/default
+    environment:
+      WPE_SESSION_DIR: ./.wpe
+    parameters:
+      slug:
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - wp-product-orb/variable-load
+      - run:
+          name: "Bundle plugin files into a zip"
+          command: |
+            zip --verbose -x@<<parameters.slug>>/.zipignore -x *.wpe/* */build/ -r "build/<<parameters.slug>>.$BUILD_VERSION.zip" <<parameters.slug>>
+            echo "<<parameters.slug>>.$BUILD_VERSION.zip" >> build/file.txt
+      - store_artifacts:
+          path: build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+  plugin-deploy:
+    executor: wp-product-orb/authenticate
+    environment:
+      WPE_SESSION_DIR: ./.wpe
+    parameters:
+      auth_url:
+        type: string
+      upload_url:
+        type: string
+      slug:
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - wp-product-orb/variable-load
+      - wp-product-orb/authenticate:
+          user: WPE_LDAP_USER
+          pass: WPE_LDAP_PASS
+          url: <<parameters.auth_url>>
+      - wp-product-orb/post-zip:
+          url: <<parameters.upload_url>>/<<parameters.slug>>
+          zip: build/<<parameters.slug>>.$BUILD_VERSION.zip
+          json: build/<<parameters.slug>>.$BUILD_VERSION.json
+          version: $BUILD_VERSION
+
+  plugin-build-readme:
+    executor:
+      name: node/default
+      tag: '16.13.0'
+    parameters:
+      slug:
+        type: string
+    working_directory: .
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: NPM build readme.txt
+          command: |
+            npm run build-readme
+          working_directory: <<parameters.slug>>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - wpgraphql-content-blocks/readme.txt
+
+  lint-php:
+    parameters:
+      php-version:
+        type: string
+        default: "8.0"
+    docker:
+      - image: cimg/php:<<parameters.php-version>>
+    steps:
+      - attach_workspace:
+          at: .
+      - setup-composer
+      - run:
+          name: "Check php syntax as version <<parameters.php-version>>"
+          command: composer lint
+          working_directory: ./wpgraphql-content-blocks
+
+  check-code-standards:
+    docker:
+      - image: cimg/php:8.0.24
+    steps:
+      - attach_workspace:
+          at: .
+      - setup-composer
+      - run:
+          name: "Check code standards"
+          command: composer phpcs
+          working_directory: ./wpgraphql-content-blocks
+
+  run-phpunit:
+    parameters:
+      php-version:
+        type: string
+        default: "8.0"
+      wordpress-version:
+        type: string
+        default: "latest"
+      multisite:
+        type: integer
+        default: 0
+    docker:
+      - image: cimg/php:<<parameters.php-version>>
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_ROOT_PASSWORD: wordpress
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Install mysql_client and subversion"
+          command: |
+            sudo apt-get update -yq
+            sudo apt-get install default-mysql-client subversion -yq
+      - setup-composer
+      - run:
+          name: "Setup WordPress unit test framework files"
+          command: |
+            /bin/bash tests/install-wp-tests.sh wpgraphql_content_blocks_integration_tests root wordpress 127.0.0.1:3306 <<parameters.wordpress-version>>
+          working_directory: ./wpgraphql-content-blocks
+      - run:
+          name: "Run phpunit"
+          command: |
+            composer test
+          working_directory: ./wpgraphql-content-blocks
+
+workflows:
+  plugin:
+    jobs:
+      - plugin-checkout:
+          slug: wpgraphql-content-blocks
+          filename: wpgraphql-content-blocks.php
+          # run this job for any build, any branch
+          filters:
+            tags:
+              only: /.*/
+      - plugin-build-composer:
+          slug: wpgraphql-content-blocks
+          requires:
+            - plugin-checkout
+          # run this job for any build, any branch
+          filters:
+            tags:
+              only: /.*/
+      - plugin-build-readme:
+          slug: wpgraphql-content-blocks
+          requires:
+            - plugin-checkout
+          # run this job for any build, any branch
+          filters:
+            tags:
+              only: /.*/
+      - plugin-build-json:
+          slug: wpgraphql-content-blocks
+          requires:
+            - plugin-build-readme
+          # Run this job on every commit/PR to make sure it's in working order prior to deploying
+          filters:
+            tags:
+              only: /.*/
+      - plugin-build-zip:
+          slug: wpgraphql-content-blocks
+          requires:
+            - plugin-build-composer
+          # Run this job on every commit/PR so the plugin is available as a build artifact
+          filters:
+            tags:
+              only: /.*/
+      - plugin-deploy:
+          name: "plugin-deploy-staging"
+          slug: wpgraphql-content-blocks
+          requires:
+            - plugin-build-zip
+            - plugin-build-json
+            - run-phpunit
+            - lint-php
+          filters:
+            branches:
+              only:
+                - main
+                - canary
+            tags:
+              only: /.*/
+          context: wpe-ldap-creds
+          auth_url: https://auth-staging.wpengine.io/v1/tokens
+          upload_url: https://wp-product-info-staging.wpesvc.net/v1/plugins
+      - plugin-deploy:
+          name: "plugin-deploy-production"
+          slug: wpgraphql-content-blocks
+          requires:
+            - "plugin-deploy-staging"
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              # tag ex. 1.0.0
+              only: /^\S+/
+          context: wpe-ldap-creds
+          auth_url: https://auth.wpengine.io/v1/tokens
+          upload_url: https://wp-product-info.wpesvc.net/v1/plugins
+
+      - lint-php:
+          requires:
+            - plugin-checkout
+          matrix:
+            parameters:
+              php-version: [ "7.4", "8.1", "8.2" ]
+          filters:
+            tags:
+              only: /.*/ # run this job for any build, any branch
+      - check-code-standards:
+          requires:
+            - lint-php
+          filters:
+            tags:
+              only: /.*/ # run this job for any build, any branch
+      - run-phpunit:
+          requires:
+            - check-code-standards
+          matrix:
+            parameters:
+              wordpress-version: [ "6.4", "6.3" ]
+              php-version: [ "7.4", "8.1", "8.2" ]
+              multisite: [ 0, 1 ]
+          filters:
+            tags:
+              only: /.*/ # run this job for any build, any branch
