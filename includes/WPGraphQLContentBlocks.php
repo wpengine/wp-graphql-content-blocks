@@ -149,6 +149,8 @@ final class WPGraphQLContentBlocks {
 
 		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/updates/update-functions.php';
 		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/updates/update-callbacks.php';
+
+		new \EnforceSemVer\EnforceSemVer( WPGRAPHQL_CONTENT_BLOCKS_PATH );
 		return true;
 	}
 
