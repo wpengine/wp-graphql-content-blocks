@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b45898422af097c51889e5dad4ac25b0",
+    "content-hash": "f13b8ebc87b833928dcb8ff3475f18b6",
     "packages": [
+        {
+            "name": "blakewilson/wp-enforce-semver",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/blakewilson/wp-enforce-semver.git",
+                "reference": "d595e75ffadd7993975dfb124072b0664c853c49"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/blakewilson/wp-enforce-semver/zipball/d595e75ffadd7993975dfb124072b0664c853c49",
+                "reference": "d595e75ffadd7993975dfb124072b0664c853c49",
+                "shasum": ""
+            },
+            "require": {
+                "phlak/semver": "^4.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "phpcompatibility/phpcompatibility-wp": "^2.1",
+                "wp-coding-standards/wpcs": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EnforceSemVer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Blake Wilson",
+                    "email": "blake@blake.id"
+                }
+            ],
+            "description": "A class to enforce SemVer in your WordPress plugins.",
+            "support": {
+                "issues": "https://github.com/blakewilson/wp-enforce-semver/issues",
+                "source": "https://github.com/blakewilson/wp-enforce-semver/tree/2.0.1"
+            },
+            "time": "2023-10-20T05:29:32+00:00"
+        },
         {
             "name": "imangazaliev/didom",
             "version": "2.0.1",
@@ -57,6 +102,65 @@
                 "source": "https://github.com/Imangazaliev/DiDOM/tree/2.0.1"
             },
             "time": "2023-03-05T03:23:48+00:00"
+        },
+        {
+            "name": "phlak/semver",
+            "version": "4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHLAK/SemVer.git",
+                "reference": "decdb385f26f2f8da2748289534fa3e61347917e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHLAK/SemVer/zipball/decdb385f26f2f8da2748289534fa3e61347917e",
+                "reference": "decdb385f26f2f8da2748289534fa3e61347917e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phlak/coding-standards": "^2.0",
+                "psy/psysh": "^0.11.1",
+                "vimeo/psalm": "^4.3",
+                "yoast/phpunit-polyfills": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Support/helpers.php"
+                ],
+                "psr-4": {
+                    "PHLAK\\SemVer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Kankiewicz",
+                    "email": "Chris@ChrisKankiewicz.com"
+                }
+            ],
+            "description": "Semantic versioning helper library",
+            "support": {
+                "issues": "https://github.com/PHLAK/SemVer/issues",
+                "source": "https://github.com/PHLAK/SemVer/tree/4.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/PHLAK",
+                    "type": "github"
+                },
+                {
+                    "url": "https://paypal.me/ChrisKankiewicz",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2022-12-23T20:28:04+00:00"
         }
     ],
     "packages-dev": [
@@ -4021,5 +4125,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
