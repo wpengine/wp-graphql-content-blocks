@@ -150,7 +150,10 @@ final class WPGraphQLContentBlocks {
 		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/updates/update-functions.php';
 		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/updates/update-callbacks.php';
 
+		// Tell SonarQube to ignore the following line. The library bootstraps itself, hence no need to instantiate to a variable.
+		// BEGIN-NOSCAN
 		new \EnforceSemVer\EnforceSemVer( WPGRAPHQL_CONTENT_BLOCKS_PATH );
+		// END-NOSCAN
 		return true;
 	}
 
