@@ -123,14 +123,14 @@ function get_api_error_text( string $reason ): string {
 			return __( 'The product you requested information for is unknown. Please contact support.', 'wp-graphql-content-blocks' );
 
 		default:
-			/* translators: %1$s: Link to account portal. %2$s: The text that is linked. */
 			return sprintf(
+				/* translators: %1$s: Link to GitHub issues. %2$s: The text that is linked. */
 				__(
-					'WPGraphQL Content Blocks encountered an unknown error connecting to the update service. This issue could be temporary. Please contact support if this error persists.',
+					'WPGraphQL Content Blocks encountered an unknown error connecting to the update service. This issue could be temporary. Please <a href="%1$s">%2$s</a> if this error persists.',
 					'wp-graphql-content-blocks'
 				),
-				'https://my.wpengine.com/products',
-				esc_html__( 'WP Engine Account Portal', 'wp-graphql-content-blocks' )
+				'https://github.com/wpengine/wp-graphql-content-blocks/issues',
+				esc_html__( 'contact support', 'wp-graphql-content-blocks' )
 			);
 	}
 }
