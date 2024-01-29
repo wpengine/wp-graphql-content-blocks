@@ -23,5 +23,11 @@ class CoreCode extends Block {
 			'source'    => 'attribute',
 			'attribute' => 'class',
 		],
+		'content'      => [
+			'type'     => 'string',
+			'selector' => 'code',
+			'source'   => 'html',
+			'default'  => '',
+		],
 	];
 }
