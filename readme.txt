@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.4
-Stable tag: 2.0.0
+Stable tag: 3.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,12 +25,26 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 3.0.0 =
+
+### Major Changes
+
+- f15f95c: Adds missing default value for content attribute CoreParagraph and CoreCode blocks. This will make the type of the content field `String!` instead of `String`
+- 9b71411: Feature: Add support for querying array type query data from blocks
+
+  Query source block attribute types are supported. See: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-attributes/#query-source
+
+### Patch Changes
+
+- be7a34f: Interface Types are now registered with the Post Type's `graphql_single_name`, instead of the Post Type's `name`. Fixes a bug where invalid Types were registered.
+
 = 2.0.0 =
 
 ### Major Changes
 
 - 7251fb0: Fix: use `use_block_editor_for_post_type` instead of `post_type_supports` when filtering the post types.
-  **BREAKING**: Potential schema changes on previously exposed blocks that do not support the block editor. Those blocks will no longer inherit the `editorBlocks` field.
+
+**BREAKING**: Potential schema changes for GraphQL Types representing a Post Type that does not use the Block Editor. Each GraphQL Type representing a Post Type that does not have block editor support previously would have had the `editorBlocks` field but that field will no longer exist on those Types.
 
 = 1.2.1 =
 
@@ -59,17 +73,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
     }
   }
   ```
-
-= 1.2.0 =
-
-### Minor Changes
-
-- a118662: Added new `wpgraphql_content_blocks_should_apply_post_type_editor_blocks_interfaces` filter to allow controlling whether ${PostType}EditorBlock interfaces should be applied.
-
-### Patch Changes
-
-- 2e7f2e8: Refactored `register_block_types` to remove usages of `register_graphql_interfaces_to_types` to improve performance.
-
-  Deprecated `Anchor::register_to_block` public static method.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
