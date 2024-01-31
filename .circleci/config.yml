@@ -45,7 +45,7 @@ jobs:
           name: "Unzip plugin files"
           command: |
             curl -sL https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip > wp-graphql-content-blocks.zip
-            unzip -o -d <<parameters.slug>> <<parameters.slug>>.*.zip
+            unzip -o -d <<parameters.slug>> <<parameters.slug>>.zip
       - wp-product-orb/get_version_from_php:
           filename: <<parameters.slug>>/<<parameters.filename>>
           return_var: BUILD_VERSION
