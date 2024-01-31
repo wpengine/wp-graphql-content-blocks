@@ -1,6 +1,6 @@
 # Notes:
 # - Jobs initially start from /home/circleci/project
-# - Plugin located at /home/circleci/project/wpgraphql-content-blocks
+# - Plugin located at /home/circleci/project/wp-graphql-content-blocks
 
 version: 2.1
 ##
@@ -114,14 +114,14 @@ workflows:
 #      equal: [ "release", << pipeline.parameters.GHA_Event >> ]
     jobs:
       - plugin-unzip:
-            slug: wpgraphql-content-blocks
+            slug: wp-graphql-content-blocks
             filename: wp-graphql-content-blocks.php
             # Run this job on every commit/PR so the plugin is available as a build artifact
             filters:
               tags:
                 only: /.*/
       - plugin-build-json:
-          slug: wpgraphql-content-blocks
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-unzip
           # Run this job on every commit/PR to make sure it's in working order prior to deploying
@@ -130,7 +130,7 @@ workflows:
               only: /.*/
       - plugin-deploy:
           name: "plugin-deploy-staging"
-          slug: wpgraphql-content-blocks
+          slug: wp-graphql-content-blocks
           requires:
             - plugin-unzip
             - plugin-build-json
@@ -146,7 +146,7 @@ workflows:
           upload_url: https://wp-product-info-staging.wpesvc.net/v1/plugins
       - plugin-deploy:
           name: "plugin-deploy-production"
-          slug: wpgraphql-content-blocks
+          slug: wp-graphql-content-blocks
           requires:
             - "plugin-deploy-staging"
           filters:
