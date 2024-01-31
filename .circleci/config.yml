@@ -72,6 +72,10 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          command: |
+            cd ~/project
+            mkdir build
       - wp-product-orb/variable_load
       - wp-product-orb/parse_wp_readme:
           infile: <<parameters.slug>>/readme.txt
