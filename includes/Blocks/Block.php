@@ -394,7 +394,7 @@ class Block {
 					}
 					break;
 				case 'attribute':
-					$result[ $key ] = DOMHelpers::parseAttribute( $html, $value['selector'], $value['attribute'], $value );
+					$result[ $key ] = DOMHelpers::parseAttribute( $html, $value['selector'], $value['attribute'], $default );
 					break;
 				case 'text':
 					$result[ $key ] = DOMHelpers::parseText( $html, $value['selector'] );
