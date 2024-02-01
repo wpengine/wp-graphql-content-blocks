@@ -48,7 +48,7 @@ jobs:
             cd ~/project
             mkdir build
             ls -laR
-            curl -sL https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip > wp-graphql-content-blocks.zip
+            curl -sL https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip > <<parameters.slug>>.zip
             unzip -o -d <<parameters.slug>> <<parameters.slug>>.zip
             mv <<parameters.slug>>.zip build/
             ls -laR
@@ -132,14 +132,14 @@ workflows:
 #      equal: [ "release", << pipeline.parameters.GHA_Event >> ]
     jobs:
       - plugin-unzip:
-            slug: wp-graphql-content-blocks
+            slug: wpgraphql-content-blocks
             filename: wp-graphql-content-blocks.php
             # Run this job on every commit/PR so the plugin is available as a build artifact
             filters:
               tags:
                 only: /.*/
       - plugin-build-json:
-          slug: wp-graphql-content-blocks
+          slug: wpgraphql-content-blocks
           requires:
             - plugin-unzip
           # Run this job on every commit/PR to make sure it's in working order prior to deploying
@@ -148,7 +148,7 @@ workflows:
               only: /.*/
       - plugin-deploy:
           name: "plugin-deploy-staging"
-          slug: wp-graphql-content-blocks
+          slug: wpgraphql-content-blocks
           requires:
             - plugin-unzip
             - plugin-build-json
