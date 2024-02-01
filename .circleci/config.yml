@@ -57,10 +57,14 @@ jobs:
       - wp-product-orb/variable:
           var: BUILD_VERSION
           value: $BUILD_VERSION
+      - run:
+          name: "DEBUG"
+          command: |
+            ls -laR
       - persist_to_workspace:
           root: .
           paths:
-            - <<parameters.slug>>
+            - .
 
   plugin-build-json:
     executor: wp-product-orb/parser
