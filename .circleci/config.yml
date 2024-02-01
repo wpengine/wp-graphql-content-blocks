@@ -86,6 +86,10 @@ jobs:
           outfile: build/<<parameters.slug>>.$BUILD_VERSION.json
       - store_artifacts:
           path: build
+      - run:
+          name: "DEBUG"
+          command: |
+            ls -laR
       - persist_to_workspace:
           root: .
           paths:
