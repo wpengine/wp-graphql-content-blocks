@@ -115,6 +115,11 @@ jobs:
           user: WPE_LDAP_USER
           pass: WPE_LDAP_PASS
           url: <<parameters.auth_url>>
+      - run:
+          name: "DEBUG"
+          command: |
+            pwd
+            ls -laR
       - wp-product-orb/post_zip:
           url: <<parameters.upload_url>>/<<parameters.slug>>
           zip: build/<<parameters.slug>>.$BUILD_VERSION.zip
