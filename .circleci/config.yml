@@ -148,26 +148,26 @@ workflows:
             - plugin-unzip
             - plugin-build-json
           filters:
-            branches:
-              only:
-                - main
-                - canary
+#            branches:
+#              only:
+#                - main
+#                - canary
             tags:
               only: /.*/
           context: wpe-ldap-creds
           auth_url: https://auth-staging.wpengine.io/v1/tokens
           upload_url: https://wp-product-info-staging.wpesvc.net/v1/plugins
-      - plugin-deploy:
-          name: "plugin-deploy-production"
-          slug: wp-graphql-content-blocks
-          requires:
-            - "plugin-deploy-staging"
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              # tag ex. 1.0.0
-              only: /^\S+/
-          context: wpe-ldap-creds
-          auth_url: https://auth.wpengine.io/v1/tokens
-          upload_url: https://wp-product-info.wpesvc.net/v1/plugins
+#      - plugin-deploy:
+#          name: "plugin-deploy-production"
+#          slug: wp-graphql-content-blocks
+#          requires:
+#            - "plugin-deploy-staging"
+#          filters:
+#            branches:
+#              ignore: /.*/
+#            tags:
+#              # tag ex. 1.0.0
+#              only: /^\S+/
+#          context: wpe-ldap-creds
+#          auth_url: https://auth.wpengine.io/v1/tokens
+#          upload_url: https://wp-product-info.wpesvc.net/v1/plugins
