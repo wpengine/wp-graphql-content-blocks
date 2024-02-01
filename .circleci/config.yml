@@ -50,7 +50,6 @@ jobs:
             ls -laR
             curl -sL https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip > <<parameters.slug>>.zip
             unzip -o -d <<parameters.slug>> <<parameters.slug>>.zip
-            mv <<parameters.slug>>.zip build/
             ls -laR
       - wp-product-orb/get_version_from_php:
           filename: <<parameters.slug>>/<<parameters.filename>>
@@ -58,6 +57,10 @@ jobs:
       - wp-product-orb/variable:
           var: BUILD_VERSION
           value: $BUILD_VERSION
+      - run:
+          name: "Move zip file to build directory"
+          command: |
+              mv <<parameters.slug>>.zip build/<<parameters.slug>>.$BUILD_VERSION.zip
       - run:
           name: "DEBUG"
           command: |
