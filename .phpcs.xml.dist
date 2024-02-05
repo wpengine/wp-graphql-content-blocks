@@ -3,7 +3,7 @@
 	<description>Sniffs for WPGraphQL Content Blocks</description>
 
 	<!-- What to scan: include any root-level PHP files, and the /includes folder -->
-	<file>./wp-graphql-content-blocks.php</file>
+	<file>./wpgraphql-content-blocks.php</file>
 	<file>./includes/</file>
 	<exclude-pattern>/vendor/</exclude-pattern>
 	<exclude-pattern>/node_modules/</exclude-pattern>
