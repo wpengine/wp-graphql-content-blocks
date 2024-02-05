@@ -129,8 +129,8 @@ jobs:
 
 workflows:
   deploy:
-    when:
-      equal: [ "release", << pipeline.parameters.GHA_Event >> ]
+#    when:
+#      equal: [ "release", << pipeline.parameters.GHA_Event >> ]
     jobs:
       - plugin-unzip:
             slug: wpgraphql-content-blocks
