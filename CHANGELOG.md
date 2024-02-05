@@ -1,5 +1,18 @@
 # WPGraphQL Content Blocks
 
+## 3.0.0
+
+### Major Changes
+
+- f15f95c: Adds missing default value for content attribute CoreParagraph and CoreCode blocks. This will make the type of the content field `String!` instead of `String`
+- 9b71411: Feature: Add support for querying array type query data from blocks
+
+  Query source block attribute types are supported. See: https://developer.wordpress.org/block-editor/reference-guides/block-api/block-attributes/#query-source
+
+### Patch Changes
+
+- be7a34f: Interface Types are now registered with the Post Type's `graphql_single_name`, instead of the Post Type's `name`. Fixes a bug where invalid Types were registered.
+
 ## 2.0.0
 
 ### Major Changes
