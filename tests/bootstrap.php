@@ -36,7 +36,7 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
  * @return void
  */
 function _manually_load_plugin() {
-	require dirname( __DIR__ ) . '/wp-graphql-content-blocks.php';
+	require dirname( __DIR__ ) . '/wpgraphql-content-blocks.php';
 
 	// Load WP-GraphQL
 	require_once WP_TEST_PLUGINS_DIR . '/wp-graphql/wp-graphql.php';
