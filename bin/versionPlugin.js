@@ -18,7 +18,7 @@ const writeFile = fs.writeFile;
  */
 async function versionPlugin() {
   const pluginPath = path.join(__dirname, "../");
-  const pluginFile = path.join(pluginPath, "wp-graphql-content-blocks.php");
+  const pluginFile = path.join(pluginPath, "wpgraphql-content-blocks.php");
   const readmeTxt = path.join(pluginPath, "readme.txt");
   const changelog = path.join(pluginPath, "CHANGELOG.md");
   const constantsFile = path.join(
