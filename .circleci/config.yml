@@ -44,10 +44,8 @@ jobs:
       - run:
           name: "Unzip plugin files"
           command: |
-            pwd
             cd ~/project
             mkdir build
-            ls -laR
             curl -sL https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip > <<parameters.slug>>.zip
             unzip -o -d <<parameters.slug>> <<parameters.slug>>.zip
             ls -laR
