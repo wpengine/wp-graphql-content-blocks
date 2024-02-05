@@ -15,4 +15,8 @@ class TestUpdateCallbacks extends WP_UnitTestCase {
 		self::assertSame( 10, has_action( 'admin_notices', 'WPGraphQL\ContentBlocks\PluginUpdater\delegate_plugin_row_notice' ) );
 		self::assertSame( 10, has_action( 'admin_notices', 'WPGraphQL\ContentBlocks\PluginUpdater\display_update_page_notice' ) );
 	}
+
+	public function test_semantic_versioning_notice_text_has_filter_added(): void {
+		self::assertSame( 10, has_filter( 'semantic_versioning_notice_text', 'WPGraphQL\ContentBlocks\PluginUpdater\filter_semver_notice_text', 10, 2 ) );
+	}
 }
