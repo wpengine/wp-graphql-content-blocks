@@ -160,3 +160,19 @@ function display_update_page_notice() {
 	</div>
 	<?php
 }
+
+add_filter( 'semantic_versioning_notice_text', __NAMESPACE__ . '\filter_semver_notice_text', 10, 2 );
+/**
+ * Filters the semver notice text when breaking changes are released.
+ *
+ * @param string $notice_text The default notice text.
+ * @param string $plugin_filename The plugin directory and filename.
+ *
+ * @return string|null
+ */
+function filter_semver_notice_text( $notice_text, $plugin_filename ) {
+	if ( WPGRAPHQL_CONTENT_BLOCKS_PATH !== $plugin_filename ) {
+		return $notice_text;
+	}
+	return '<br><br>' . __( '<b>THIS UPDATE MAY CONTAIN BREAKING CHANGES:</b> This plugin uses Semantic Versioning, and this new version is a major release. Please review the changelog before updating.', 'wp-graphql-content-blocks' );
+}
