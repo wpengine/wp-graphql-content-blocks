@@ -41,7 +41,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "@wpengine/wp-graphql-content-blocks.zip"
-          asset_name: wp-graphql-content-blocks.zip
+          file: "@wpengine/wpgraphql-content-blocks.zip"
+          asset_name: wpgraphql-content-blocks.zip
           tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           overwrite: true
