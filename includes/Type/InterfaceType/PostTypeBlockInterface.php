@@ -26,7 +26,7 @@ final class PostTypeBlockInterface {
 			[
 				'description' => sprintf(
 					// translators: EditorBlock Interface for %s Block Type.
-					__( 'EditorBlock Interface for %s Block Type', 'wp-graphql-content-blocks' ),
+					__( 'EditorBlock Interface for %s Block Type', 'wpgraphql-content-blocks' ),
 					ucfirst( $post_type )
 				),
 				'interfaces'  => [ 'EditorBlock' ],
@@ -52,7 +52,7 @@ final class PostTypeBlockInterface {
 			[
 				'description'     => sprintf(
 					// translators: %s is the post type.
-					__( 'Node that has %s content blocks associated with it', 'wp-graphql-content-blocks' ),
+					__( 'Node that has %s content blocks associated with it', 'wpgraphql-content-blocks' ),
 					$post_type
 				),
 				'eagerlyLoadType' => true,
@@ -69,7 +69,7 @@ final class PostTypeBlockInterface {
 						],
 						'description' => sprintf(
 							// translators: %s is the post type.
-							__( 'List of %s editor blocks', 'wp-graphql-content-blocks' ),
+							__( 'List of %s editor blocks', 'wpgraphql-content-blocks' ),
 							$post_type
 						),
 						'resolve'     => static function ( $node, $args ) use ( $block_names ) {

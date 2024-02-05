@@ -51,7 +51,7 @@ class CoreImage extends Block {
 				'type'        => 'MediaDetails',
 				'description' => sprintf(
 					// translators: %s is the block type name.
-					__( 'Media Details of the %s Block Type', 'wp-graphql-content-blocks' ),
+					__( 'Media Details of the %s Block Type', 'wpgraphql-content-blocks' ),
 					$this->type_name
 				),
 				'resolve'     => static function ( $block ) {

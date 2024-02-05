@@ -21,11 +21,11 @@ class Anchor {
 		register_graphql_interface_type(
 			'BlockWithSupportsAnchor',
 			[
-				'description' => __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
+				'description' => __( 'Block that supports Anchor field', 'wpgraphql-content-blocks' ),
 				'fields'      => [
 					'anchor' => [
 						'type'        => 'string',
-						'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The anchor field for the block.', 'wpgraphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							$rendered_block = wp_unslash( render_block( $block ) );
 							if ( empty( $rendered_block ) ) {

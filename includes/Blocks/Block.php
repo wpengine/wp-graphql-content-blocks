@@ -96,7 +96,7 @@ class Block {
 				[
 					'description' => sprintf(
 						// translators: %s is the block type name.
-						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+						__( 'Attributes of the %s Block Type', 'wpgraphql-content-blocks' ),
 						$this->type_name
 					),
 					'interfaces'  => $this->get_block_attributes_interfaces(),
@@ -111,7 +111,7 @@ class Block {
 					'type'        => $block_attribute_type_name,
 					'description' => sprintf(
 						// translators: %s is the block type name.
-						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+						__( 'Attributes of the %s Block Type', 'wpgraphql-content-blocks' ),
 						$this->type_name
 					),
 					'resolve'     => static function ( $block ) {
@@ -209,7 +209,7 @@ class Block {
 				'type'        => $graphql_type,
 				'description' => sprintf(
 					// translators: %1$s is the attribute name, %2$s is the block name.
-					__( 'The "%1$s" field on the "%2$s" block or block attributes', 'wp-graphql-content-blocks' ),
+					__( 'The "%1$s" field on the "%2$s" block or block attributes', 'wpgraphql-content-blocks' ),
 					$attribute_name,
 					$prefix
 				),
@@ -245,7 +245,7 @@ class Block {
 				'fields'      => $fields,
 				'description' => sprintf(
 					// translators: %1$s is the attribute name, %2$s is the block attributes field.
-					__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
+					__( 'The "%1$s" field on the "%2$s" block attribute field', 'wpgraphql-content-blocks' ),
 					$type,
 					$prefix
 				),
@@ -275,7 +275,7 @@ class Block {
 					'type'        => $type,
 					'description' => sprintf(
 						// translators: %1$s is the attribute name, %2$s is the block attributes field.
-						__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
+						__( 'The "%1$s" field on the "%2$s" block attribute field', 'wpgraphql-content-blocks' ),
 						$name,
 						$prefix
 					),
@@ -341,13 +341,13 @@ class Block {
 		register_graphql_object_type(
 			$this->type_name,
 			[
-				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
+				'description'     => __( 'A block used for editing the site', 'wpgraphql-content-blocks' ),
 				'interfaces'      => $this->get_block_interfaces(),
 				'eagerlyLoadType' => true,
 				'fields'          => [
 					'name' => [
 						'type'        => 'String',
-						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The name of the block', 'wpgraphql-content-blocks' ),
 						'resolve'     => function ( $block ) {
 							return $this->resolve( $block );
 						},

@@ -120,17 +120,17 @@ function get_remote_plugin_info() {
 function get_api_error_text( string $reason ): string {
 	switch ( $reason ) {
 		case 'key-unknown':
-			return __( 'The product you requested information for is unknown. Please contact support.', 'wp-graphql-content-blocks' );
+			return __( 'The product you requested information for is unknown. Please contact support.', 'wpgraphql-content-blocks' );
 
 		default:
 			return sprintf(
 				/* translators: %1$s: Link to GitHub issues. %2$s: The text that is linked. */
 				__(
 					'WPGraphQL Content Blocks encountered an unknown error connecting to the update service. This issue could be temporary. Please <a href="%1$s">%2$s</a> if this error persists.',
-					'wp-graphql-content-blocks'
+					'wpgraphql-content-blocks'
 				),
 				'https://github.com/wpengine/wp-graphql-content-blocks/issues',
-				esc_html__( 'contact support', 'wp-graphql-content-blocks' )
+				esc_html__( 'contact support', 'wpgraphql-content-blocks' )
 			);
 	}
 }

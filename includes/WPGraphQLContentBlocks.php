@@ -50,7 +50,7 @@ final class WPGraphQLContentBlocks {
 	 */
 	public function __clone() {
 		// Cloning instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'The WPGraphQLContentBlocks class should not be cloned.', 'wp-graphql-content-blocks' ), '0.0.1' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'The WPGraphQLContentBlocks class should not be cloned.', 'wpgraphql-content-blocks' ), '0.0.1' );
 	}
 
 	/**
@@ -61,7 +61,7 @@ final class WPGraphQLContentBlocks {
 	 */
 	public function __wakeup() {
 		// De-serializing instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the WPGraphQLContentBlocks class is not allowed', 'wp-graphql-content-blocks' ), '0.0.1' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'De-serializing instances of the WPGraphQLContentBlocks class is not allowed', 'wpgraphql-content-blocks' ), '0.0.1' );
 	}
 
 	/**
@@ -116,7 +116,7 @@ final class WPGraphQLContentBlocks {
 								'<p>%s</p>' .
 							'</div>',
 							wp_kses_post(
-								__( 'WPGraphQL Content Blocks appears to have been installed without its dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wp-graphql-content-blocks' )
+								__( 'WPGraphQL Content Blocks appears to have been installed without its dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wpgraphql-content-blocks' )
 							)
 						);
 					}
@@ -138,7 +138,7 @@ final class WPGraphQLContentBlocks {
 							'<div class="notice notice-error is-dismissible">' .
 								'<p>%s</p>' .
 							'</div>',
-							esc_html__( 'WPGraphQL Content Blocks will not work without WPGraphQL installed and active.', 'wp-graphql-content-blocks' )
+							esc_html__( 'WPGraphQL Content Blocks will not work without WPGraphQL installed and active.', 'wpgraphql-content-blocks' )
 						);
 					}
 				);
