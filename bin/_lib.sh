@@ -121,8 +121,8 @@ configure_wordpress() {
 
 setup_plugin() {
 	# Add this repo as a plugin to the repo
-	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wp-graphql-content-blocks ]; then
-		ln -s $PLUGIN_DIR $WP_CORE_DIR/wp-content/plugins/wp-graphql-content-blocks
+	if [ ! -d $WP_CORE_DIR/wp-content/plugins/wpgraphql-content-blocks ]; then
+		ln -s $PLUGIN_DIR $WP_CORE_DIR/wp-content/plugins/wpgraphql-content-blocks
 		cd $WP_CORE_DIR/wp-content/plugins
 		pwd
 		ls
@@ -139,7 +139,7 @@ setup_plugin() {
     wp plugin activate wp-graphql
 
 	# activate the plugin
-	wp plugin activate wp-graphql-content-blocks
+	wp plugin activate wpgraphql-content-blocks
 
 	# List the active plugins
 	wp plugin list
