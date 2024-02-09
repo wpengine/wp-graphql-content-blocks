@@ -6,7 +6,7 @@
  * Author URI: https://wpengine.com/
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: wpgraphql-content-blocks
+ * Text Domain: wp-graphql-content-blocks
  * Domain Path: /languages
  * Version: 3.0.0
  * Requires PHP: 7.4

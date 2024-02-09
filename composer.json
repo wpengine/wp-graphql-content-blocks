@@ -1,5 +1,5 @@
 {
-  "name": "wpengine/wpgraphql-content-blocks",
+  "name": "wpengine/wp-graphql-content-blocks",
   "description": "Plugin that extends WPGraphQL to support querying (Gutenberg) Blocks as data.",
   "type": "wordpress-plugin",
   "prefer-stable": true,

@@ -174,5 +174,5 @@ function filter_semver_notice_text( $notice_text, $plugin_filename ) {
 	if ( WPGRAPHQL_CONTENT_BLOCKS_PATH !== $plugin_filename ) {
 		return $notice_text;
 	}
-	return '<br><br>' . __( '<b>THIS UPDATE MAY CONTAIN BREAKING CHANGES:</b> This plugin uses Semantic Versioning, and this new version is a major release. Please review the changelog before updating.', 'wpgraphql-content-blocks' );
+	return '<br><br>' . __( '<b>THIS UPDATE MAY CONTAIN BREAKING CHANGES:</b> This plugin uses Semantic Versioning, and this new version is a major release. Please review the changelog before updating.', 'wp-graphql-content-blocks' );
 }
