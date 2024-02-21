@@ -20,6 +20,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'WPGRAPHQL_CONTENT_BLOCKS_DIR', __DIR__ );
+define( 'WPGRAPHQL_CONTENT_BLOCKS_FILE', __FILE__ );
+define( 'WPGRAPHQL_CONTENT_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
+define( 'WPGRAPHQL_CONTENT_BLOCKS_PATH', plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_FILE ) );
+define( 'WPGRAPHQL_CONTENT_BLOCKS_SLUG', dirname( plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_FILE ) ) );
 
 if ( ! class_exists( 'WPGraphQLContentBlocks' ) ) {
 	require_once __DIR__ . '/includes/WPGraphQLContentBlocks.php';
