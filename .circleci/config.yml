@@ -3,24 +3,6 @@
 # - Plugin located at /home/circleci/project/wp-graphql-content-blocks
 
 version: 2.1
-##
-# The `GHA_Event` parameter will be populated with the value `release` when triggered by
-# the GitHub workflow. This can be used in conditional statements to run a specific workflow
-# for a specific event.
-##
-parameters:
-  GHA_Event:
-    type: string
-    default: ""
-  GHA_Actor:
-    type: string
-    default: ""
-  GHA_Action:
-    type: string
-    default: ""
-  GHA_Meta:
-    type: string
-    default: ""
 
 orbs:
   php: circleci/php@1.1.0
