@@ -129,24 +129,26 @@ jobs:
 
 workflows:
   deploy:
-    when:
-      equal: [ "release", << pipeline.parameters.GHA_Event >> ]
     jobs:
       - plugin-unzip:
             slug: wpgraphql-content-blocks
             filename: wp-graphql-content-blocks.php
-            # Run this job on every commit/PR so the plugin is available as a build artifact
+            # Run this job when a tag is published.
             filters:
+              branches:
+                ignore: /.*/
               tags:
-                only: /.*/
+                only: /^v.*/
       - plugin-build-json:
           slug: wpgraphql-content-blocks
           requires:
             - plugin-unzip
-          # Run this job on every commit/PR to make sure it's in working order prior to deploying
+          # Run this job when a tag is published.
           filters:
+            branches:
+              ignore: /.*/
             tags:
-              only: /.*/
+              only: /^v.*/
       - plugin-deploy:
           name: "plugin-deploy-staging"
           slug: wpgraphql-content-blocks
@@ -159,7 +161,7 @@ workflows:
                 - main
                 - canary
             tags:
-              only: /.*/
+              only: /^v.*/
           context: wpe-ldap-creds
           auth_url: https://auth-staging.wpengine.io/v1/tokens
           upload_url: https://wp-product-info-staging.wpesvc.net/v1/plugins
@@ -172,8 +174,8 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              # tag ex. 1.0.0
-              only: /^\S+/
+              # Run this job when a tag is published.
+              only: /^v.*/
           context: wpe-ldap-creds
           auth_url: https://auth.wpengine.io/v1/tokens
           upload_url: https://wp-product-info.wpesvc.net/v1/plugins
