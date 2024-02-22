@@ -29,8 +29,6 @@
   ],
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "@wordpress/e2e-test-utils": "^8.5.0",
-    "@wordpress/env": "^5.6.0",
     "@wordpress/jest-console": "^6.4.0",
     "@wordpress/jest-puppeteer-axe": "^5.4.0",
     "@wordpress/scripts": "^26.18.0",

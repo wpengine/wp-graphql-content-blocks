@@ -8,14 +8,14 @@ on:
 
 jobs:
   test_plugin:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         php: [ '8.2', '7.4' ]
-        wordpress: [ '6.3', '6.2', '5.9' ]
+        wordpress: [ '6.3', '6.2', '6.1' ]
         exclude:
         - php: 8.2
-          wordpress: 5.9
+          wordpress: 6.1
         - php: 7.4
           wordpress: 6.2
         - php: 7.4
@@ -24,7 +24,7 @@ jobs:
     name: WordPress ${{ matrix.wordpress }}, PHP ${{ matrix.php }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Create Docker Containers
         env:
