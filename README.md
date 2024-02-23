@@ -8,7 +8,7 @@ WordPress plugin that extends WPGraphQL to support querying (Gutenberg) Blocks a
 
 ## How to Install
 
-This plugin is an extension of [`wp-graphql`](https://www.wpgraphql.com/), so make sure you have it installed first.
+This plugin is an extension of [`WPGraphQL`](https://www.wpgraphql.com/), so make sure you have it installed first.
 
 1. Download the [latest .zip version of the plugin](https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip)
 2. Upload the plugin .zip to your WordPress site
