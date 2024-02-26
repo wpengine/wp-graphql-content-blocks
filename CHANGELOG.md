@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 3.1.0
+
+### Minor Changes
+
+- 9fab724: Added support for automatic updates hosted from WP Engine infrastructure. Includes warnings when major versions with potential breaking changes are released.
+
 ## 3.0.0
 
 ### Major Changes
