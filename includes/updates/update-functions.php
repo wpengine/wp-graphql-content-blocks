@@ -39,7 +39,7 @@ function get_plugin_data_from_wpe( $args ) {
 	$api->name                  = $product_info->name;
 	$api->requires              = isset( $product_info->requires_at_least ) ? $product_info->requires_at_least : $current_plugin_data['RequiresWP'];
 	$api->sections['changelog'] = isset( $product_info->sections->changelog ) ? $product_info->sections->changelog : '<h4>1.0</h4><ul><li>Initial release.</li></ul>';
-	$api->slug                  = $args->slug;
+	$api->slug                  = 'wp-graphql-content-blocks';
 
 	// Only pass along the update info if the requirements are met and there's actually a newer version.
 	if ( $meets_wp_req && version_compare( $current_plugin_data['Version'], $product_info->version, '<' ) ) {
