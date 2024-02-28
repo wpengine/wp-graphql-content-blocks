@@ -35,6 +35,7 @@ function check_for_plugin_updates( $data ) {
 		return $data;
 	}
 
+	$response->slug      = 'wp-graphql-content-blocks';
 	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_FILE );
 	$meets_wp_req        = version_compare( get_bloginfo( 'version' ), $response->requires_at_least, '>=' );
 
@@ -114,7 +115,7 @@ function display_plugin_row_notice() {
 	$error = get_plugin_api_error();
 
 	?>
-	<tr class="plugin-update-tr active" id="wpgraphql-content-blocks-update" data-slug="wpgraphql-content-blocks" data-plugin="wpgraphql-content-blocks/wpgraphql-content-blocks.php">
+	<tr class="plugin-update-tr active" id="wp-graphql-content-blocks-update" data-slug="wp-graphql-content-blocks" data-plugin="wp-graphql-content-blocks/wp-graphql-content-blocks.php">
 		<td colspan="4" class="plugin-update">
 			<div class="update-message notice inline notice-error notice-alt">
 				<p>
