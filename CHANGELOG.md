@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 3.1.2
+
+### Patch Changes
+
+- 1117a18: Fixed issue with updater functionality.
+
 ## 3.1.1
 
 ### Patch Changes
