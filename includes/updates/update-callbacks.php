@@ -35,7 +35,7 @@ function check_for_plugin_updates( $data ) {
 		return $data;
 	}
 
-	$response->slug = 'wp-graphql-content-blocks';
+	$response->slug      = 'wp-graphql-content-blocks';
 	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_FILE );
 	$meets_wp_req        = version_compare( get_bloginfo( 'version' ), $response->requires_at_least, '>=' );
 
