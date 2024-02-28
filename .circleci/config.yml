@@ -149,7 +149,7 @@ workflows:
           upload_url: https://wp-product-info-staging.wpesvc.net/v1/plugins
       - plugin-deploy:
           name: "plugin-deploy-production"
-          slug: wp-graphql-content-blocks
+          slug: wpgraphql-content-blocks
           requires:
             - "plugin-deploy-staging"
           filters:
