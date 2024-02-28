@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.4
-Stable tag: 3.0.0
+Stable tag: 3.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 3.1.0 =
+
+### Minor Changes
+
+- 9fab724: Added support for automatic updates hosted from WP Engine infrastructure. Includes warnings when major versions with potential breaking changes are released.
+
 = 3.0.0 =
 
 ### Major Changes
@@ -45,33 +51,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 - 7251fb0: Fix: use `use_block_editor_for_post_type` instead of `post_type_supports` when filtering the post types.
 
 **BREAKING**: Potential schema changes for GraphQL Types representing a Post Type that does not use the Block Editor. Each GraphQL Type representing a Post Type that does not have block editor support previously would have had the `editorBlocks` field but that field will no longer exist on those Types.
-
-= 1.2.1 =
-
-### Patch Changes
-
-- 54affda: Adds mediaDetails field in CoreImage block:
-
-  ```graphql
-  {
-    posts {
-      nodes {
-        editorBlocks {
-          ... on CoreImage {
-            mediaDetails {
-              file
-              sizes {
-                name
-                fileSize
-                height
-                width
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  ```
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
