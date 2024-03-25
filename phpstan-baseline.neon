@@ -1,0 +1,161 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Argument of an invalid type array\\<DOMElement\\>\\|DOMElement supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: includes/Blocks/Block.php
+
+		-
+			message: "#^Call to an undefined method DOMElement\\:\\:html\\(\\)\\.$#"
+			count: 1
+			path: includes/Blocks/Block.php
+
+		-
+			message: "#^Cannot call method innerHTML\\(\\) on array\\<DOMElement\\>\\|DOMElement\\.$#"
+			count: 1
+			path: includes/Blocks/Block.php
+
+		-
+			message: "#^Cannot cast array\\|string to string\\.$#"
+			count: 1
+			path: includes/Blocks/Block.php
+
+		-
+			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Blocks\\\\Block\\:\\:resolve\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: includes/Blocks/Block.php
+
+		-
+			message: "#^Parameter \\#3 \\$prefix of method WPGraphQL\\\\ContentBlocks\\\\Blocks\\\\Block\\:\\:get_attribute_type\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: includes/Blocks/Block.php
+
+		-
+			message: "#^Cannot access property \\$post_content on WP_Post\\|null\\.$#"
+			count: 1
+			path: includes/Data/ContentBlocksResolver.php
+
+		-
+			message: "#^Variable \\$block_spec in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: includes/Field/BlockSupports/Anchor.php
+
+		-
+			message: "#^@param array \\$supported_blocks_for_post_type_context does not accept actual type of parameter\\: array\\<string\\>\\|bool\\.$#"
+			count: 1
+			path: includes/Registry/Registry.php
+
+		-
+			message: "#^Access to an undefined property WP_Post_Type\\:\\:\\$graphql_single_name\\.$#"
+			count: 3
+			path: includes/Registry/Registry.php
+
+		-
+			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_attributes_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
+			count: 1
+			path: includes/Registry/Registry.php
+
+		-
+			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
+			count: 1
+			path: includes/Registry/Registry.php
+
+		-
+			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:html\\(\\)\\.$#"
+			count: 1
+			path: includes/Utilities/DomHelpers.php
+
+		-
+			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:innerHTML\\(\\)\\.$#"
+			count: 1
+			path: includes/Utilities/DomHelpers.php
+
+		-
+			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:text\\(\\)\\.$#"
+			count: 1
+			path: includes/Utilities/DomHelpers.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: includes/Utilities/DomHelpers.php
+
+		-
+			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Utilities\\\\DOMHelpers\\:\\:findNodes\\(\\) should return array\\<DOMElement\\>\\|DOMElement but returns array\\<DiDom\\\\Element\\|DOMElement\\>\\|DiDom\\\\Element\\|DOMElement\\.$#"
+			count: 1
+			path: includes/Utilities/DomHelpers.php
+
+		-
+			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Utilities\\\\DOMHelpers\\:\\:findNodes\\(\\) should return array\\<DOMElement\\>\\|DOMElement but returns null\\.$#"
+			count: 1
+			path: includes/Utilities/DomHelpers.php
+
+		-
+			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PATH not found\\.$#"
+			count: 1
+			path: includes/WPGraphQLContentBlocks.php
+
+		-
+			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR not found\\.$#"
+			count: 4
+			path: includes/WPGraphQLContentBlocks.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$response\\.$#"
+			count: 1
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Cannot access property \\$id on WP_Screen\\|null\\.$#"
+			count: 2
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PATH not found\\.$#"
+			count: 2
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_SLUG not found\\.$#"
+			count: 1
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\custom_plugin_api_request\\(\\) has invalid return type WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\stdClass\\.$#"
+			count: 1
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\custom_plugin_api_request\\(\\) should return WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\stdClass\\|false but returns array\\|object\\|false\\.$#"
+			count: 2
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\custom_plugin_api_request\\(\\) should return WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\stdClass\\|false but returns object\\.$#"
+			count: 1
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\filter_semver_notice_text\\(\\) never returns null so it can be removed from the return type\\.$#"
+			count: 1
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Variable \\$data in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Variable \\$response in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: includes/updates/update-callbacks.php
+
+		-
+			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_URL not found\\.$#"
+			count: 1
+			path: includes/updates/update-functions.php
+
+		-
+			message: "#^Variable \\$product_info in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: includes/updates/update-functions.php
