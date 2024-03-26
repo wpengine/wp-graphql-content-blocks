@@ -46,17 +46,17 @@ parameters:
 			path: includes/Registry/Registry.php
 
 		-
-			message: "#^Access to an undefined property WP_Post_Type\\:\\:\\$graphql_single_name\\.$#"
-			count: 3
-			path: includes/Registry/Registry.php
-
-		-
 			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_attributes_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
 			count: 1
 			path: includes/Registry/Registry.php
 
 		-
 			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
+			count: 1
+			path: includes/Registry/Registry.php
+
+		-
+			message: "#^Parameter \\#2 \\$type_names of function register_graphql_interfaces_to_types expects array\\<string\\>\\|string, array\\<string\\|null\\> given\\.$#"
 			count: 1
 			path: includes/Registry/Registry.php
 
@@ -76,11 +76,6 @@ parameters:
 			path: includes/Utilities/DomHelpers.php
 
 		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: includes/Utilities/DomHelpers.php
-
-		-
 			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Utilities\\\\DOMHelpers\\:\\:findNodes\\(\\) should return array\\<DOMElement\\>\\|DOMElement but returns array\\<DiDom\\\\Element\\|DOMElement\\>\\|DiDom\\\\Element\\|DOMElement\\.$#"
 			count: 1
 			path: includes/Utilities/DomHelpers.php
@@ -91,13 +86,13 @@ parameters:
 			path: includes/Utilities/DomHelpers.php
 
 		-
-			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PATH not found\\.$#"
-			count: 1
+			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR not found\\.$#"
+			count: 4
 			path: includes/WPGraphQLContentBlocks.php
 
 		-
-			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR not found\\.$#"
-			count: 4
+			message: "#^Parameter \\#1 \\$plugin_filename of class EnforceSemVer\\\\EnforceSemVer constructor expects string, null given\\.$#"
+			count: 1
 			path: includes/WPGraphQLContentBlocks.php
 
 		-
@@ -108,16 +103,6 @@ parameters:
 		-
 			message: "#^Cannot access property \\$id on WP_Screen\\|null\\.$#"
 			count: 2
-			path: includes/updates/update-callbacks.php
-
-		-
-			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PATH not found\\.$#"
-			count: 2
-			path: includes/updates/update-callbacks.php
-
-		-
-			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_SLUG not found\\.$#"
-			count: 1
 			path: includes/updates/update-callbacks.php
 
 		-
@@ -139,23 +124,3 @@ parameters:
 			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\filter_semver_notice_text\\(\\) never returns null so it can be removed from the return type\\.$#"
 			count: 1
 			path: includes/updates/update-callbacks.php
-
-		-
-			message: "#^Variable \\$data in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: includes/updates/update-callbacks.php
-
-		-
-			message: "#^Variable \\$response in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: includes/updates/update-callbacks.php
-
-		-
-			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_URL not found\\.$#"
-			count: 1
-			path: includes/updates/update-functions.php
-
-		-
-			message: "#^Variable \\$product_info in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: includes/updates/update-functions.php
