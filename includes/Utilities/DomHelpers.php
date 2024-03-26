@@ -25,7 +25,7 @@ final class DOMHelpers {
 	 */
 	public static function parseAttribute( $html, $selector, $attribute, $default_value = null ): ?string {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		if ( '*' === $selector ) {
 			$selector = '*[' . $attribute . ']';
 		}
@@ -75,7 +75,7 @@ final class DOMHelpers {
 	 */
 	public static function parseHTML( $html, $selector, $default_value = null ) {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		$node       = $doc->find( $selector );
 		$inner_html = isset( $default_value ) ? $default_value : '';
 
@@ -95,7 +95,7 @@ final class DOMHelpers {
 	 */
 	public static function getElementsFromHTML( $html, $selector ) {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		$elements = $doc->find( $selector );
 
 		$output = '';
@@ -118,7 +118,7 @@ final class DOMHelpers {
 	 */
 	public static function parseText( $html, $selector ) {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		$nodes = $doc->find( $selector );
 
 		if ( count( $nodes ) === 0 ) {
