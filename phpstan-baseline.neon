@@ -31,11 +31,6 @@ parameters:
 			path: includes/Blocks/Block.php
 
 		-
-			message: "#^Cannot access property \\$post_content on WP_Post\\|null\\.$#"
-			count: 1
-			path: includes/Data/ContentBlocksResolver.php
-
-		-
 			message: "#^Variable \\$block_spec in isset\\(\\) always exists and is not nullable\\.$#"
 			count: 1
 			path: includes/Field/BlockSupports/Anchor.php
