@@ -71,7 +71,7 @@ final class DOMHelpers {
 	 * @param string $selector The selector to use.
 	 * @param mixed  $default_value The default value to return if the selector is not found.
 	 *
-	 * @return string|null extracted innerHTML of selector
+	 * @return string extracted innerHTML of selector
 	 */
 	public static function parseHTML( $html, $selector, $default_value = null ) {
 		$doc = new Document();
@@ -91,7 +91,7 @@ final class DOMHelpers {
 	 * @param string $html The HTML string to parse.
 	 * @param string $selector The element (selector) to extract.
 	 *
-	 * @return string|null the HTML string of the extracted elements
+	 * @return string the HTML string of the extracted elements
 	 */
 	public static function getElementsFromHTML( $html, $selector ) {
 		$doc = new Document();
