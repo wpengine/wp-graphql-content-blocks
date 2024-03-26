@@ -3,7 +3,19 @@ includes:
 parameters:
 		level: 8
 		inferPrivatePropertyTypeFromConstructor: true
-		checkMissingIterableValueType: false
+		checkAlwaysTrueCheckTypeFunctionCall: true
+		checkAlwaysTrueInstanceof: true
+		checkAlwaysTrueStrictComparison: true
+		checkExplicitMixedMissingReturn: true
+		checkFunctionNameCase: true
+		checkInternalClassCaseSensitivity: true
+		checkMissingIterableValueType: false # @todo this should be true
+		checkTooWideReturnTypesInProtectedAndPublicMethods: true
+		polluteScopeWithAlwaysIterableForeach: false
+		polluteScopeWithLoopInitialAssignments: false
+		reportAlwaysTrueInLastCondition: true
+		reportStaticMethodSignatures: true
+		reportWrongPhpDocTypeInVarTag: true
 		treatPhpDocTypesAsCertain: false
 		stubFiles:
 			# Simulate added properties
