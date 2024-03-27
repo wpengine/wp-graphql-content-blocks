@@ -36,11 +36,6 @@ parameters:
 			path: includes/Field/BlockSupports/Anchor.php
 
 		-
-			message: "#^@param array \\$supported_blocks_for_post_type_context does not accept actual type of parameter\\: array\\<string\\>\\|bool\\.$#"
-			count: 1
-			path: includes/Registry/Registry.php
-
-		-
 			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_attributes_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
 			count: 1
 			path: includes/Registry/Registry.php
