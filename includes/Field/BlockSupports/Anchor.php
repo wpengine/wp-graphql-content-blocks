@@ -48,9 +48,10 @@ class Anchor {
 	 * @return string[]
 	 */
 	public static function get_block_interfaces( $existing, \WP_Block_Type $block_spec ): array {
-		if ( isset( $block_spec ) && isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
+		if ( isset( $block_spec->supports['anchor'] ) && true === $block_spec->supports['anchor'] ) {
 			$existing[] = 'BlockWithSupportsAnchor';
 		}
+
 		return $existing;
 	}
 
