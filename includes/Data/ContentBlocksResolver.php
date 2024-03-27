@@ -58,7 +58,9 @@ final class ContentBlocksResolver {
 		$new_parsed_blocks = [];
 		foreach ( $parsed_blocks as $block ) {
 			if ( 'core/block' === $block['blockName'] && $block['attrs']['ref'] ) {
-				$reusable_blocks = parse_blocks( get_post( $block['attrs']['ref'] )->post_content );
+				$post            = get_post( $block['attrs']['ref'] );
+				$reusable_blocks = ! empty( $post->post_content ) ? parse_blocks( $post->post_content ) : null;
+
 				if ( ! empty( $reusable_blocks ) ) {
 					array_push( $new_parsed_blocks, ...$reusable_blocks );
 				}
