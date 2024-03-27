@@ -25,7 +25,7 @@ final class DOMHelpers {
 	 */
 	public static function parseAttribute( $html, $selector, $attribute, $default_value = null ): ?string {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		if ( '*' === $selector ) {
 			$selector = '*[' . $attribute . ']';
 		}
@@ -71,11 +71,11 @@ final class DOMHelpers {
 	 * @param string $selector The selector to use.
 	 * @param mixed  $default_value The default value to return if the selector is not found.
 	 *
-	 * @return string|null extracted innerHTML of selector
+	 * @return string extracted innerHTML of selector
 	 */
 	public static function parseHTML( $html, $selector, $default_value = null ) {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		$node       = $doc->find( $selector );
 		$inner_html = isset( $default_value ) ? $default_value : '';
 
@@ -91,11 +91,11 @@ final class DOMHelpers {
 	 * @param string $html The HTML string to parse.
 	 * @param string $selector The element (selector) to extract.
 	 *
-	 * @return string|null the HTML string of the extracted elements
+	 * @return string the HTML string of the extracted elements
 	 */
 	public static function getElementsFromHTML( $html, $selector ) {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		$elements = $doc->find( $selector );
 
 		$output = '';
@@ -118,7 +118,7 @@ final class DOMHelpers {
 	 */
 	public static function parseText( $html, $selector ) {
 		$doc = new Document();
-		$doc->loadHTML( $html );
+		$doc->loadHtml( $html );
 		$nodes = $doc->find( $selector );
 
 		if ( count( $nodes ) === 0 ) {
