@@ -187,8 +187,6 @@ class Block {
 	 *
 	 * @param ?array      $block_attributes The block attributes.
 	 * @param string|null $prefix The current prefix string to use for the get_query_type
-	 * 
-	 * @return array
 	 */
 	private function get_block_attribute_fields( ?array $block_attributes, $prefix = '' ): array {
 		$fields = [];
@@ -260,8 +258,6 @@ class Block {
 	 * 
 	 * @param array  $attributes The query attributes config
 	 * @param string $prefix The current prefix string to use for registering the new query attribute type
-	 * 
-	 * @return array
 	 */
 	private function create_attributes_fields( $attributes, $prefix ): array {
 		$fields = [];
@@ -372,8 +368,6 @@ class Block {
 	 * @param array  $attributes The block current attributes value
 	 * @param string $html The block rendered html
 	 * @param array  $config The block current attribute configuration
-	 * 
-	 * @return array
 	 */
 	private function resolve_block_attributes_recursive( $attributes, $html, $config ): array {
 		$result = [];
