@@ -1,5 +1,18 @@
 # WPGraphQL Content Blocks
 
+## 3.1.3
+
+### Patch Changes
+
+- d62e8db: chore: remove `squizlabs/php_codesniffer` from Composer's direct dependencies.
+- e6b4ac4: chore: update Composer dev-deps and lint
+- 05b21b5: fix: Update parameter type for `$supported_blocks_for_post_type_context` in `wpgraphql_content_blocks_should_apply_post_type_editor_blocks_interfaces` to support boolean values
+- 7b49863: chore: Bump PHPStan.neon.dist to level 8 and generate baseline of existing tech debt.
+- 0c8e2c7: fix: check for `post_content` before attempting to parse them.
+- 2d4a218: fix: : rename `WPGraphQLHelpers` file to match class casing. The file name has been changed from `includes/Utilities/WPGraphqlHelpers.php` to `includes/Utilities/WPGraphQLHelpers.php`.
+- 66f74fb: chore: stub WP_Post_Type and boostrap wp-graphql-content-blocks.php when scanning with PHPStan
+- 43791db: chore: update PHPStan ruleset for stricter linting, and address newly-discovered tech debt.
+
 ## 3.1.2
 
 ### Patch Changes
