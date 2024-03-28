@@ -211,7 +211,12 @@ final class Registry {
 			},
 			$supported_post_types
 		);
+
+		// Remove any null values from the array
+		$type_names = array_filter( $type_names );
+
 		register_graphql_interfaces_to_types( [ 'NodeWithEditorBlocks' ], $type_names );
+
 		$post_id = -1;
 		// For each Post type
 		foreach ( $supported_post_types as $post_type ) {

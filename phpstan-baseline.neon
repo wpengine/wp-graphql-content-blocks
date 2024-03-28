@@ -46,11 +46,6 @@ parameters:
 			path: includes/Registry/Registry.php
 
 		-
-			message: "#^Parameter \\#2 \\$type_names of function register_graphql_interfaces_to_types expects array\\<string\\>\\|string, array\\<string\\|null\\> given\\.$#"
-			count: 1
-			path: includes/Registry/Registry.php
-
-		-
 			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:html\\(\\)\\.$#"
 			count: 1
 			path: includes/Utilities/DomHelpers.php
