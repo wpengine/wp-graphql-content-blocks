@@ -16,11 +16,6 @@ parameters:
 			path: includes/Blocks/Block.php
 
 		-
-			message: "#^Cannot cast array\\|string to string\\.$#"
-			count: 1
-			path: includes/Blocks/Block.php
-
-		-
 			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Blocks\\\\Block\\:\\:resolve\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: includes/Blocks/Block.php
