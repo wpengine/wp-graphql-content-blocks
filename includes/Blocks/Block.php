@@ -164,7 +164,11 @@ class Block {
 					}
 					break;
 				case 'object':
-					$type = Scalar::get_block_attributes_object_type_name();
+                    if ( isset( $attribute['properties'] ) ) {
+                        $type = $this->get_query_type( $name, $attribute['properties'], $prefix );
+                    } else {
+                        $type = Scalar::get_block_attributes_object_type_name();
+                    }
 					break;
 			}
 		} elseif ( isset( $attribute['source'] ) ) {
