@@ -394,8 +394,15 @@ class Block {
 					$result[ $key ] = DOMHelpers::parseText( $html, $value['selector'] );
 					break;
 				case 'query':
-					$temp = [];
-					foreach ( DOMHelpers::findNodes( $html, $value['selector'] ) as $source_node ) {
+					$temp  = [];
+					$nodes = DOMHelpers::findNodes( $html, $value['selector'] );
+
+					// Coerce nodes to an array if it's not already.
+					if ( ! is_array( $nodes ) ) {
+						$nodes = [ $nodes ];
+					}
+	
+					foreach ( $nodes as $source_node ) {
 						foreach ( $value['query'] as $q_key => $q_value ) {
 							$temp_config    = [
 								$q_key => $q_value,

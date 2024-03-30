@@ -1,17 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Argument of an invalid type array\\<DOMElement\\>\\|DOMElement supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: includes/Blocks/Block.php
-
-		-
-			message: "#^Call to an undefined method DOMElement\\:\\:html\\(\\)\\.$#"
-			count: 1
-			path: includes/Blocks/Block.php
-
-		-
-			message: "#^Cannot call method innerHTML\\(\\) on array\\<DOMElement\\>\\|DOMElement\\.$#"
+			message: "#^Cannot call method innerHTML\\(\\) on array\\<DiDom\\\\Element\\>\\|DiDom\\\\Element\\.$#"
 			count: 1
 			path: includes/Blocks/Block.php
 
@@ -44,31 +34,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
 			count: 1
 			path: includes/Registry/Registry.php
-
-		-
-			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:html\\(\\)\\.$#"
-			count: 1
-			path: includes/Utilities/DomHelpers.php
-
-		-
-			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:innerHTML\\(\\)\\.$#"
-			count: 1
-			path: includes/Utilities/DomHelpers.php
-
-		-
-			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:text\\(\\)\\.$#"
-			count: 1
-			path: includes/Utilities/DomHelpers.php
-
-		-
-			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Utilities\\\\DOMHelpers\\:\\:findNodes\\(\\) should return array\\<DOMElement\\>\\|DOMElement but returns array\\<DiDom\\\\Element\\|DOMElement\\>\\|DiDom\\\\Element\\|DOMElement\\.$#"
-			count: 1
-			path: includes/Utilities/DomHelpers.php
-
-		-
-			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Utilities\\\\DOMHelpers\\:\\:findNodes\\(\\) should return array\\<DOMElement\\>\\|DOMElement but returns null\\.$#"
-			count: 1
-			path: includes/Utilities/DomHelpers.php
 
 		-
 			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR not found\\.$#"
