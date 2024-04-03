@@ -26,22 +26,12 @@ parameters:
 			path: includes/Blocks/Block.php
 
 		-
-			message: "#^Variable \\$block_spec in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 1
-			path: includes/Field/BlockSupports/Anchor.php
-
-		-
 			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_attributes_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
 			count: 1
 			path: includes/Registry/Registry.php
 
 		-
 			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
-			count: 1
-			path: includes/Registry/Registry.php
-
-		-
-			message: "#^Parameter \\#2 \\$type_names of function register_graphql_interfaces_to_types expects array\\<string\\>\\|string, array\\<string\\|null\\> given\\.$#"
 			count: 1
 			path: includes/Registry/Registry.php
 
