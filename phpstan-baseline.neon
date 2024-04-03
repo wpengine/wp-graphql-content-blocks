@@ -21,21 +21,6 @@ parameters:
 			path: includes/Blocks/Block.php
 
 		-
-			message: "#^Method WPGraphQL\\\\ContentBlocks\\\\Blocks\\\\Block\\:\\:resolve\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: includes/Blocks/Block.php
-
-		-
-			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_attributes_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
-			count: 1
-			path: includes/Registry/Registry.php
-
-		-
-			message: "#^Parameter \\#2 \\$block_spec of static method WPGraphQL\\\\ContentBlocks\\\\Field\\\\BlockSupports\\\\Anchor\\:\\:get_block_interfaces\\(\\) expects WP_Block_Type, WP_Block_Type\\|null given\\.$#"
-			count: 1
-			path: includes/Registry/Registry.php
-
-		-
 			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:html\\(\\)\\.$#"
 			count: 1
 			path: includes/Utilities/DomHelpers.php
