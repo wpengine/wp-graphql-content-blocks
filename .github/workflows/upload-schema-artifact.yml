@@ -1,9 +1,6 @@
 name: Upload Schema Artifact
 
 on:
-  push:
-    branches:
-      - "**" # All branches
   workflow_run:
     workflows: ["Release"]
     types:
@@ -36,9 +33,9 @@ jobs:
           # Output: /tmp/schema.graphql
           wp graphql generate-static-schema
 
-      # - name: Upload schema as release artifact
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     files: /tmp/schema.graphql
-      #   env:
-      #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Upload schema as release artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          files: /tmp/schema.graphql
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
