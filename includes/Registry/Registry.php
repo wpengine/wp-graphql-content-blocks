@@ -170,7 +170,13 @@ final class Registry {
 	 * @return string[]
 	 */
 	public function get_block_additional_interfaces( string $block_name ): array {
-		$block_spec       = $this->block_type_registry->get_registered( $block_name );
+		$block_spec = $this->block_type_registry->get_registered( $block_name );
+
+		// Bail if no block type is found.
+		if ( ! $block_spec instanceof \WP_Block_Type ) {
+			return [];
+		}
+
 		$block_interfaces = [];
 		// NOTE: Using add_filter here creates a performance penalty.
 		$block_interfaces = Anchor::get_block_interfaces( $block_interfaces, $block_spec );
@@ -185,7 +191,13 @@ final class Registry {
 	 * @return string[]
 	 */
 	public function get_block_attributes_interfaces( string $block_name ): array {
-		$block_spec       = $this->block_type_registry->get_registered( $block_name );
+		$block_spec = $this->block_type_registry->get_registered( $block_name );
+
+		// Bail if no block type is found.
+		if ( ! $block_spec instanceof \WP_Block_Type ) {
+			return [];
+		}
+
 		$block_interfaces = [];
 		// NOTE: Using add_filter here creates a performance penalty.
 		$block_interfaces = Anchor::get_block_attributes_interfaces( $block_interfaces, $block_spec );
@@ -211,7 +223,12 @@ final class Registry {
 			},
 			$supported_post_types
 		);
+
+		// Remove any null values from the array
+		$type_names = array_filter( $type_names );
+
 		register_graphql_interfaces_to_types( [ 'NodeWithEditorBlocks' ], $type_names );
+
 		$post_id = -1;
 		// For each Post type
 		foreach ( $supported_post_types as $post_type ) {

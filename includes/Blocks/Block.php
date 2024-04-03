@@ -352,22 +352,13 @@ class Block {
 					'name' => [
 						'type'        => 'String',
 						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
-						'resolve'     => function ( $block ) {
-							return $this->resolve( $block );
+						'resolve'     => static function ( $block ) {
+							return isset( $block['blockName'] ) ? (string) $block['blockName'] : null;
 						},
 					],
 				],
 			]
 		);
-	}
-
-	/**
-	 * Returns the necessary block data to resolve the block field.
-	 *
-	 * @param mixed $block The block data passed to the resolver.
-	 */
-	private function resolve( $block ) {
-		return isset( $block['blockName'] ) ? $block['blockName'] : '';
 	}
 
 	/**
