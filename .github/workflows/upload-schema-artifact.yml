@@ -1,10 +1,9 @@
 name: Upload Schema Artifact
 
 on:
-  workflow_run:
-    workflows: ["Release"]
-    types:
-      - completed
+  push:
+    tags:
+      - "*"
 
 jobs:
   run:
@@ -22,8 +21,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Setup WordPress
         uses: ./.github/actions/setup-wordpress
 
@@ -34,8 +32,9 @@ jobs:
           wp graphql generate-static-schema
 
       - name: Upload schema as release artifact
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ format('v{0}',github.ref_name)}}
           files: /tmp/schema.graphql
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
