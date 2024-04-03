@@ -12,7 +12,7 @@ download() {
 }
 
 install_wordpress() {
-	
+
 	if [ -d $WP_CORE_DIR ]; then
 		return;
 	fi
@@ -46,6 +46,7 @@ install_wordpress() {
 		else
 			local ARCHIVE_NAME="wordpress-$WP_VERSION"
 		fi
+		echo ${ARCHIVE_NAME}
 		download https://wordpress.org/${ARCHIVE_NAME}.tar.gz  $TMPDIR/wordpress.tar.gz
 		tar --strip-components=1 -zxmf $TMPDIR/wordpress.tar.gz -C $WP_CORE_DIR
 	fi
@@ -113,7 +114,7 @@ configure_wordpress() {
 
 	echo "Setting up WordPress..."
 	export WP_CLI_CONFIG_PATH=${WP_CLI_CONFIG_PATH};
-	
+
 	wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
 	wp core install --url=$WP_DOMAIN --title=Test --admin_user=$ADMIN_USERNAME --admin_password=$ADMIN_PASSWORD --admin_email=$ADMIN_EMAIL
 	wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
