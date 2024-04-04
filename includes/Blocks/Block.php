@@ -136,9 +136,7 @@ class Block {
 
 		if ( isset( $attribute['type'] ) ) {
 			switch ( $attribute['type'] ) {
-				case 'rich-text': 
-					$type = 'String';
-					break;
+				case 'rich-text':
 				case 'string':
 					$type = 'String';
 					break;
@@ -300,7 +298,6 @@ class Block {
 	private function normalize_attribute_value( $value, $type ) {
 		switch ( $type ) {
 			case 'rich-text':
-				return (string) $value;
 			case 'string':
 				return (string) $value;
 			case 'number':
