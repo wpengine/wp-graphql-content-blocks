@@ -21,11 +21,6 @@ parameters:
 			path: includes/Blocks/Block.php
 
 		-
-			message: "#^Parameter \\#3 \\$prefix of method WPGraphQL\\\\ContentBlocks\\\\Blocks\\\\Block\\:\\:get_attribute_type\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: includes/Blocks/Block.php
-
-		-
 			message: "#^Call to an undefined method DiDom\\\\Element\\|DOMElement\\:\\:html\\(\\)\\.$#"
 			count: 1
 			path: includes/Utilities/DomHelpers.php
