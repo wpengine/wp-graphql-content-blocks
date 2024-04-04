@@ -138,6 +138,7 @@ class Block {
 			switch ( $attribute['type'] ) {
 				case 'rich-text': 
 					$type = 'String';
+					break;
 				case 'string':
 					$type = 'String';
 					break;
