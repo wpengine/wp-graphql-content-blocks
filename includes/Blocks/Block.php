@@ -185,10 +185,10 @@ class Block {
 	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
-	 * @param ?array      $block_attributes The block attributes.
-	 * @param string|null $prefix The current prefix string to use for the get_query_type
+	 * @param ?array $block_attributes The block attributes.
+	 * @param string $prefix The current prefix string to use for the get_query_type
 	 */
-	private function get_block_attribute_fields( ?array $block_attributes, $prefix = '' ): array {
+	private function get_block_attribute_fields( ?array $block_attributes, string $prefix = '' ): array {
 		$fields = [];
 
 		// Bail early if no attributes are defined.

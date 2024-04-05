@@ -11,11 +11,6 @@ parameters:
 			path: includes/Blocks/Block.php
 
 		-
-			message: "#^Parameter \\#3 \\$prefix of method WPGraphQL\\\\ContentBlocks\\\\Blocks\\\\Block\\:\\:get_attribute_type\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: includes/Blocks/Block.php
-
-		-
 			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR not found\\.$#"
 			count: 4
 			path: includes/WPGraphQLContentBlocks.php
