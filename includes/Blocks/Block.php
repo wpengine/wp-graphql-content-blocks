@@ -136,6 +136,7 @@ class Block {
 
 		if ( isset( $attribute['type'] ) ) {
 			switch ( $attribute['type'] ) {
+				case 'rich-text':
 				case 'string':
 					$type = 'String';
 					break;
@@ -301,6 +302,7 @@ class Block {
 		}
 
 		switch ( $type ) {
+			case 'rich-text':
 			case 'array':
 				// If we're here, we want an array type, even though the value is not an array.
 				return isset( $value ) ? [ $value ] : [];
@@ -375,6 +377,7 @@ class Block {
 			$default = $value['default'] ?? null;
 			$source  = $value['source'] ?? null;
 			switch ( $source ) {
+				case 'rich-text':
 				case 'html':
 					if ( ! isset( $value['selector'] ) ) {
 						$result[ $key ] = $this->parse_single_source( $html, $source );
