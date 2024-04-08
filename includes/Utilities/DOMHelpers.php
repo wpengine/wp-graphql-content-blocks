@@ -76,12 +76,15 @@ final class DOMHelpers {
 	public static function parseHTML( $html, $selector, $default_value = null ) {
 		$doc = new Document();
 		$doc->loadHtml( $html );
+
+		/** @var \DiDom\Element[] $node */
 		$node       = $doc->find( $selector );
 		$inner_html = isset( $default_value ) ? $default_value : '';
 
 		foreach ( $node as $elem ) {
-			$inner_html .= $elem->innerHTML();
+			$inner_html .= $elem->innerHtml();
 		}
+
 		return $inner_html;
 	}
 
@@ -96,6 +99,8 @@ final class DOMHelpers {
 	public static function getElementsFromHTML( $html, $selector ) {
 		$doc = new Document();
 		$doc->loadHtml( $html );
+
+		/** @var \DiDom\Element[] $elements */
 		$elements = $doc->find( $selector );
 
 		$output = '';
@@ -114,11 +119,13 @@ final class DOMHelpers {
 	 * @param string $html The HTML string to parse.
 	 * @param string $selector The selector to get the text content from.
 	 *
-	 * @return string|null The text content of the selector if found.
+	 * @return ?string The text content of the selector if found.
 	 */
 	public static function parseText( $html, $selector ) {
 		$doc = new Document();
 		$doc->loadHtml( $html );
+
+		/** @var \DiDom\Element[] $nodes */
 		$nodes = $doc->find( $selector );
 
 		if ( count( $nodes ) === 0 ) {
@@ -136,19 +143,26 @@ final class DOMHelpers {
 	 * @param string      $html The HTML string to parse.
 	 * @param string|null $selector The selector to use.
 	 *
-	 * @return \DOMElement[]|\DOMElement
+	 * @return \DiDom\Element[]|\DiDom\Element
 	 */
 	public static function findNodes( $html, $selector = null ) {
 		// Bail early if there's no html to parse.
 		if ( empty( trim( $html ) ) ) {
-			return null;
+			return [];
 		}
+
 		$doc = new Document( $html );
 		// <html><body>$html</body></html>
-		$elem = $doc->find( '*' )[2];
+
+		/** @var \DiDom\Element[] $elements */
+		$elements = $doc->find( '*' );
+		$elem     = $elements[2] ?? [];
+
 		if ( $selector ) {
+			/** @var \DiDom\Element[] $elem */
 			$elem = $doc->find( $selector );
 		}
+
 		return $elem;
 	}
 }
