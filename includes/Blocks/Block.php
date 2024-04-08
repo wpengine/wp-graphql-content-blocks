@@ -185,10 +185,10 @@ class Block {
 	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
-	 * @param ?array      $block_attributes The block attributes.
-	 * @param string|null $prefix The current prefix string to use for the get_query_type
+	 * @param ?array $block_attributes The block attributes.
+	 * @param string $prefix The current prefix string to use for the get_query_type
 	 */
-	private function get_block_attribute_fields( ?array $block_attributes, $prefix = '' ): array {
+	private function get_block_attribute_fields( ?array $block_attributes, string $prefix = '' ): array {
 		$fields = [];
 
 		// Bail early if no attributes are defined.
@@ -292,10 +292,18 @@ class Block {
 	 * @param array|string $value The value
 	 * @param string       $type The type of the value
 	 * 
-	 * @return mixed
+	 * @return array|string|int|float|bool
 	 */
 	private function normalize_attribute_value( $value, $type ) {
+		// @todo use the `source` to normalize array/object values.
+		if ( is_array( $value ) ) {
+			return $value;
+		}
+
 		switch ( $type ) {
+			case 'array':
+				// If we're here, we want an array type, even though the value is not an array.
+				return isset( $value ) ? [ $value ] : [];
 			case 'string':
 				return (string) $value;
 			case 'number':
@@ -385,8 +393,15 @@ class Block {
 					$result[ $key ] = DOMHelpers::parseText( $html, $value['selector'] );
 					break;
 				case 'query':
-					$temp = [];
-					foreach ( DOMHelpers::findNodes( $html, $value['selector'] ) as $source_node ) {
+					$temp  = [];
+					$nodes = DOMHelpers::findNodes( $html, $value['selector'] );
+
+					// Coerce nodes to an array if it's not already.
+					if ( ! is_array( $nodes ) ) {
+						$nodes = [ $nodes ];
+					}
+	
+					foreach ( $nodes as $source_node ) {
 						foreach ( $value['query'] as $q_key => $q_value ) {
 							$temp_config    = [
 								$q_key => $q_value,

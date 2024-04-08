@@ -28,3 +28,9 @@ docker-compose.override.yml
 
 # Built Zip
 @wpengine
+
+# Ignore WordPress sorce directory
+wordpress/
+
+# Ignore config file from Kana development environment
+.kana.json
