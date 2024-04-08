@@ -23,11 +23,5 @@ class CoreParagraph extends Block {
 			'source'    => 'attribute',
 			'attribute' => 'class',
 		],
-		'content'      => [
-			'type'     => 'string',
-			'selector' => 'p',
-			'source'   => 'html',
-			'default'  => '',
-		],
 	];
 }
