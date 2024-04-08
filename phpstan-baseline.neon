@@ -6,11 +6,6 @@ parameters:
 			path: includes/Blocks/Block.php
 
 		-
-			message: "#^Cannot cast array\\|string to string\\.$#"
-			count: 1
-			path: includes/Blocks/Block.php
-
-		-
 			message: "#^Constant WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR not found\\.$#"
 			count: 4
 			path: includes/WPGraphQLContentBlocks.php

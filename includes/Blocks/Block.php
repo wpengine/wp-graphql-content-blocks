@@ -292,10 +292,18 @@ class Block {
 	 * @param array|string $value The value
 	 * @param string       $type The type of the value
 	 * 
-	 * @return mixed
+	 * @return array|string|int|float|bool
 	 */
 	private function normalize_attribute_value( $value, $type ) {
+		// @todo use the `source` to normalize array/object values.
+		if ( is_array( $value ) ) {
+			return $value;
+		}
+
 		switch ( $type ) {
+			case 'array':
+				// If we're here, we want an array type, even though the value is not an array.
+				return isset( $value ) ? [ $value ] : [];
 			case 'string':
 				return (string) $value;
 			case 'number':
