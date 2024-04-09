@@ -27,9 +27,9 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 = 4.0.0 =
 
-### Major Changes
+### Breaking Changes
 
-- ed23a32: MAJOR: Update Schema to reflect latest WordPress 6.5 changes.
+- ed23a32: BREAKING: Update Schema to reflect latest WordPress 6.5 changes.
 
   - WHAT the breaking change is: Added new `rich-text` type
   - WHY the change was made: WordPress 6.5 replaced some of the attribute types from string to `rich-text` causing breaking changes to the existing block fields.
