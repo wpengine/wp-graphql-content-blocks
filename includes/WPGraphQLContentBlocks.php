@@ -75,7 +75,7 @@ final class WPGraphQLContentBlocks {
 		$main_file_path = dirname( __DIR__ ) . '/wp-graphql.php';
 
 		// Plugin version.
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '3.1.2' );
+		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '4.0.0' );
 		// Plugin Folder Path.
 		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR', plugin_dir_path( $main_file_path ) );
 		// Plugin Root File.
