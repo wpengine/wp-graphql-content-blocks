@@ -1,9 +1,8 @@
 name: Upload Schema Artifact
 
 on:
-  push:
-    tags:
-      - "*"
+  release:
+    types: [ published ]
 
 jobs:
   run:
