@@ -51,8 +51,6 @@ install_wordpress() {
 	fi
 
 	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
-
-	cat $WP_CORE_DIR/wp-content/version.php
 }
 
 recreate_db() {
