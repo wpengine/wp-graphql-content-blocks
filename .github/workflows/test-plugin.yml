@@ -53,7 +53,7 @@ jobs:
         working-directory: ./
         run: |
           docker exec -e COVERAGE=1 $(docker-compose ps -q wordpress) init-testing-environment.sh
-          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core version
+          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core version --allow-root
 
       - name: Install and activate WP GraphQL
         working-directory: ./
