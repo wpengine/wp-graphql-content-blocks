@@ -47,6 +47,12 @@ jobs:
             sleep 1
           done
 
+      - name: Ensure Correct WordPress version
+        run: |
+          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core version --allow-root
+          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core download --version=nightly --force --allow-root
+          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core version --allow-root
+
       - name: Setup testing framework
         working-directory: ./
         run: docker exec -e COVERAGE=1 $(docker-compose ps -q wordpress) init-testing-environment.sh
