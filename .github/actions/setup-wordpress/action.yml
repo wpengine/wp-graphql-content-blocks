@@ -26,4 +26,3 @@ runs:
       run: |
         cp .env.dist .env
         composer run install-test-env
-        wp core version
