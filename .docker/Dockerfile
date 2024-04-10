@@ -1,7 +1,7 @@
 ARG WP_VERSION
 ARG PHP_VERSION
 
-FROM wordpress:${WP_VERSION}-php${PHP_VERSION}
+FROM wordpress:latest
 
 # Save the build args for use by the runtime environment
 ENV WP_VERSION=${WP_VERSION}
