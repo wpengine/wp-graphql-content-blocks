@@ -17,8 +17,8 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 	&& mv wp-cli.phar /usr/local/bin/wp \
 	&& wp --info
 
-RUN wp core update --version=${WP_VERSION} --force
-	&& wp core update-db --force
+RUN wp core update --version=${WP_VERSION} --force \
+	&& wp core update-db --force \
 	&& wp core version
 
 RUN set -e \
