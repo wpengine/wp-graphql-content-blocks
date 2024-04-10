@@ -12,7 +12,7 @@ download() {
 }
 
 install_wordpress() {
-	
+
 	if [ -d $WP_CORE_DIR ]; then
 		return;
 	fi
@@ -51,6 +51,8 @@ install_wordpress() {
 	fi
 
 	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
+
+	cat $WP_CORE_DIR/wp-content/version.php
 }
 
 recreate_db() {
@@ -113,7 +115,7 @@ configure_wordpress() {
 
 	echo "Setting up WordPress..."
 	export WP_CLI_CONFIG_PATH=${WP_CLI_CONFIG_PATH};
-	
+
 	wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --dbhost="$DB_HOST" --skip-check --force=true
 	wp core install --url=$WP_DOMAIN --title=Test --admin_user=$ADMIN_USERNAME --admin_password=$ADMIN_PASSWORD --admin_email=$ADMIN_EMAIL
 	wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
