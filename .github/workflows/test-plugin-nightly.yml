@@ -1,0 +1,53 @@
+name: Test Plugin / WordPress Nightly, PHP 8.2
+
+on:
+  workflow_call:
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+
+jobs:
+  test_plugin:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Docker Containers
+        env:
+          PHP_VERSION: 8.2
+          WP_VERSION: 6.5
+        working-directory: ./
+        run: |
+          docker-compose build \
+            --build-arg WP_VERSION=6.5 \
+            --build-arg PHP_VERSION=8.2
+          docker-compose up -d
+
+      - name: Wait for db
+        run: |
+          while ! mysqladmin ping --host=127.0.0.1 --port=33066 --password=$MYSQL_ROOT_PASSWORD --silent; do
+            sleep 1
+          done
+
+      - name: Setup testing framework
+        working-directory: ./
+        run: docker exec -e COVERAGE=1 $(docker-compose ps -q wordpress) init-testing-environment.sh
+
+      - name: Ensure Correct WordPress version
+        run: |
+          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core version --allow-root
+          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core upgrade --version=nightly --force --allow-root
+          docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp core version --allow-root
+
+      - name: Install and activate WP GraphQL
+        working-directory: ./
+        run: docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp plugin install wp-graphql --activate --allow-root
+
+      - name: Install Dependencies
+        working-directory: ./
+        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) composer install
+
+      - name: Run unit tests
+        working-directory: ./
+        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) composer test
