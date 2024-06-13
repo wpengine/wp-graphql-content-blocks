@@ -64,6 +64,7 @@ final class PostTypeBlockInterface {
 						],
 						'args'        => [
 							'flat' => [
+								'description' => __( 'Returns the list of blocks as a flat list if true', 'wp-graphql-content-blocks' ),
 								'type' => 'Boolean',
 							],
 						],
