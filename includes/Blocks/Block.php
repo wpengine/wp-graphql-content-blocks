@@ -366,73 +366,60 @@ class Block {
 	/**
 	 * Resolved the value of the block attributes based on the specified config
 	 * 
-	 * @param array  $attributes The block current attributes value
-	 * @param string $html The block rendered html
-	 * @param array  $config The block current attribute configuration
+	 * @param array<string,mixed> $attributes The block current attributes value.
+	 * @param string              $html The block rendered html.
+	 * @param array<string,mixed> $config The block current attribute configuration, keyed to the attribute name.
 	 */
-	private function resolve_block_attributes_recursive( $attributes, $html, $config ): array {
+	private function resolve_block_attributes_recursive( $attributes, string $html, array $config ): array {
 		$result = [];
+
 		foreach ( $config as $key => $value ) {
 			// Get default value.
 			$default = $value['default'] ?? null;
 			$source  = $value['source'] ?? null;
+
 			switch ( $source ) {
 				case 'rich-text':
 				case 'html':
+					// If there is no selector, we are dealing with single source.
 					if ( ! isset( $value['selector'] ) ) {
 						$result[ $key ] = $this->parse_single_source( $html, $source );
-					} else {
-						$result[ $key ] = DOMHelpers::parseHTML( $html, $value['selector'] );
-	
-						if ( isset( $value['multiline'] ) && ! empty( $result[ $key ] ) ) {
-							$result[ $key ] = DOMHelpers::getElementsFromHTML( $result[ $key ], $value['multiline'] );
-						}
+						break;
 					}
+
+					$result[ $key ] = $this->parse_html_source( $html, $value );
 					break;
 				case 'attribute':
-					$result[ $key ] = DOMHelpers::parseAttribute( $html, $value['selector'], $value['attribute'], $default );
+					$result[ $key ] = $this->parse_attribute_source( $html, $value );
 					break;
 				case 'text':
-					$result[ $key ] = DOMHelpers::parseText( $html, $value['selector'] );
+					$result[ $key ] = $this->parse_text_source( $html, $value );
 					break;
 				case 'query':
-					$temp  = [];
-					$nodes = DOMHelpers::findNodes( $html, $value['selector'] );
+					$result[ $key ] = $this->parse_query_source( $html, $value, $attributes );
+					break;
+			}
 
-					// Coerce nodes to an array if it's not already.
-					if ( ! is_array( $nodes ) ) {
-						$nodes = [ $nodes ];
-					}
-	
-					foreach ( $nodes as $source_node ) {
-						foreach ( $value['query'] as $q_key => $q_value ) {
-							$temp_config    = [
-								$q_key => $q_value,
-							];
-							$res            = $this->resolve_block_attributes_recursive( $attributes, $source_node->html(), $temp_config );
-							$temp[ $q_key ] = $res[ $q_key ];
-						}
-						$result[ $key ][] = $temp;
-					}
-					break;
-			}
 			// Post processing of return value based on configured type
-			switch ( $value['type'] ) {
-				case 'integer':
-					$result[ $key ] = intval( $result[ $key ] );
-					break;
-				case 'boolean':
-					if ( false === $result[ $key ] ) {
+			if ( array_key_exists( $key, $result ) ) {
+				switch ( $value['type'] ) {
+					case 'integer':
+						$result[ $key ] = intval( $result[ $key ] );
 						break;
-					}
-					if ( is_null( $result[ $key ] ) ) {
-						$result[ $key ] = false;
+					case 'boolean':
+						if ( false === $result[ $key ] ) {
+							break;
+						}
+						if ( is_null( $result[ $key ] ) ) {
+							$result[ $key ] = false;
+							break;
+						}
+						$result[ $key ] = true;
 						break;
-					}
-					$result[ $key ] = true;
-					break;
+				}
 			}
-			
+
+			// Fallback to the attributes or default value if the result is empty.
 			if ( empty( $result[ $key ] ) ) {
 				$result[ $key ] = $attributes[ $key ] ?? $default;
 			}
@@ -460,5 +447,96 @@ class Block {
 				break;
 		}
 		return $value;
+	}
+
+	/**
+	 * Parses the block content of an HTML source block type.
+	 *
+	 * Includes `multiline` handling.
+	 *
+	 * @param string              $html The html value.
+	 * @param array<string,mixed> $value The value configuration.
+	 */
+	private function parse_html_source( string $html, $value ): ?string {
+		if ( ! isset( $value['selector'] ) ) {
+			return null;
+		}
+
+		$result = DOMHelpers::parseHTML( $html, $value['selector'] );
+
+		// Multiline values are located somewhere else.
+		if ( isset( $value['multiline'] ) && ! empty( $result ) ) {
+			$result = DOMHelpers::getElementsFromHTML( $result, $value['multiline'] );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Parses an attribute source block type.
+	 *
+	 * @param string              $html The html value.
+	 * @param array<string,mixed> $value The value configuration.
+	 */
+	private function parse_attribute_source( string $html, $value ): ?string {
+		if ( ! isset( $value['selector'] ) || ! isset( $value['attribute'] ) ) {
+			return null;
+		}
+
+		return DOMHelpers::parseAttribute( $html, $value['selector'], $value['attribute'] );
+	}
+
+	/**
+	 * Parses a text source block type.
+	 *
+	 * @param string              $html The html value.
+	 * @param array<string,mixed> $value The value configuration.
+	 */
+	private function parse_text_source( string $html, $value ): ?string {
+		if ( ! isset( $value['selector'] ) ) {
+			return null;
+		}
+
+		return DOMHelpers::parseText( $html, $value['selector'] );
+	}
+
+	/**
+	 * Parses a query source block type.
+	 * 
+	 * @param string              $html The html value.
+	 * @param array<string,mixed> $value The value configuration.
+	 * @param array<string,mixed> $attributes The block attributes.
+	 *
+	 * @return ?mixed[]
+	 */
+	private function parse_query_source( string $html, $value, $attributes ): ?array {
+		if ( ! isset( $value['selector'] ) || ! isset( $value['query'] ) ) {
+			return null;
+		}
+
+		$nodes = DOMHelpers::findNodes( $html, $value['selector'] );
+
+		// Coerce nodes to an array if it's not already.
+		if ( ! is_array( $nodes ) ) {
+			$nodes = [ $nodes ];
+		}
+
+		$temp    = [];
+		$results = [];
+		foreach ( $nodes as $source_node ) {
+			foreach ( $value['query'] as $q_key => $q_value ) {
+				/** @var array<string,mixed> $temp_config */
+				$temp_config = [
+					$q_key => $q_value,
+				];
+
+				$res            = $this->resolve_block_attributes_recursive( $attributes, $source_node->html(), $temp_config );
+				$temp[ $q_key ] = $res[ $q_key ];
+			}
+
+			$results[] = $temp;
+		}
+
+		return $results;
 	}
 }
