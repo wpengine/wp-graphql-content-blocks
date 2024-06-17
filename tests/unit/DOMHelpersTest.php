@@ -6,15 +6,19 @@ use \WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 
 final class DOMHelpersTest extends PluginTestCase {
 	public function testParseAttribute(): void {
-		$html                 = '<p id="foo-id" class="foo-class" data="foo-data"><span >Bar</span></p>';
+		$html = '<p id="foo-id" class="foo-class" data="foo-data"><span >Bar</span></p>';
+		$html2 = '<td class="has-text-align-center" data-align="center">Content 1</td>
+		<td class="has-text-align-right" data-align="right">Content 2</td>';
+		$html3 = '<div class="container"><span data-align="left">Left</span><span data-align="right">Right</span></div>';
 		$no_existent_selector = '#foo';
-		$id_selector          = '#foo-id';
-		$class_selector       = '.foo-class';
-		$element_selector     = 'p';
-		$data_attribute       = 'data';
-		$class_attribute      = 'class';
-		$id_attribute         = 'id';
+		$id_selector = '#foo-id';
+		$class_selector = '.foo-class';
+		$element_selector = 'p';
+		$data_attribute = 'data';
+		$class_attribute = 'class';
+		$id_attribute = 'id';
 
+		// $html
 		$this->assertNull( DOMHelpers::parseAttribute( $html, $no_existent_selector, $data_attribute ) );
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $no_existent_selector, $data_attribute, 'Bar' ), 'Bar' );
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $id_selector, $data_attribute ), 'foo-data' );
@@ -26,14 +30,24 @@ final class DOMHelpersTest extends PluginTestCase {
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $element_selector, $data_attribute ), 'foo-data' );
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $element_selector, $class_attribute ), 'foo-class' );
 		$this->assertEquals( DOMHelpers::parseAttribute( $html, $element_selector, $id_attribute ), 'foo-id' );
+
+		// $html2
+		$this->assertEquals( 'center', DOMHelpers::parseAttribute( $html2, '*', 'data-align' ) );
+		$this->assertEquals( 'right', DOMHelpers::parseAttribute( $html2, '.has-text-align-right', 'data-align' ) );
+		$this->assertNull( DOMHelpers::parseAttribute( $html2, '.non-existent-class', 'data-align' ) );
+		$this->assertEquals( 'default', DOMHelpers::parseAttribute( $html2, '.non-existent-class', 'data-align', 'default' ) );
+
+		// $htm3
+		$this->assertEquals( 'left', DOMHelpers::parseAttribute( $html3, 'span', 'data-align' ) );
+		$this->assertEquals( 'left', DOMHelpers::parseAttribute( $html3, '*', 'data-align' ) );
 	}
 
 	public function testParseHTML(): void {
-		$html                 = '<p id="foo-id" class="foo-class" data="foo-data"><span >Bar</span></p>';
+		$html = '<p id="foo-id" class="foo-class" data="foo-data"><span >Bar</span></p>';
 		$no_existent_selector = '#foo';
-		$id_selector          = '#foo-id';
-		$class_selector       = '.foo-class';
-		$element_selector     = 'p';
+		$id_selector = '#foo-id';
+		$class_selector = '.foo-class';
+		$element_selector = 'p';
 
 		$this->assertEmpty( DOMHelpers::parseHTML( $html, $no_existent_selector ) );
 		$this->assertEquals( DOMHelpers::parseHTML( $html, $no_existent_selector, 'Bar' ), 'Bar' );
@@ -43,8 +57,8 @@ final class DOMHelpersTest extends PluginTestCase {
 	}
 
 	public function testGetElementsFromHTML(): void {
-		$html                 = '<blockquote><p>First paragraph</p><div>My div</div><p>Second paragraph</p></blockquote>';
-		$element_selector     = 'p';
+		$html = '<blockquote><p>First paragraph</p><div>My div</div><p>Second paragraph</p></blockquote>';
+		$element_selector = 'p';
 		$no_existent_selector = 'span';
 
 		$this->assertEquals( DOMHelpers::getElementsFromHTML( $html, $element_selector ), '<p>First paragraph</p><p>Second paragraph</p>' );
@@ -54,9 +68,9 @@ final class DOMHelpersTest extends PluginTestCase {
 	public function getTextFromSelector(): void {
 		$html = '<blockquote><p>First paragraph</p><div>My div</div><p>Second paragraph</p></blockquote>';
 
-		$blockquote_element   = 'blockquote';
-		$p_element            = 'p';
-		$div_element          = 'div';
+		$blockquote_element = 'blockquote';
+		$p_element = 'p';
+		$div_element = 'div';
 		$no_existent_selector = 'span';
 
 		// getTextFromSelector should get all text (even descendents) according to "textContent"
