@@ -33,9 +33,14 @@ final class DOMHelpers {
 		if ( empty( $selector ) ) {
 			$selector = '*';
 		}
-		$node          = $doc->find( $selector );
+		$nodes         = $doc->find( $selector );
 		$default_value = isset( $default_value ) ? $default_value : null;
-		return ( ! empty( $node ) && isset( $node[0] ) ) ? $node[0]->getAttribute( $attribute ) : $default_value;
+		foreach ( $nodes as $node ) {
+			if ( $node->hasAttribute( $attribute ) ) {
+				return $node->getAttribute( $attribute );
+			}
+		}
+		return $default_value;
 	}
 
 	/**
