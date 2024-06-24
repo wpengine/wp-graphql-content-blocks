@@ -62,12 +62,6 @@ final class PostTypeBlockInterface {
 						'type'        => [
 							'list_of' => ucfirst( $post_type ) . 'EditorBlock',
 						],
-						'args'        => [
-							'flat' => [
-								'description' => __( 'Returns the list of blocks as a flat list if true', 'wp-graphql-content-blocks' ),
-								'type'        => 'Boolean',
-							],
-						],
 						'description' => sprintf(
 							// translators: %s is the post type.
 							__( 'List of %s editor blocks', 'wp-graphql-content-blocks' ),
