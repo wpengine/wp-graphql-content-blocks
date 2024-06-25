@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.5
-Stable tag: 4.0.0
+Stable tag: 4.0.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,11 +25,19 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 4.0.1 =
+
+### Patch Changes
+
+- 39e8181: Bug fix: CoreTable column alignment returns null
+- 8d8ce66: fix: refactor `Block::resolve_block_attributes_recursive()` and improve type safety
+- a910d62: fix: Don't overload `NodeWithEditorBlocks.flat` on implementing Interfaces.
+
 = 4.0.0 =
 
-### Breaking Changes
+### Major Changes
 
-- ed23a32: BREAKING: Update Schema to reflect latest WordPress 6.5 changes.
+- ed23a32: MAJOR: Update Schema to reflect latest WordPress 6.5 changes.
 
   - WHAT the breaking change is: Added new `rich-text` type
   - WHY the change was made: WordPress 6.5 replaced some of the attribute types from string to `rich-text` causing breaking changes to the existing block fields.
@@ -58,11 +66,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 ### Patch Changes
 
 - 1117a18: Fixed issue with updater functionality.
-
-= 3.1.1 =
-
-### Patch Changes
-
-- bc32b94: No functional changes between 3.1.0 and 3.1.1. This was tagged due to pipeline issues during the 3.1.0 release.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)

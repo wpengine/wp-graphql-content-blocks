@@ -1,5 +1,13 @@
 # WPGraphQL Content Blocks
 
+## 4.0.1
+
+### Patch Changes
+
+- 39e8181: Bug fix: CoreTable column alignment returns null
+- 8d8ce66: fix: refactor `Block::resolve_block_attributes_recursive()` and improve type safety
+- a910d62: fix: Don't overload `NodeWithEditorBlocks.flat` on implementing Interfaces.
+
 ## 4.0.0
 
 ### Major Changes
