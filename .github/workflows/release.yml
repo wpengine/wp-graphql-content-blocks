@@ -6,11 +6,24 @@ on:
       - main
 
 jobs:
+
   call-workflow-test-plugin:
     uses: ./.github/workflows/test-plugin.yml
+
   release:
+    services:
+      mariadb:
+        image: mariadb:10.8.2
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        # Ensure docker waits for mariadb to start
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     name: Release
     runs-on: ubuntu-22.04
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -32,11 +45,10 @@ jobs:
           version: npm run version
           title: "Release Plugin"
           commit: "Release Plugin"
-          
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload release artifact
+      - name: Upload plugin zip file
         if: steps.changesets.outputs.published == 'true'
         uses: svenstaro/upload-release-action@v2
         with:
@@ -45,3 +57,23 @@ jobs:
           asset_name: wp-graphql-content-blocks.zip
           tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           overwrite: true
+
+      - name: Setup WordPress to generate static schema
+        if: steps.changesets.outputs.published == 'true'
+        uses: ./.github/actions/setup-wordpress
+
+      - name: Generate the static schema
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          cd /tmp/wordpress
+          # Output: /tmp/schema.graphql
+          wp graphql generate-static-schema
+
+      - name: Upload schema as release artifact
+        if: steps.changesets.outputs.published == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version)}}
+          files: /tmp/schema.graphql
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
