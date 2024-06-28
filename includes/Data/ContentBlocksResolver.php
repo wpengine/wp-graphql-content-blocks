@@ -7,8 +7,8 @@
 
 namespace WPGraphQL\ContentBlocks\Data;
 
-use WPGraphQL\Model\Post;
 use WPGraphQL\ContentBlocks\Utilities\TraverseHelpers;
+use WPGraphQL\Model\Post;
 
 /**
  * Class ContentBlocksResolver
@@ -21,7 +21,7 @@ final class ContentBlocksResolver {
 	 * @param array $args GraphQL query args to pass to the connection resolver.
 	 * @param array $allowed_block_names The list of allowed block names to filter.
 	 */
-	public static function 	resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
+	public static function resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
 		$content = null;
 		if ( $node instanceof Post ) {
 
@@ -84,7 +84,7 @@ final class ContentBlocksResolver {
 			$parsed_blocks
 		);
 		// Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
-		TraverseHelpers::traverse_blocks($parsed_blocks, ['WPGraphQL\ContentBlocks\Utilities\TraverseHelpers', 'replace_reusable_blocks'], 0, PHP_INT_MAX);
+		TraverseHelpers::traverse_blocks( $parsed_blocks, [ 'WPGraphQL\ContentBlocks\Utilities\TraverseHelpers', 'replace_reusable_blocks' ], 0, PHP_INT_MAX );
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
 		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
