@@ -21,7 +21,7 @@ final class TraverseHelpers {
 	 * @param int      $depth The current depth of traversal.
 	 * @param int      $max_depth The maximum depth to traverse.
 	 */
-	public static function traverse_blocks( &$blocks, $callback, $depth = 0, $max_depth = PHP_INT_MAX ) {
+	public static function traverse_blocks( &$blocks, $callback, $depth = 0, $max_depth = PHP_INT_MAX ): void {
 		foreach ( $blocks as &$block ) {
 			$callback( $block );
 			if ( ! empty( $block['innerBlocks'] ) && $depth < $max_depth ) {
@@ -35,7 +35,7 @@ final class TraverseHelpers {
 	 *
 	 * @param array $block The block to potentially replace.
 	 */
-	public static function replace_reusable_blocks( &$block ) {
+	public static function replace_reusable_blocks( &$block ): void {
 		if ( 'core/block' === $block['blockName'] && isset( $block['attrs']['ref'] ) ) {
 			$post            = get_post( $block['attrs']['ref'] );
 			$reusable_blocks = ! empty( $post->post_content ) ? parse_blocks( $post->post_content ) : null;
