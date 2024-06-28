@@ -8,6 +8,7 @@
 namespace WPGraphQL\ContentBlocks\Data;
 
 use WPGraphQL\Model\Post;
+use WPGraphQL\ContentBlocks\Utilities\TraverseHelpers;
 
 /**
  * Class ContentBlocksResolver
@@ -20,7 +21,7 @@ final class ContentBlocksResolver {
 	 * @param array $args GraphQL query args to pass to the connection resolver.
 	 * @param array $allowed_block_names The list of allowed block names to filter.
 	 */
-	public static function resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
+	public static function 	resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
 		$content = null;
 		if ( $node instanceof Post ) {
 
@@ -54,23 +55,6 @@ final class ContentBlocksResolver {
 			return [];
 		}
 
-		// Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
-		$new_parsed_blocks = [];
-		foreach ( $parsed_blocks as $block ) {
-			if ( 'core/block' === $block['blockName'] && $block['attrs']['ref'] ) {
-				$post            = get_post( $block['attrs']['ref'] );
-				$reusable_blocks = ! empty( $post->post_content ) ? parse_blocks( $post->post_content ) : null;
-
-				if ( ! empty( $reusable_blocks ) ) {
-					array_push( $new_parsed_blocks, ...$reusable_blocks );
-				}
-			} else {
-				$new_parsed_blocks[] = $block;
-			}
-		}
-
-		$parsed_blocks = $new_parsed_blocks;
-
 		// 1st Level filtering of blocks that are empty
 		$parsed_blocks = array_filter(
 			$parsed_blocks,
@@ -99,12 +83,12 @@ final class ContentBlocksResolver {
 			},
 			$parsed_blocks
 		);
-
+		// Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
+		TraverseHelpers::traverse_blocks($parsed_blocks, ['WPGraphQL\ContentBlocks\Utilities\TraverseHelpers', 'replace_reusable_blocks'], 0, PHP_INT_MAX);
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
 		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
 		}
-
 		// Final level of filtering out blocks not in the allowed list
 		if ( ! empty( $allowed_block_names ) ) {
 			$parsed_blocks = array_filter(
