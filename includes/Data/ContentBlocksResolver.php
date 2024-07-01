@@ -84,7 +84,7 @@ final class ContentBlocksResolver {
 			$parsed_blocks
 		);
 		// Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
-		TraverseHelpers::traverse_blocks( $parsed_blocks, [ 'WPGraphQL\ContentBlocks\Utilities\TraverseHelpers', 'replace_reusable_blocks' ], 0, PHP_INT_MAX );
+		TraverseHelpers::traverse_blocks( $parsed_blocks, [ TraverseHelpers::class, 'replace_reusable_blocks' ], 0, PHP_INT_MAX );
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
 		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );

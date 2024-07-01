@@ -79,7 +79,7 @@ class TraverseHelpersTest extends PluginTestCase {
 			]
 		];
 
-		TraverseHelpers::traverse_blocks( $blocks, [ 'WPGraphQL\ContentBlocks\Utilities\TraverseHelpers', 'replace_reusable_blocks' ], 0, PHP_INT_MAX );
+		TraverseHelpers::traverse_blocks( $blocks, [ TraverseHelpers::class, 'replace_reusable_blocks' ], 0, PHP_INT_MAX );
 		$this->assertEquals( $expected, $blocks );
 	}
 }
