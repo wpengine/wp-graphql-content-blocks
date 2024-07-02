@@ -95,7 +95,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
     public function test_resolve_content_blocks_resolves_reusable_blocks() {
         $post_model = new Post( get_post( $this->reusable_post_id ) );
         $actual     = $this->instance->resolve_content_blocks( $post_model, array( 'flat' => true ) );
-
+		
         // There should return only the non-empty blocks
 		$this->assertEquals( 3, count( $actual ) );
 		$this->assertEquals( 'core/columns', $actual[0]['blockName'] );
