@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.5
-Stable tag: 4.0.1
+Stable tag: 4.0.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,6 +24,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.0.2 =
+
+### Patch Changes
+
+- 5c21ce3: Bug fix. Reusable block isn't resolved inside innerBlocks.
 
 = 4.0.1 =
 
@@ -60,11 +66,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 - 66f74fb: chore: stub WP_Post_Type and boostrap wp-graphql-content-blocks.php when scanning with PHPStan
 - ad03a21: fix: Don't register `NodeWithEditorBlocks` interface to `null` type names.
 - 43791db: chore: update PHPStan ruleset for stricter linting, and address newly-discovered tech debt.
-
-= 3.1.2 =
-
-### Patch Changes
-
-- 1117a18: Fixed issue with updater functionality.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
