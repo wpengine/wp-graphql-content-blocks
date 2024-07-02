@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.0.2
+
+### Patch Changes
+
+- 5c21ce3: Bug fix. Reusable block isn't resolved inside innerBlocks.
+
 ## 4.0.1
 
 ### Patch Changes
