@@ -217,7 +217,6 @@ class Block {
 						$attribute_name => $attribute_config,
 					];
 					$result = $this->resolve_block_attributes_recursive( $block['attrs'], wp_unslash( render_block( $block ) ), $config );
-					
 					return $result[ $attribute_name ];
 				},
 			];
