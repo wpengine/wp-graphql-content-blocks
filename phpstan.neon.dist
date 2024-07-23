@@ -9,7 +9,6 @@ parameters:
 		checkExplicitMixedMissingReturn: true
 		checkFunctionNameCase: true
 		checkInternalClassCaseSensitivity: true
-		checkMissingIterableValueType: false # @todo this should be true
 		checkTooWideReturnTypesInProtectedAndPublicMethods: true
 		polluteScopeWithAlwaysIterableForeach: false
 		polluteScopeWithLoopInitialAssignments: false
@@ -28,3 +27,7 @@ parameters:
 			- includes/
 		scanFiles:
 			- vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
+
+		# Todo, remove when stricter types are enforced
+		ignoreErrors:
+			- identifier: missingType.iterableValue
