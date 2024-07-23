@@ -125,9 +125,9 @@ class Block {
 	/**
 	 * Returns the type of the block attribute
 	 *
-	 * @param string $name The block name
-	 * @param object $attribute The block attribute config
-	 * @param string $prefix Current prefix string to use for the get_query_type
+	 * @param string              $name The block name
+	 * @param array<string,mixed> $attribute The block attribute config
+	 * @param string              $prefix Current prefix string to use for the get_query_type
 	 *
 	 * @return mixed
 	 */
@@ -198,7 +198,7 @@ class Block {
 		}
 
 		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
-			$graphql_type = self::get_attribute_type( $attribute_name, $attribute_config, $prefix );
+			$graphql_type = $this->get_attribute_type( $attribute_name, $attribute_config, $prefix );
 
 			if ( empty( $graphql_type ) ) {
 				continue;
