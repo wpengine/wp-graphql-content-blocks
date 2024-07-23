@@ -9,7 +9,7 @@ namespace WPGraphQL\ContentBlocks\Utilities;
 
 /**
  * Class TraverseHelpers
- * 
+ *
  * Provides utility functions to traverse and manipulate blocks.
  */
 final class TraverseHelpers {
