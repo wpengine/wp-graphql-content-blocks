@@ -31,7 +31,7 @@ class Anchor {
 							if ( empty( $rendered_block ) ) {
 								return null;
 							}
-							return DOMHelpers::parseFirstNodeAttribute( $rendered_block, 'id' );
+							return DOMHelpers::parse_first_node_attribute( $rendered_block, 'id' );
 						},
 					],
 				],

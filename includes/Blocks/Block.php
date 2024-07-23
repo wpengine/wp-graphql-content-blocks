@@ -373,6 +373,9 @@ class Block {
 	private function resolve_block_attributes_recursive( $attributes, string $html, array $config ): array {
 		$result = [];
 
+		// Clean up the html.
+		$html = trim( $html );
+
 		foreach ( $config as $key => $value ) {
 			// Get default value.
 			$default = $value['default'] ?? null;
@@ -433,20 +436,18 @@ class Block {
 	 *
 	 * @param string $html The html value
 	 * @param string $source The source type
-	 *
-	 * @return string|null
 	 */
-	private function parse_single_source( $html, $source ) {
-		$value = null;
+	private function parse_single_source( string $html, $source ): ?string {
 		if ( empty( $html ) ) {
-			return $value;
+			return null;
 		}
+
 		switch ( $source ) {
 			case 'html':
-				$value = DOMHelpers::findNodes( $html )->innerHTML();
-				break;
+				return DOMHelpers::find_nodes( $html )->innerHTML();
 		}
-		return $value;
+
+		return null;
 	}
 
 	/**
@@ -458,15 +459,15 @@ class Block {
 	 * @param array<string,mixed> $value The value configuration.
 	 */
 	private function parse_html_source( string $html, $value ): ?string {
-		if ( ! isset( $value['selector'] ) ) {
+		if ( empty( $html ) || ! isset( $value['selector'] ) ) {
 			return null;
 		}
 
-		$result = DOMHelpers::parseHTML( $html, $value['selector'] );
+		$result = DOMHelpers::parse_html( $html, $value['selector'] );
 
 		// Multiline values are located somewhere else.
 		if ( isset( $value['multiline'] ) && ! empty( $result ) ) {
-			$result = DOMHelpers::getElementsFromHTML( $result, $value['multiline'] );
+			$result = DOMHelpers::get_elements_from_html( $result, $value['multiline'] );
 		}
 
 		return $result;
@@ -479,11 +480,11 @@ class Block {
 	 * @param array<string,mixed> $value The value configuration.
 	 */
 	private function parse_attribute_source( string $html, $value ): ?string {
-		if ( ! isset( $value['selector'] ) || ! isset( $value['attribute'] ) ) {
+		if ( empty( $html ) || ! isset( $value['selector'] ) || ! isset( $value['attribute'] ) ) {
 			return null;
 		}
 
-		return DOMHelpers::parseAttribute( $html, $value['selector'], $value['attribute'] );
+		return DOMHelpers::parse_attribute( $html, $value['selector'], $value['attribute'] );
 	}
 
 	/**
@@ -497,7 +498,7 @@ class Block {
 			return null;
 		}
 
-		return DOMHelpers::parseText( $html, $value['selector'] );
+		return DOMHelpers::parse_text( $html, $value['selector'] );
 	}
 
 	/**
@@ -514,7 +515,7 @@ class Block {
 			return null;
 		}
 
-		$nodes = DOMHelpers::findNodes( $html, $value['selector'] );
+		$nodes = DOMHelpers::find_nodes( $html, $value['selector'] );
 
 		// Coerce nodes to an array if it's not already.
 		if ( ! is_array( $nodes ) ) {
