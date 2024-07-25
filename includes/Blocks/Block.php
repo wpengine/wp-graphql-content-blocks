@@ -124,11 +124,11 @@ class Block {
 
 	/**
 	 * Returns the type of the block attribute
-	 * 
-	 * @param string $name The block name
-	 * @param object $attribute The block attribute config
-	 * @param string $prefix Current prefix string to use for the get_query_type
-	 * 
+	 *
+	 * @param string              $name The block name
+	 * @param array<string,mixed> $attribute The block attribute config
+	 * @param string              $prefix Current prefix string to use for the get_query_type
+	 *
 	 * @return mixed
 	 */
 	private function get_attribute_type( $name, $attribute, $prefix ) {
@@ -196,9 +196,9 @@ class Block {
 		if ( null === $block_attributes ) {
 			return $fields;
 		}
-		
+
 		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
-			$graphql_type = self::get_attribute_type( $attribute_name, $attribute_config, $prefix );
+			$graphql_type = $this->get_attribute_type( $attribute_name, $attribute_config, $prefix );
 
 			if ( empty( $graphql_type ) ) {
 				continue;
@@ -217,7 +217,7 @@ class Block {
 						$attribute_name => $attribute_config,
 					];
 					$result = $this->resolve_block_attributes_recursive( $block['attrs'], wp_unslash( render_block( $block ) ), $config );
-					
+
 					return $result[ $attribute_name ];
 				},
 			];
@@ -225,10 +225,10 @@ class Block {
 
 		return $fields;
 	}
-	
+
 	/**
 	 * Returns the type of the block query attribute
-	 * 
+	 *
 	 * @param string $name The block name
 	 * @param array  $query The block query config
 	 * @param string $prefix The current prefix string to use for registering the new query attribute type
@@ -237,7 +237,7 @@ class Block {
 		$type = $prefix . ucfirst( $name );
 
 		$fields = $this->create_attributes_fields( $query, $type );
-	
+
 		register_graphql_object_type(
 			$type,
 			[
@@ -256,7 +256,7 @@ class Block {
 
 	/**
 	 * Creates the new attribute fields for query types
-	 * 
+	 *
 	 * @param array  $attributes The query attributes config
 	 * @param string $prefix The current prefix string to use for registering the new query attribute type
 	 */
@@ -289,10 +289,10 @@ class Block {
 
 	/**
 	 * Normalizes the value of the attribute
-	 * 
+	 *
 	 * @param array|string $value The value
 	 * @param string       $type The type of the value
-	 * 
+	 *
 	 * @return array|string|int|float|bool
 	 */
 	private function normalize_attribute_value( $value, $type ) {
@@ -365,7 +365,7 @@ class Block {
 
 	/**
 	 * Resolved the value of the block attributes based on the specified config
-	 * 
+	 *
 	 * @param array<string,mixed> $attributes The block current attributes value.
 	 * @param string              $html The block rendered html.
 	 * @param array<string,mixed> $config The block current attribute configuration, keyed to the attribute name.
@@ -424,16 +424,16 @@ class Block {
 				$result[ $key ] = $attributes[ $key ] ?? $default;
 			}
 		}
-		
+
 		return $result;
 	}
 
 	/**
 	 * Parses the block content of a source only block type
-	 * 
+	 *
 	 * @param string $html The html value
 	 * @param string $source The source type
-	 * 
+	 *
 	 * @return string|null
 	 */
 	private function parse_single_source( $html, $source ) {
@@ -502,7 +502,7 @@ class Block {
 
 	/**
 	 * Parses a query source block type.
-	 * 
+	 *
 	 * @param string              $html The html value.
 	 * @param array<string,mixed> $value The value configuration.
 	 * @param array<string,mixed> $attributes The block attributes.

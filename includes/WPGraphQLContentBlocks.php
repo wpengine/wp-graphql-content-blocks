@@ -13,7 +13,7 @@
  */
 final class WPGraphQLContentBlocks {
 	/**
-	 * Stores the instance of the WPGraphQLContentBlocks class 
+	 * Stores the instance of the WPGraphQLContentBlocks class
 	 *
 	 * @var ?\WPGraphQLContentBlocks The one true WPGraphQL
 	 */
