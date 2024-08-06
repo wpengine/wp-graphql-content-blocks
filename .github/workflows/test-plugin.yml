@@ -36,10 +36,10 @@ jobs:
           WP_VERSION: ${{ matrix.wordpress }}
         working-directory: ./
         run: |
-          docker-compose build \
+          docker compose build \
             --build-arg WP_VERSION=${{ matrix.wordpress }} \
             --build-arg PHP_VERSION=${{ matrix.php }}
-          docker-compose up -d
+          docker compose up -d
 
       - name: Wait for db
         run: |
@@ -49,16 +49,16 @@ jobs:
 
       - name: Setup testing framework
         working-directory: ./
-        run: docker exec -e COVERAGE=1 $(docker-compose ps -q wordpress) init-testing-environment.sh
+        run: docker exec -e COVERAGE=1 $(docker compose ps -q wordpress) init-testing-environment.sh
 
       - name: Install and activate WP GraphQL
         working-directory: ./
-        run: docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) wp plugin install wp-graphql --activate --allow-root
+        run: docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker compose ps -q wordpress) wp plugin install wp-graphql --activate --allow-root
 
       - name: Install Dependencies
         working-directory: ./
-        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) composer install
+        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker compose ps -q wordpress) composer install
 
       - name: Run unit tests
         working-directory: ./
-        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker-compose ps -q wordpress) composer test
+        run: docker exec -e COVERAGE=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks $(docker compose ps -q wordpress) composer test
