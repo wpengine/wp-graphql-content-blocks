@@ -1,6 +1,6 @@
 # WPGraphQL Content Blocks
 
-[![End-to-End Tests](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/e2e-tests.yml)
+[![Test Plugin](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/test-plugin.yml/badge.svg)](https://github.com/wpengine/wp-graphql-content-blocks/actions/workflows/test-plugin.yml)
 
 [![Download Latest Version](https://img.shields.io/github/package-json/version/wpengine/wp-graphql-content-blocks?label=Download%20Latest%20Version)](https://github.com/wpengine/wp-graphql-content-blocks/releases/latest/download/wp-graphql-content-blocks.zip)
 
