@@ -103,9 +103,6 @@ class Block {
 					'fields'      => $block_attribute_fields,
 				]
 			);
-			if ($this->type_name === 'CoreTable') {
-				print_r($block_attributes);
-			}
 			register_graphql_field(
 				$this->type_name,
 				'attributes',
