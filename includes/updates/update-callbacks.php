@@ -87,7 +87,7 @@ add_action( 'admin_notices', __NAMESPACE__ . '\delegate_plugin_row_notice' );
  */
 function delegate_plugin_row_notice() {
 	$screen = get_current_screen();
-	if ( 'plugins' !== $screen->id ) {
+	if ( ! isset( $screen->id ) || 'plugins' !== $screen->id ) {
 		return;
 	}
 
@@ -139,7 +139,7 @@ add_action( 'admin_notices', __NAMESPACE__ . '\display_update_page_notice' );
  */
 function display_update_page_notice() {
 	$screen = get_current_screen();
-	if ( 'update-core' !== $screen->id ) {
+	if ( ! isset( $screen->id ) || 'update-core' !== $screen->id ) {
 		return;
 	}
 
