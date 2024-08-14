@@ -68,7 +68,6 @@ final class CoreVideoTest extends PluginTestCase {
 		  }
 		';
 		$actual = graphql( array( 'query' => $query ) );
-		print_r(get_post( $this->post_id ));
 		$node   = $actual['data']['posts']['nodes'][0];
 		
 		// Verify that the ID of the first post matches the one we just created.
