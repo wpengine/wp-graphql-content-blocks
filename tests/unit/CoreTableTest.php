@@ -39,20 +39,18 @@ final class CoreTableTest extends PluginTestCase {
 
 	public function test_retrieve_core_table_attribute_fields() {
 		$query  = '
-		  fragment CoreTableBlockFragment on CoreTable {
-			attributes {
-			  caption
-			  align
-			  anchor
-			}
-		  }
-
 		  query GetPosts {
 			posts(first: 1) {
 			  nodes {
 				editorBlocks(flat: true) {
 				  name
-				  ...CoreTableBlockFragment
+				  ...on CoreTable {
+					attributes {
+						caption
+						align
+						anchor
+					}
+				  }
 				}
 			  }
 			}
