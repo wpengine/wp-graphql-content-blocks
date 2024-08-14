@@ -109,6 +109,7 @@ final class CoreImageTest extends PluginTestCase {
 		  }
 		';
 		$actual = graphql( array( 'query' => $query ) );
+		print_r($actual);
 		$node   = $actual['data']['posts']['nodes'][0];
 		
 		// Verify that the ID of the first post matches the one we just created.
