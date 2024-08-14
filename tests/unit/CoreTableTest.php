@@ -50,7 +50,7 @@ final class CoreTableTest extends PluginTestCase {
 		  query GetPosts {
 			posts(first: 1) {
 			  nodes {
-				editorBlocks {
+				editorBlocks(flat: true) {
 				  name
 				  ...CoreTableBlockFragment
 				}
@@ -59,7 +59,6 @@ final class CoreTableTest extends PluginTestCase {
 		  }
 		';
 		$actual = graphql( array( 'query' => $query ) );
-		print_r(get_post( $this->post_id ));
 		$node   = $actual['data']['posts']['nodes'][0];
 		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/table' );
 		// There should be only one block using that query when not using flat: true

@@ -59,7 +59,7 @@ final class CoreVideoTest extends PluginTestCase {
 			posts(first: 1) {
 			  nodes {
 				databaseId
-				editorBlocks {
+				editorBlocks(flat: true) {
 				  name
 				  ...CoreVideoBlockFragment
 				}
