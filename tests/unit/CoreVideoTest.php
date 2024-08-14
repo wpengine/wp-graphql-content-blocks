@@ -62,7 +62,6 @@ final class CoreVideoTest extends PluginTestCase {
 				editorBlocks(flat: true) {
 				  name
 				  renderedHTML
-				  ...CoreVideoBlockFragment
 				}
 			  }
 			}
