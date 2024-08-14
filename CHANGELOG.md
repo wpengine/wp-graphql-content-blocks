@@ -1,5 +1,24 @@
 # WPGraphQL Content Blocks
 
+## 4.1.0
+
+### Minor Changes
+
+- 6241c4e: fix: prevent fatal errors by improving type-safety and returning early when parsing HTML.
+  The following methods have been deprecated for their stricter-typed counterparts:
+  - `DOMHelpers::parseAttribute()` => `::parse_attribute()`
+  - `DOMHelpers::parseFirstNodeAttribute()` => `::parse_first_node_attribute()`
+  - `DOMHelpers::parseHTML()` => `::parse_html()`
+  - `DOMHelpers::getElementsFromHTML()` => `::get_elements_from_html()`
+  - `DOMHelpers::parseText()` => `::parse_text()`
+  - `DOMHelpers::findNodes()`=> `::find_nodes()`
+
+### Patch Changes
+
+- 2b947dc: chore: update Composer dev-dependencies and fix resulting issues.
+- 205da8c: ci: replace `docker-compose` commands with `docker compose`
+- 5c21ce3: Bug fix. Reusable block isn't resolved inside innerBlocks.
+
 ## 4.0.1
 
 ### Patch Changes
