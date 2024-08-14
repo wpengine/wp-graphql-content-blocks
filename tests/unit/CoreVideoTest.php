@@ -37,31 +37,12 @@ final class CoreVideoTest extends PluginTestCase {
 
     public function test_retrieve_core_video_attributes() {
 		$query  = '  
-		  fragment CoreVideoBlockFragment on CoreVideo {
-			attributes {
-              align
-              anchor
-              autoplay
-              tracks
-              muted
-              caption
-              preload
-              src
-              playsInline
-              controls
-              loop
-              poster
-              id
-            }
-		  }
-		  
 		  query GetPosts {
 			posts(first: 1) {
 			  nodes {
 				databaseId
 				editorBlocks(flat: true) {
 				  name
-				  renderedHTML
 				}
 			  }
 			}

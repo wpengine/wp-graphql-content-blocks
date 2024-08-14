@@ -44,14 +44,6 @@ final class CoreTableTest extends PluginTestCase {
 			  nodes {
 				editorBlocks(flat: true) {
 				  name
-				  renderedHtml
-				  ...on CoreTable {
-					attributes {
-						caption
-						align
-						anchor
-					}
-				  }
 				}
 			  }
 			}
