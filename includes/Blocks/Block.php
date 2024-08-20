@@ -103,7 +103,6 @@ class Block {
 					'fields'      => $block_attribute_fields,
 				]
 			);
-
 			register_graphql_field(
 				$this->type_name,
 				'attributes',
@@ -427,7 +426,6 @@ class Block {
 				$result[ $key ] = $attributes[ $key ] ?? $default;
 			}
 		}
-
 		return $result;
 	}
 
