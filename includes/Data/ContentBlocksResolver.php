@@ -22,6 +22,20 @@ final class ContentBlocksResolver {
 	 * @param array $allowed_block_names The list of allowed block names to filter.
 	 */
 	public static function resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
+		/**
+		 * When this filter returns a non-null value, the content blocks resolver will use that value
+		 *
+		 * @param ?array                 $content_blocks The content blocks to parse.
+		 * @param \WPGraphQL\Model\Model $node           The node we are resolving.
+		 * @param array                  $args           GraphQL query args to pass to the connection resolver.
+		 * @param array                  $allowed_block_names The list of allowed block names to filter.
+		 */
+		$pre_resolved_blocks = apply_filters( 'wpgraphql_content_blocks_pre_resolve_blocks', null, $node, $args, $allowed_block_names );
+
+		if ( null !== $pre_resolved_blocks && is_array( $pre_resolved_blocks ) ) {
+			return $pre_resolved_blocks;
+		}
+
 		$content = null;
 		if ( $node instanceof Post ) {
 
@@ -83,12 +97,14 @@ final class ContentBlocksResolver {
 			},
 			$parsed_blocks
 		);
+
 		// Resolve reusable blocks - replaces "core/block" with the corresponding block(s) from the reusable ref ID
 		TraverseHelpers::traverse_blocks( $parsed_blocks, [ TraverseHelpers::class, 'replace_reusable_blocks' ], 0, PHP_INT_MAX );
 		// Flatten block list here if requested or if 'flat' value is not selected (default)
 		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
 		}
+
 		// Final level of filtering out blocks not in the allowed list
 		if ( ! empty( $allowed_block_names ) ) {
 			$parsed_blocks = array_filter(
@@ -99,7 +115,18 @@ final class ContentBlocksResolver {
 				ARRAY_FILTER_USE_BOTH
 			);
 		}
-		return $parsed_blocks;
+
+		/**
+		 * Filters the content blocks after they have been resolved.
+		 *
+		 * @param array                  $parsed_blocks The parsed blocks.
+		 * @param \WPGraphQL\Model\Model $node          The node we are resolving.
+		 * @param array                  $args          GraphQL query args to pass to the connection resolver.
+		 * @param array                  $allowed_block_names The list of allowed block names to filter.
+		 */
+		$parsed_blocks = apply_filters( 'wpgraphql_content_blocks_resolve_blocks', $parsed_blocks, $node, $args, $allowed_block_names );
+
+		return is_array( $parsed_blocks ) ? $parsed_blocks : [];
 	}
 
 	/**
