@@ -25,6 +25,10 @@ jobs:
                 org,
                 username,
               });
+              console.log( {
+                username,
+                membership
+              });
               return { isMember: membership.state === 'active' };
             } catch (error) {
               return { isMember: false }; // Treat as not a member if any error occurs
