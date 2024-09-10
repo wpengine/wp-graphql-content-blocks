@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check if PR author is an org member
         id: check-member
-        uses: actions/github-script@v6.3.0
+        uses: actions/github-script@v6.3.0  # Updated version to support Node 20
         with:
           script: |
             const org = 'wpengine'; 
@@ -32,11 +32,13 @@ jobs:
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        outputs:
-          isMember: ${{ steps.check-member.outputs.isMember }}
+
+      # Set an output for the job based on the result of the membership check
+      - name: Set output for isMember
+        run: echo "isMember=${{ steps.check-member.outputs.isMember }}" >> $GITHUB_ENV
 
       - name: Skip if not an org member
-        if: steps.check-member.outputs.isMember == 'false'
+        if: env.isMember == 'false'
         run: echo "Skipping workflow because PR author is not an org member" && exit 0
 
       - uses: actions/checkout@v4
