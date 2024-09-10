@@ -20,7 +20,7 @@ jobs:
             const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
             const { data: membership } = await octokit.orgs.checkMembershipForUser({
               org: 'wpengine',
-              username: context.payload.pull_request.user.login,s
+              username: context.payload.pull_request.user.login,
             }).catch(err => {
               return { data: { state: 'none' } };
             });
