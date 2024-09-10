@@ -12,6 +12,25 @@ jobs:
   sonarqube:
     runs-on: ubuntu-22.04
     steps:
+      - name: Check if PR author is an org member
+        id: check-member
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            const { data: membership } = await octokit.orgs.checkMembershipForUser({
+              org: 'wpengine',
+              username: context.payload.pull_request.user.login,s
+            }).catch(err => {
+              return { data: { state: 'none' } };
+            });
+            return { isMember: membership.state === 'active' };
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip if not an org member
+        if: steps.check-member.outputs.isMember != 'true'
+        run: echo "Skipping workflow because PR author is not an org member" && exit 0
       - uses: actions/checkout@v4
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
