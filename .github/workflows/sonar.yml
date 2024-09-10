@@ -1,6 +1,5 @@
 on:
-  # Trigger analysis when pushing in main or pull requests, and when creating
-  # a pull request.
+  # Trigger analysis when pushing to main or pull requests, and when creating a pull request.
   push:
     branches:
       - main
@@ -14,7 +13,7 @@ jobs:
     steps:
       - name: Check if PR author is an org member
         id: check-member
-        uses: actions/github-script@v6
+        uses: actions/github-script@v6.3.0
         with:
           script: |
             const org = 'wpengine'; 
@@ -25,29 +24,32 @@ jobs:
                 org,
                 username,
               });
-              console.log( {
-                username,
-                membership
-              });
+              console.log({ username, membership });
               return { isMember: membership.state === 'active' };
             } catch (error) {
+              console.log(`Error checking membership: ${error}`);
               return { isMember: false }; // Treat as not a member if any error occurs
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        outputs:
+          isMember: ${{ steps.check-member.outputs.isMember }}
 
       - name: Skip if not an org member
-        if: steps.check-member.outputs.isMember != 'true'
+        if: steps.check-member.outputs.isMember == 'false'
         run: echo "Skipping workflow because PR author is not an org member" && exit 0
+
       - uses: actions/checkout@v4
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
       - name: SonarQube Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master
         # Force to fail step after specific time
