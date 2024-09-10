@@ -17,14 +17,23 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-            const { data: membership } = await octokit.orgs.checkMembershipForUser({
-              org: 'wpengine',
-              username: context.payload.pull_request.user.login,
-            }).catch(err => {
-              return { data: { state: 'none' } };
+            const { Octokit } = require("@octokit/rest");
+            const octokit = new Octokit({
+              auth: process.env.GITHUB_TOKEN,
             });
-            return { isMember: membership.state === 'active' };
+
+            const org = 'wpengine'; // replace with your GitHub org
+            const username = context.payload.pull_request.user.login;
+
+            try {
+              const { data: membership } = await octokit.orgs.getMembershipForUser({
+                org,
+                username,
+              });
+              return { isMember: membership.state === 'active' };
+            } catch (error) {
+              return { isMember: false }; // If not a member or error occurs, treat as not a member
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
