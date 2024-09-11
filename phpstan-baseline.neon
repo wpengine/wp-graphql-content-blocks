@@ -11,11 +11,6 @@ parameters:
 			path: includes/updates/update-callbacks.php
 
 		-
-			message: "#^Cannot access property \\$id on WP_Screen\\|null\\.$#"
-			count: 2
-			path: includes/updates/update-callbacks.php
-
-		-
 			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\custom_plugin_api_request\\(\\) has invalid return type WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\stdClass\\.$#"
 			count: 1
 			path: includes/updates/update-callbacks.php
