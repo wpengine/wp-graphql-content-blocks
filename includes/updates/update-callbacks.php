@@ -169,7 +169,7 @@ add_filter( 'semantic_versioning_notice_text', __NAMESPACE__ . '\filter_semver_n
  * @param string $notice_text The default notice text.
  * @param string $plugin_filename The plugin directory and filename.
  *
- * @return string|null
+ * @return string
  */
 function filter_semver_notice_text( $notice_text, $plugin_filename ) {
 	if ( WPGRAPHQL_CONTENT_BLOCKS_PATH !== $plugin_filename ) {
