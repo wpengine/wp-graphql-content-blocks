@@ -30,7 +30,7 @@ function get_plugin_data_from_wpe( $args ) {
 		return $args;
 	}
 
-	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_FILE );
+	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
 	$meets_wp_req        = version_compare( get_bloginfo( 'version' ), $product_info->requires_at_least, '>=' );
 
 	$api                        = new stdClass();
@@ -65,7 +65,7 @@ function get_plugin_api_error() {
  * @return \stdClass
  */
 function get_remote_plugin_info() {
-	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_FILE );
+	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
 	$response            = get_transient( 'wpgraphql_content_blocks_product_info' );
 
 	if ( false === $response ) {
@@ -101,7 +101,9 @@ function get_remote_plugin_info() {
 		);
 
 		if ( ! property_exists( $response, 'icons' ) || empty( $response->icons['default'] ) ) {
-			$response->icons['default'] = WPGRAPHQL_CONTENT_BLOCKS_URL . 'includes/updates/images/wpe-logo-stacked-inverse.svg';
+			$plugin_url = plugin_dir_url( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
+
+			$response->icons['default'] = $plugin_url . 'includes/updates/images/wpe-logo-stacked-inverse.svg';
 		}
 
 		set_transient( 'wpgraphql_content_blocks_product_info', $response, HOUR_IN_SECONDS * 12 );
