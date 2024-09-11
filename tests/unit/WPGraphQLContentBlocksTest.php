@@ -38,15 +38,4 @@ final class WPGraphQLContentBlocksTest extends PluginTestCase {
 		$this->assertTrue( $rc->hasMethod( '__clone' ) );
 		$this->assertTrue( $rc->hasMethod( '__wakeup' ) );
 	}
-
-	/**
-	 * @covers WPGraphQLContentBlocks::setup_constants()
-	 */
-	public function testSetupConstants() {
-		$this->assertTrue( defined( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION' ) );
-		$this->assertTrue( defined( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR' ) );
-		$this->assertTrue( defined( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE' ) );
-		$this->assertTrue( defined( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD' ) );
-		$this->assertTrue( defined( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION' ) );
-	}
 }

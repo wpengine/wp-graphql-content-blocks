@@ -36,13 +36,13 @@ function check_for_plugin_updates( $data ) {
 	}
 
 	$response->slug      = 'wp-graphql-content-blocks';
-	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_FILE );
+	$current_plugin_data = \get_plugin_data( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
 	$meets_wp_req        = version_compare( get_bloginfo( 'version' ), $response->requires_at_least, '>=' );
 
 	// Only update the response if there's a newer version, otherwise WP shows an update notice for the same version.
 	if ( $meets_wp_req && version_compare( $current_plugin_data['Version'], $response->version, '<' ) ) {
-		$response->plugin                                = plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_FILE );
-		$data->response[ WPGRAPHQL_CONTENT_BLOCKS_PATH ] = $response;
+		$response->plugin                                       = plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
+		$data->response[ WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH ] = $response;
 	}
 
 	return $data;
@@ -60,10 +60,13 @@ add_filter( 'plugins_api', __NAMESPACE__ . '\custom_plugin_api_request', 10, 3 )
  * @param string             $action The type of information being requested from the Plugin Installation API.
  * @param object             $args Plugin API arguments.
  *
- * @return false|\WPGraphQL\ContentBlocks\PluginUpdater\stdClass $response Plugin API arguments.
+ * @return false|object|array $response Plugin API arguments.
  */
 function custom_plugin_api_request( $api, $action, $args ) {
-	if ( empty( $args->slug ) || WPGRAPHQL_CONTENT_BLOCKS_SLUG !== $args->slug ) {
+	// Bail if it's not our plugin.
+	$plugin_slug = dirname( plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE ) );
+
+	if ( empty( $args->slug ) || $plugin_slug !== $args->slug ) {
 		return $api;
 	}
 
@@ -96,7 +99,7 @@ function delegate_plugin_row_notice() {
 		return;
 	}
 
-	$plugin_basename = plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_FILE );
+	$plugin_basename = plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
 
 	remove_action( "after_plugin_row_{$plugin_basename}", 'wp_plugin_update_row' );
 	add_action( "after_plugin_row_{$plugin_basename}", __NAMESPACE__ . '\display_plugin_row_notice', 10 );
@@ -172,8 +175,9 @@ add_filter( 'semantic_versioning_notice_text', __NAMESPACE__ . '\filter_semver_n
  * @return string
  */
 function filter_semver_notice_text( $notice_text, $plugin_filename ) {
-	if ( WPGRAPHQL_CONTENT_BLOCKS_PATH !== $plugin_filename ) {
+	if ( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH !== $plugin_filename ) {
 		return $notice_text;
 	}
+
 	return '<br><br>' . __( '<b>THIS UPDATE MAY CONTAIN BREAKING CHANGES:</b> This plugin uses Semantic Versioning, and this new version is a major release. Please review the changelog before updating.', 'wp-graphql-content-blocks' );
 }
