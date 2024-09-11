@@ -1,26 +1,57 @@
 on:
-  # Trigger analysis when pushing in main or pull requests, and when creating
-  # a pull request.
+  # Trigger analysis when pushing to main or pull requests, and when creating a pull request.
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
 
-name: Main Workflow
+name: SonarQube Analysis
 jobs:
   sonarqube:
     runs-on: ubuntu-22.04
     steps:
+      - name: Check if PR author is an org member
+        id: check-member
+        uses: actions/github-script@v6.3.0  # Updated version to support Node 20
+        with:
+          script: |
+            const org = 'wpengine'; 
+            const username = context.payload.pull_request.user.login;
+
+            try {
+              const { data: membership } = await github.rest.orgs.getMembershipForUser({
+                org,
+                username,
+              });
+              console.log({ username, membership });
+              return { isMember: membership.state === 'active' };
+            } catch (error) {
+              console.log(`Error checking membership: ${error}`);
+              return { isMember: false }; // Treat as not a member if any error occurs
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Set an output for the job based on the result of the membership check
+      - name: Set output for isMember
+        run: echo "isMember=${{ steps.check-member.outputs.isMember }}" >> $GITHUB_ENV
+
+      - name: Skip if not an org member
+        if: env.isMember == 'false'
+        run: echo "Skipping workflow because PR author is not an org member" && exit 0
+
       - uses: actions/checkout@v4
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
       - name: SonarQube Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master
         # Force to fail step after specific time
