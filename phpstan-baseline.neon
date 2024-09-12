@@ -10,17 +10,4 @@ parameters:
 			count: 1
 			path: includes/PluginUpdater/UpdateCallbacks.php
 
-		-
-			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\custom_plugin_api_request\\(\\) has invalid return type WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\stdClass\\.$#"
-			count: 1
-			path: includes/PluginUpdater/UpdateCallbacks.php
 
-		-
-			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\custom_plugin_api_request\\(\\) should return WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\stdClass\\|false but returns array\\|object\\|false\\.$#"
-			count: 2
-			path: includes/PluginUpdater/UpdateCallbacks.php
-
-		-
-			message: "#^Function WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\custom_plugin_api_request\\(\\) should return WPGraphQL\\\\ContentBlocks\\\\PluginUpdater\\\\stdClass\\|false but returns object\\.$#"
-			count: 1
-			path: includes/PluginUpdater/UpdateCallbacks.php

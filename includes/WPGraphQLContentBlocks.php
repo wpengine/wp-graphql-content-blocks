@@ -28,7 +28,9 @@ final class WPGraphQLContentBlocks {
 	public static function instance() {
 		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof self ) ) {
 			self::$instance = new self();
-			self::$instance->setup_constants();
+			// @todo Remove this in a major version bump.
+			self::$instance->deprecated_constants();
+
 			if ( self::$instance->includes() ) {
 				self::$instance->actions();
 			}
@@ -65,95 +67,48 @@ final class WPGraphQLContentBlocks {
 	}
 
 	/**
-	 * Setup plugin constants.
-	 *
-	 * @since  0.0.1
-	 */
-	private function setup_constants(): void {
-
-		// Set main file path.
-		$main_file_path = dirname( __DIR__ ) . '/wp-graphql.php';
-
-		// Plugin version.
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '4.1.0' );
-		// Plugin Folder Path.
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR', plugin_dir_path( $main_file_path ) );
-		// Plugin Root File.
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE', $main_file_path );
-		// Whether to autoload the files or not.
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD', true );
-		// The minimum version of PHP this plugin requires to work properly
-		$this->define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', '7.4' );
-	}
-
-	/**
 	 * Include required files.
 	 * Uses composer's autoload
 	 *
 	 * @since  0.0.1
 	 */
 	private function includes(): bool {
-		/**
-		 * WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD can be set to "false" to prevent the autoloader from running.
-		 * In most cases, this is not something that should be disabled, but some environments
-		 * may bootstrap their dependencies in a global autoloader that will autoload files
-		 * before we get to this point, and requiring the autoloader again can trigger fatal errors.
-		 */
-		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD' ) && true === WPGRAPHQL_CONTENT_BLOCKS_AUTOLOAD ) {
-			if ( file_exists( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
-				// Autoload Required Classes.
-				require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'vendor/autoload.php';
-			} else {
-				add_action(
-					'admin_notices',
-					static function () {
-						if ( ! current_user_can( 'manage_options' ) ) {
-							return;
-						}
+		// Holds the status of whether the plugin is active or not so we can load the updater functions regardless.
+		$success = true;
 
-						printf(
-							'<div class="notice notice-error">' .
-								'<p>%s</p>' .
-							'</div>',
-							wp_kses_post(
-								__( 'WPGraphQL Content Blocks appears to have been installed without its dependencies. If you meant to download the source code, you can run `composer install` to install dependencies. If you are looking for the production version of the plugin, you can download it from the <a target="_blank" href="https://github.com/wpengine/wp-graphql-content-blocks/releases">GitHub Releases tab.</a>', 'wp-graphql-content-blocks' )
-							)
-						);
+		// If GraphQL class doesn't exist, then that plugin is not active.
+		if ( ! class_exists( 'WPGraphQL' ) ) {
+			add_action(
+				'admin_notices',
+				static function () {
+					if ( ! current_user_can( 'manage_options' ) ) {
+						return;
 					}
-				);
-			}//end if
 
-			// If GraphQL class doesn't exist, then dependencies cannot be
-			// detected. This likely means the user cloned the repo from GitHub
-			// but did not run `composer install`
-			if ( ! class_exists( 'WPGraphQL' ) ) {
-				add_action(
-					'admin_notices',
-					static function () {
-						if ( ! current_user_can( 'manage_options' ) ) {
-							return;
-						}
+					printf(
+						'<div class="notice notice-error is-dismissible">' .
+							'<p>%s</p>' .
+						'</div>',
+						esc_html__( 'WPGraphQL Content Blocks will not work without WPGraphQL installed and active.', 'wp-graphql-content-blocks' )
+					);
+				}
+			);
 
-						printf(
-							'<div class="notice notice-error is-dismissible">' .
-								'<p>%s</p>' .
-							'</div>',
-							esc_html__( 'WPGraphQL Content Blocks will not work without WPGraphQL installed and active.', 'wp-graphql-content-blocks' )
-						);
-					}
-				);
+			$success = false;
+		}
 
-				return false;
-			}//end if
-		}//end if
+		// Include the updater functions.
+		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/includes/PluginUpdater/UpdateFunctions.php';
+		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/includes/PluginUpdater/UpdateCallbacks.php';
 
-		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/PluginUpdater/UpdateFunctions.php';
-		require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . 'includes/PluginUpdater/UpdateCallbacks.php';
+		// Bail if the Enforce SemVer class doesn't exist.
+		if ( ! class_exists( 'EnforceSemVer\EnforceSemVer' ) ) {
+			return false;
+		}
 
-		// phpcs:ignore SlevomatCodingStandard.Variables.UnusedVariable.UnusedVariable -- Library bootstraps itself, hence variable is unused.
-		$semver = new \EnforceSemVer\EnforceSemVer( WPGRAPHQL_CONTENT_BLOCKS_PATH );
+		new \EnforceSemVer\EnforceSemVer( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH );
 
-		return true;
+		return $success;
 	}
 
 	/**
@@ -176,16 +131,27 @@ final class WPGraphQLContentBlocks {
 	}
 
 	/**
-	 * Define constant if not already set.
+	 * Sets up deprecated constants.
 	 *
-	 * @param string      $name  Constant name.
-	 * @param string|bool $value Constant value.
-	 *
-	 * @since 1.4.0
+	 * @deprecated @todo This can be removed in a major version bump.
 	 */
-	private function define( string $name, $value ): void {
-		if ( ! defined( $name ) ) {
-			define( $name, $value ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
+	private function deprecated_constants(): void {
+		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_FILE' ) ) {
+			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_FILE', 'The WPGRAPHQL_CONTENT_BLOCKS_VERSION constant has been deprecated. Use the WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE constant instead.', '@todo' );
+		} else {
+			define( 'WPGRAPHQL_CONTENT_BLOCKS_FILE', WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
+		}
+
+		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_PATH' ) ) {
+			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_PATH', 'The WPGRAPHQL_CONTENT_BLOCKS_PATH constant has been deprecated. Use the WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH constant instead.', '@todo' );
+		} else {
+			define( 'WPGRAPHQL_CONTENT_BLOCKS_PATH', WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH );
+		}
+
+		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION' ) ) {
+			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', 'The WPGRAPHQL_CONTENT_BLOCKS_VERSION constant has been deprecated, with no replacement. It will be removed in a future release.', '@todo' );
+		} else {
+			define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', WPGRAPHQL_CONTENT_BLOCKS_VERSION );
 		}
 	}
 }
