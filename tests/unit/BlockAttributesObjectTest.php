@@ -8,10 +8,11 @@ final class BlockAttributesObjectTest extends PluginTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
+
 		global $wpdb;
 
 		$this->post_id = wp_insert_post(
-			array(
+			[
 				'post_title'   => 'Post Title',
 				'post_content' => preg_replace(
 					'/\s+/',
@@ -24,13 +25,14 @@ final class BlockAttributesObjectTest extends PluginTestCase {
 					)
 				),
 				'post_status'  => 'publish',
-			)
+			]
 		);
 	}
 
 	public function tearDown(): void {
 		// your tear down methods here
 		parent::tearDown();
+
 		wp_delete_post( $this->post_id, true );
 	}
 
@@ -52,7 +54,7 @@ final class BlockAttributesObjectTest extends PluginTestCase {
 		}
 		';
 
-		$actual = graphql( array( 'query' => $query ) );
+		$actual = graphql( [ 'query' => $query ] );
 		$node   = $actual['data']['posts']['nodes'][0];
 
 		// Verify that the ID of the first post matches the one we just created.

@@ -2,10 +2,11 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-use \WPGraphQL\ContentBlocks\Type\InterfaceType\PostTypeBlockInterface;
+use WPGraphQL\ContentBlocks\Type\InterfaceType\PostTypeBlockInterface;
 
 final class PostTypeBlockInterfaceTest extends PluginTestCase {
 	public $instance;
+
 	public function setUp(): void {
 		parent::setUp();
 
@@ -20,6 +21,7 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 	public function tearDown(): void {
 		// your tear down methods here
 		\WPGraphQL::clear_schema();
+
 		parent::tearDown();
 	}
 
@@ -27,57 +29,57 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 	 * @covers PostTypeBlockInterface->register_type
 	 */
 	public function test_register_type() {
-		$this->instance::register_type( 'post', array(), \WPGraphQL::get_type_registry() );
+		$this->instance::register_type( 'post', [], \WPGraphQL::get_type_registry() );
 
 		// Verify NodeWithPostEditorBlocks fields registration
 		$queryNodeWithPostEditorBlocksMeta = '
 		query NodeWithPostEditorBlocksMeta {
-            __type(name: "NodeWithPostEditorBlocks") {
-              fields {
-                name
-              }
-            }
-          }
+				__type(name: "NodeWithPostEditorBlocks") {
+					fields {
+						name
+					}
+				}
+			}
 		';
 		$response                          = graphql(
-			array(
+			[
 				'query'     => $queryNodeWithPostEditorBlocksMeta,
-				'variables' => array(
+				'variables' => [
 					'name' => 'NodeWithPostEditorBlocks',
-				),
-			)
+				],
+			]
 		);
-		$expected                          = array(
-			'fields' => array(
-				array(
+		$expected                          = [
+			'fields' => [
+				[
 					'name' => 'editorBlocks',
-				),
-			),
-		);
+				],
+			],
+		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertEquals( $response['data']['__type'], $expected );
 
 		// Verify PostEditorBlock fields registration
 		$queryContentBlockMeta = '
 		query ContentBlockMeta {
-		    __type(name: "PostEditorBlock") {
-		        fields {
-		            name
-		        }
-		    }
+			__type(name: "PostEditorBlock") {
+					fields {
+						name
+					}
+			}
 		}
 		';
 
 		// Verify ContentBlock fields registration
 		$response = graphql(
-			array(
+			[
 				'query'     => $queryContentBlockMeta,
-				'variables' => array(
+				'variables' => [
 					'name' => 'PostEditorBlock',
-				),
-			)
+				],
+			]
 		);
-		$expected = array(
+		$expected = [
 			'apiVersion',
 			'blockEditorCategoryName',
 			'cssClassNames',
@@ -87,10 +89,10 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 			'clientId',
 			'parentClientId',
 			'renderedHtml',
-		);
+		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$actual = array_map(
-			function ( $val ) {
+			static function ( $val ) {
 				return $val['name'];
 			},
 			$response['data']['__type']['fields']
