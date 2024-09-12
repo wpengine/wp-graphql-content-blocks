@@ -3,8 +3,6 @@
 namespace WPGraphQL\ContentBlocks\Unit;
 
 final class WPGraphQLContentBlocksTest extends PluginTestCase {
-
-
 	public $instance;
 
 	public function setUp(): void {

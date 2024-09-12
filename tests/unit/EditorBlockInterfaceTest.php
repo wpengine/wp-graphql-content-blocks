@@ -2,10 +2,9 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-use \WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
+use WPGraphQL\ContentBlocks\Type\InterfaceType\EditorBlockInterface;
 
 final class EditorBlockInterfaceTest extends PluginTestCase {
-
 	public function setUp(): void {
 		parent::setUp();
 
@@ -25,12 +24,12 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 	 * @covers EditorBlockInterface->get_block
 	 */
 	public function test_get_block() {
-		$block_exists         = array(
+		$block_exists         = [
 			'blockName' => 'core/paragraph',
-		);
-		$block_does_not_exist = array(
+		];
+		$block_does_not_exist = [
 			'blockName' => 'core/block_does_not_exist',
-		);
+		];
 
 		$this->assertNull( EditorBlockInterface::get_block( $block_does_not_exist ) );
 		$this->assertNotNull( EditorBlockInterface::get_block( $block_exists ) );
@@ -41,7 +40,7 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 	 */
 	public function test_register_type() {
 		$queryNodeWithEditorBlocksMeta = '
-		query NodeWithEditorBlocksMeta {
+			query NodeWithEditorBlocksMeta {
 				__type(name: "NodeWithEditorBlocks") {
 					fields {
 						name
@@ -52,20 +51,20 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 
 		// Verify NodeWithEditorBlocks fields registration
 		$response = graphql(
-			array(
+			[
 				'query'     => $queryNodeWithEditorBlocksMeta,
-				'variables' => array(
+				'variables' => [
 					'name' => 'NodeWithEditorBlocks',
-				),
-			)
+				],
+			]
 		);
-		$expected = array(
-			'fields' => array(
-				array(
+		$expected = [
+			'fields' => [
+				[
 					'name' => 'editorBlocks',
-				),
-			),
-		);
+				],
+			],
+		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertEquals( $response['data']['__type'], $expected );
 
@@ -81,14 +80,14 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 
 		// Verify ContentBlock fields registration
 		$response = graphql(
-			array(
+			[
 				'query'     => $queryContentBlockMeta,
-				'variables' => array(
+				'variables' => [
 					'name' => 'EditorBlock',
-				),
-			)
+				],
+			]
 		);
-		$expected = array(
+		$expected = [
 			'apiVersion',
 			'blockEditorCategoryName',
 			'cssClassNames',
@@ -98,10 +97,10 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 			'clientId',
 			'parentClientId',
 			'renderedHtml',
-		);
+		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$actual = array_map(
-			function ( $val ) {
+			static function ( $val ) {
 				return $val['name'];
 			},
 			$response['data']['__type']['fields']
