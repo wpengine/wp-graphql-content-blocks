@@ -1,6 +1,6 @@
 <?php
 /**
- * Class TestUpdateCallbacks
+ * Class UpdateCallbacksTest
  */
 class UpdateCallbacksTest extends WP_UnitTestCase {
 	public function test_pre_set_site_transient_update_plugins_has_filter_added(): void {
