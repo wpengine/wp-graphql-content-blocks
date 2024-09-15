@@ -15,12 +15,16 @@ final class CoreHeadingTest extends PluginTestCase {
 				'post_status'  => 'publish',
 			]
 		);
+
+		\WPGraphQL::clear_schema();
 	}
 
 	public function tearDown(): void {
 		parent::tearDown();
 
 		wp_delete_post( $this->post_id, true );
+
+		\WPGraphQL::clear_schema();
 	}
 
 	public function query(): string {
@@ -95,8 +99,6 @@ final class CoreHeadingTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
-		error_log( print_r( $actual, true ) );
-
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
@@ -108,7 +110,6 @@ final class CoreHeadingTest extends PluginTestCase {
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
 
 		// Verify the block data.
-		error_log( print_r( $actual['data']['post']['editorBlocks'][0], true ) );
 		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['apiVersion'], 'The apiVersion should be present' );
 		$this->assertEquals( 'text', $actual['data']['post']['editorBlocks'][0]['blockEditorCategoryName'],  'The blockEditorCategoryName should be text' );
 		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['clientId'], 'The clientId should be present' );
