@@ -138,9 +138,19 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	}
 
 	public function test_pre_resolved_blocks_filter_returns_non_null() {
-		add_filter( 'wpgraphql_content_blocks_pre_resolve_blocks', function( $blocks, $node, $args, $allowed_block_names ) {
-			return [ [ 'blockName' => 'core/paragraph', 'attrs' => [ 'content' => 'Test content' ] ] ];
-		}, 10, 4);
+		add_filter(
+			'wpgraphql_content_blocks_pre_resolve_blocks',
+			static function ( $blocks, $node, $args, $allowed_block_names ) {
+				return [
+					[
+						'blockName' => 'core/paragraph',
+						'attrs'     => [ 'content' => 'Test content' ],
+					],
+				];
+			},
+			10,
+			4
+		);
 
 		$post_id = self::factory()->post->create( [ 'post_content' => '' ] );
 		$post    = new Post( get_post( $post_id ) );
@@ -148,19 +158,21 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [] );
 		// The filter should return a block.
 		$this->assertCount( 1, $resolved_blocks );
-		$this->assertEquals( 'core/paragraph', $resolved_blocks[0][ 'blockName' ] );
+		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
 	}
 
 	public function test_content_retrieved_from_post_node() {
-		$post_id = self::factory()->post->create( [
-			'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->'
-		] );
+		$post_id         = self::factory()->post->create(
+			[
+				'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->',
+			]
+		);
 		$post            = new Post( get_post( $post_id ) );
 		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [] );
 
 		// The block should be resolved from the post node.
 		$this->assertCount( 1, $resolved_blocks );
-		$this->assertEquals( 'core/paragraph', $resolved_blocks[0][ 'blockName' ] );
+		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
 	}
 
 	public function test_returns_empty_array_for_empty_content() {
@@ -175,32 +187,41 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	}
 
 	public function test_filters_allowed_blocks() {
-		$post_id = self::factory()->post->create( [
-			'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->' .
-							  '<!-- wp:heading --><h2>Heading</h2><!-- /wp:heading -->'
-		] );
+		$post_id         = self::factory()->post->create(
+			[
+				'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->' .
+									'<!-- wp:heading --><h2>Heading</h2><!-- /wp:heading -->',
+			]
+		);
 		$post            = new Post( get_post( $post_id ) );
 		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [], [ 'core/paragraph' ] );
 
 		// The block should be resolved from the post node.
 		$this->assertCount( 1, $resolved_blocks );
-		$this->assertEquals( 'core/paragraph', $resolved_blocks[0][ 'blockName' ] );
+		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
 	}
 
 	public function test_filters_after_resolving_blocks() {
-		add_filter( 'wpgraphql_content_blocks_resolve_blocks', function( $blocks, $node, $args, $allowed_block_names ) {
-			return [ [ 'blockName' => 'core/test-filter' ] ];
-		}, 10, 4 );
+		add_filter(
+			'wpgraphql_content_blocks_resolve_blocks',
+			static function ( $blocks, $node, $args, $allowed_block_names ) {
+				return [ [ 'blockName' => 'core/test-filter' ] ];
+			},
+			10,
+			4
+		);
 
-		$post_id = self::factory()->post->create( [
-			'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->'
-		] );
+		$post_id = self::factory()->post->create(
+			[
+				'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->',
+			]
+		);
 		$post    = new Post( get_post( $post_id ) );
 
 		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [] );
 
 		// The block should be resolved from the post node.
 		$this->assertCount( 1, $resolved_blocks );
-		$this->assertEquals( 'core/test-filter', $resolved_blocks[0][ 'blockName' ] );
+		$this->assertEquals( 'core/test-filter', $resolved_blocks[0]['blockName'] );
 	}
 }
