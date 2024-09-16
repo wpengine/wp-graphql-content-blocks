@@ -2,7 +2,7 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-use \WPGraphQL\ContentBlocks\Registry\Registry;
+use WPGraphQL\ContentBlocks\Registry\Registry;
 
 final class RegistryTestCase extends PluginTestCase {
 	/**
@@ -25,6 +25,7 @@ final class RegistryTestCase extends PluginTestCase {
 	public function tearDown(): void {
 		// your tear down methods here
 		\WPGraphQL::clear_schema();
+
 		parent::tearDown();
 	}
 
@@ -48,17 +49,17 @@ final class RegistryTestCase extends PluginTestCase {
 
 		// Verify the response contains what we put in cache
 		$response           = graphql(
-			array(
+			[
 				'query'     => $query,
-				'variables' => array(
+				'variables' => [
 					'name' => 'Post',
-				),
-			)
+				],
+			]
 		);
-		$contains_interface = array(
+		$contains_interface = [
 			'name'        => 'NodeWithEditorBlocks',
 			'description' => 'Node that has content blocks associated with it',
-		);
+		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
 		$this->assertTrue( in_array( $contains_interface, $response['data']['__type']['interfaces'] ) );
@@ -69,7 +70,7 @@ final class RegistryTestCase extends PluginTestCase {
 	 * no additional interfaces are included in them.
 	 */
 	public function test_no_additional_interfaces_on_block_editor_disabled_block_types() {
-		add_filter('use_block_editor_for_post_type', '__return_false');
+		add_filter( 'use_block_editor_for_post_type', '__return_false' );
 		$query = '
 		query GetType($name:String!) {
 			__type(name: $name) {
@@ -83,21 +84,21 @@ final class RegistryTestCase extends PluginTestCase {
 		$this->instance->init();
 
 		// Verify the response contains what we put in cache
-		$response           = graphql(
-			array(
+		$response     = graphql(
+			[
 				'query'     => $query,
-				'variables' => array(
+				'variables' => [
 					'name' => 'Post',
-				),
-			)
+				],
+			]
 		);
-		$not_included = array(
-			'name'        => 'NodeWithEditorBlocks',
-		);
+		$not_included = [
+			'name' => 'NodeWithEditorBlocks',
+		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
 		$this->assertNotContains( $not_included, $response['data']['__type']['interfaces'] );
-		remove_filter('use_block_editor_for_post_type', '__return_false');
+		remove_filter( 'use_block_editor_for_post_type', '__return_false' );
 	}
 
 	/**
@@ -107,12 +108,12 @@ final class RegistryTestCase extends PluginTestCase {
 	public function test_add_block_fields_to_schema_with_get_allowed_block_types() {
 		add_filter(
 			'allowed_block_types_all',
-			function ( $allowed_blocks, $editor_context ) {
+			static function ( $allowed_blocks, $editor_context ) {
 				if ( isset( $editor_context->post ) && $editor_context->post instanceof \WP_Post && 'post' === $editor_context->post->post_type ) {
-					return array(
+					return [
 						'core/image',
 						'core/paragraph',
-					);
+					];
 				}
 				return $allowed_blocks;
 			},
@@ -140,46 +141,46 @@ final class RegistryTestCase extends PluginTestCase {
 
 		// Verify Post meta
 		$response           = graphql(
-			array(
+			[
 				'query'     => $query,
-				'variables' => array(
+				'variables' => [
 					'name' => 'Post',
-				),
-			)
+				],
+			]
 		);
-		$contains_interface = array(
+		$contains_interface = [
 			'name'        => 'NodeWithPostEditorBlocks',
 			'description' => 'Node that has Post content blocks associated with it',
-		);
+		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
 		$this->assertTrue( in_array( $contains_interface, $response['data']['__type']['interfaces'] ) );
 
 		// Verify PostEditorBlock meta
 		$response                = graphql(
-			array(
+			[
 				'query'     => $query,
-				'variables' => array(
+				'variables' => [
 					'name' => 'PostEditorBlock',
-				),
-			)
+				],
+			]
 		);
-		$contains_interface      = array(
+		$contains_interface      = [
 			'name'        => 'EditorBlock',
 			'description' => 'Blocks that can be edited to create content and layouts',
-		);
-		$contains_detail         = array(
+		];
+		$contains_detail         = [
 			'name'        => 'PostEditorBlock',
 			'description' => '',
-		);
-		$contains_possible_types = array(
-			array(
+		];
+		$contains_possible_types = [
+			[
 				'name' => 'CoreImage',
-			),
-			array(
+			],
+			[
 				'name' => 'CoreParagraph',
-			),
-		);
+			],
+		];
 
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
@@ -189,21 +190,21 @@ final class RegistryTestCase extends PluginTestCase {
 
 		// Verify NodeWithPostEditorBlocks meta
 		$response           = graphql(
-			array(
+			[
 				'query'     => $query,
-				'variables' => array(
+				'variables' => [
 					'name' => 'NodeWithPostEditorBlocks',
-				),
-			)
+				],
+			]
 		);
-		$contains_interface = array(
+		$contains_interface = [
 			'name'        => 'NodeWithEditorBlocks',
 			'description' => 'Node that has content blocks associated with it',
-		);
-		$contains_detail    = array(
+		];
+		$contains_detail    = [
 			'name'        => 'NodeWithPostEditorBlocks',
 			'description' => 'Node that has post content blocks associated with it',
-		);
+		];
 
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );

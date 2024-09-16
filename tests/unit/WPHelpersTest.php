@@ -2,44 +2,45 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-use \WPGraphQL\ContentBlocks\Utilities\WPHelpers;
+use WPGraphQL\ContentBlocks\Utilities\WPHelpers;
 
 final class WPHelpersTest extends PluginTestCase {
 	public function setUp(): void {
 		parent::setUp();
+
 		register_post_type(
 			'faq',
-			array(
+			[
 				'show_in_graphql'     => true,
 				'graphql_single_name' => 'faq',
 				'graphql_plural_name' => 'faqs',
-				'supports'            => array( 'title', 'author', 'thumbnail' ),
+				'supports'            => [ 'title', 'author', 'thumbnail' ],
 				'public'              => true,
-			)
+			]
 		);
 		register_post_type(
 			'blocks_enabled',
-			array(
+			[
 				'show_in_graphql'     => true,
 				'graphql_single_name' => 'blocksEnabled',
 				'graphql_plural_name' => 'blocksEnabled',
-				'supports'            => array( 'title', 'editor', 'author', 'thumbnail' ),
+				'supports'            => [ 'title', 'editor', 'author', 'thumbnail' ],
 				'public'              => true,
 				'show_in_rest'        => true,
-			)
+			]
 		);
 
 		register_post_type(
 			'blocks_disabled',
-			array(
+			[
 				'show_in_graphql'     => true,
 				'graphql_single_name' => 'blocksDisabled',
 				'graphql_plural_name' => 'blocksDisabled',
-				'supports'            => array( 'title', 'editor', 'author', 'thumbnail' ),
+				'supports'            => [ 'title', 'editor', 'author', 'thumbnail' ],
 				'public'              => true,
 				'show_in_rest'        => false,
 			// post types that support the editor but do not show in rest will be prevented from using the Block editor
-			)
+			]
 		);
 
 		\WPGraphQL::clear_schema();
@@ -50,8 +51,10 @@ final class WPHelpersTest extends PluginTestCase {
 		unregister_post_type( 'blocks_enabled' );
 		unregister_post_type( 'blocks_disabled' );
 		\WPGraphQL::clear_schema();
+
 		parent::tearDown();
 	}
+
 	/**
 	 * @covers WPHelpers::get_supported_post_types
 	 */

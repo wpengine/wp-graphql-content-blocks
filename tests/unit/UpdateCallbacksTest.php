@@ -1,8 +1,8 @@
 <?php
 /**
- * Class TestUpdateCallbacks
+ * Class UpdateCallbacksTest
  */
-class TestUpdateCallbacks extends WP_UnitTestCase {
+class UpdateCallbacksTest extends WP_UnitTestCase {
 	public function test_pre_set_site_transient_update_plugins_has_filter_added(): void {
 		self::assertSame( 10, has_action( 'pre_set_site_transient_update_plugins', 'WPGraphQL\ContentBlocks\PluginUpdater\check_for_plugin_updates' ) );
 	}

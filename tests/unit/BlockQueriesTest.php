@@ -8,39 +8,42 @@ final class BlockQueriesTest extends PluginTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
+
 		global $wpdb;
 
 		$this->post_id = wp_insert_post(
-			array(
+			[
 				'post_title'   => 'Post Title',
 				'post_content' => preg_replace(
 					'/\s+/',
 					' ',
 					trim(
 						'
-			    <!-- wp:columns -->
-			    <div class="wp-block-columns"><!-- wp:column -->
-			    <div class="wp-block-column"><!-- wp:paragraph -->
-			    <p>Example paragraph in Column 1</p>
-			    <!-- /wp:paragraph --></div>
-			    <!-- /wp:column -->
+							<!-- wp:columns -->
+							<div class="wp-block-columns"><!-- wp:column -->
+							<div class="wp-block-column"><!-- wp:paragraph -->
+							<p>Example paragraph in Column 1</p>
+							<!-- /wp:paragraph --></div>
+							<!-- /wp:column -->
 
-			    <!-- wp:column -->
-			    <div class="wp-block-column"><!-- wp:paragraph -->
-			    <p>Example paragraph in Column 2</p>
-			    <!-- /wp:paragraph --></div>
-			    <!-- /wp:column --></div>
-			    <!-- /wp:columns -->'
+							<!-- wp:column -->
+							<div class="wp-block-column"><!-- wp:paragraph -->
+							<p>Example paragraph in Column 2</p>
+							<!-- /wp:paragraph --></div>
+							<!-- /wp:column --></div>
+							<!-- /wp:columns -->
+						'
 					)
 				),
 				'post_status'  => 'publish',
-			)
+			]
 		);
 	}
 
 	public function tearDown(): void {
 		// your tear down methods here
 		parent::tearDown();
+
 		wp_delete_post( $this->post_id, true );
 	}
 
@@ -50,14 +53,14 @@ final class BlockQueriesTest extends PluginTestCase {
 			posts(first: 1) {
 				nodes {
 					databaseId
-                    editorBlocks(flat: false) {
-                    	name
-                    }
+					editorBlocks(flat: false) {
+						name
+					}
 				}
 			}
 		}
 		';
-		$actual = graphql( array( 'query' => $query ) );
+		$actual = graphql( [ 'query' => $query ] );
 		$node   = $actual['data']['posts']['nodes'][0];
 
 		// Verify that the ID of the first post matches the one we just created.
@@ -75,15 +78,15 @@ final class BlockQueriesTest extends PluginTestCase {
 				nodes {
 					databaseId
 					editorBlocks(flat: true) {
-                        name
-                        parentClientId
-                    }
+							name
+							parentClientId
+					}
 				}
 			}
 		}
 		';
 
-		$actual = graphql( array( 'query' => $query ) );
+		$actual = graphql( [ 'query' => $query ] );
 		$node   = $actual['data']['posts']['nodes'][0];
 
 		// Verify that the ID of the first post matches the one we just created.
@@ -107,5 +110,4 @@ final class BlockQueriesTest extends PluginTestCase {
 		$this->assertEquals( $node['editorBlocks'][4]['name'], 'core/paragraph' );
 		$this->assertNotNull( $node['editorBlocks'][4]['parentClientId'] );
 	}
-
 }

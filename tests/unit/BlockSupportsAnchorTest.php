@@ -2,43 +2,45 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
-use \WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
+use WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
 
 final class BlockSupportsAnchorTest extends PluginTestCase {
 	public $instance;
 	public $post_id;
+
 	public function setUp(): void {
 		parent::setUp();
+
 		$settings                                 = get_option( 'graphql_general_settings' );
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
 
 		$this->post_id  = wp_insert_post(
-			array(
+			[
 				'post_title'   => 'Post Title',
 				'post_content' => preg_replace(
 					'/\s+/',
 					' ',
 					trim(
 						'
-                        <!-- wp:paragraph -->
-                        <p id="example">Example paragraph with Anchor</p>
-                        <!-- /wp:paragraph -->
-                        <!-- wp:paragraph -->
-                        <p>Example paragraph without Anchor</p>
-                        <!-- /wp:paragraph -->
-
-						<!-- wp:group -->
-						<div class="wp-block-group">
 							<!-- wp:paragraph -->
-							<p id="example-inner">Example inner block</p>
+							<p id="example">Example paragraph with Anchor</p>
 							<!-- /wp:paragraph -->
-						<!-- /wp:group -->				
-			        '
+							<!-- wp:paragraph -->
+							<p>Example paragraph without Anchor</p>
+							<!-- /wp:paragraph -->
+
+							<!-- wp:group -->
+							<div class="wp-block-group">
+								<!-- wp:paragraph -->
+								<p id="example-inner">Example inner block</p>
+								<!-- /wp:paragraph -->
+							<!-- /wp:group -->				
+						'
 					)
 				),
 				'post_status'  => 'publish',
-			)
+			]
 		);
 		$this->instance = new Anchor();
 		\WPGraphQL::clear_schema();
@@ -47,6 +49,7 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 	public function tearDown(): void {
 		// your tear down methods here
 		parent::tearDown();
+
 		wp_delete_post( $this->post_id, true );
 		\WPGraphQL::clear_schema();
 	}
@@ -61,32 +64,33 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		// Verify BlockWithSupportsAnchor fields registration
 		$query    = '
 		query BlockWithSupportsAnchorMeta {
-            __type(name: "BlockWithSupportsAnchor") {
-              fields {
-                name
-              }
-              possibleTypes {
-                name
-              }
-            }
-          }
+			__type(name: "BlockWithSupportsAnchor") {
+				fields {
+					name
+				}
+				possibleTypes {
+					name
+				}
+			}
+		}
 		';
-		$actual   = graphql( array( 'query' => $query ) );
-		$expected = array(
-			'fields'        => array(
-				array(
+
+		$actual   = graphql( [ 'query' => $query ] );
+		$expected = [
+			'fields'        => [
+				[
 					'name' => 'anchor',
-				),
-			),
-			'possibleTypes' => array(
-				array(
+				],
+			],
+			'possibleTypes' => [
+				[
 					'name' => 'CoreParagraph',
-				),
-				array(
+				],
+				[
 					'name' => 'CoreParagraphAttributes',
-				),
-			),
-		);
+				],
+			],
+		];
 		$this->assertArrayHasKey( 'data', $actual, json_encode( $actual ) );
 		$this->assertEquals( $actual['data']['__type']['fields'], $expected['fields'] );
 		$this->assertContains( $expected['possibleTypes'][0], $actual['data']['__type']['possibleTypes'] );
@@ -105,16 +109,16 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		{
 			posts(first: 1) {
 				nodes {
-                    editorBlocks {
-                    	name
+					editorBlocks {
+						name
 						... on BlockWithSupportsAnchor {
 							anchor
 						}
-                    }
+					}
 				}
 			}
 		}';
-		$actual = graphql( array( 'query' => $query ) );
+		$actual = graphql( [ 'query' => $query ] );
 		$node   = $actual['data']['posts']['nodes'][0];
 
 		$this->assertEquals( count( $node['editorBlocks'] ), 4 );
