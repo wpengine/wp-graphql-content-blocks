@@ -14,6 +14,9 @@ final class RegistryTestCase extends PluginTestCase {
 		parent::setUp();
 
 		$settings                                 = get_option( 'graphql_general_settings' );
+		if ( ! is_array( $settings ) ) {
+			$settings = [];
+		}
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
 
