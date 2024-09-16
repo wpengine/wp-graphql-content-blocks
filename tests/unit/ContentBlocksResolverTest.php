@@ -137,6 +137,9 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$this->assertEquals( $allowed, $actual_block_names );
 	}
 
+	/**
+	 * Test the wpgraphql_content_blocks_pre_resolve_blocks filter.
+	 */
 	public function test_pre_resolved_blocks_filter_returns_non_null() {
 		add_filter(
 			'wpgraphql_content_blocks_pre_resolve_blocks',
@@ -159,8 +162,12 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		// The filter should return a block.
 		$this->assertCount( 1, $resolved_blocks );
 		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
+		$this->assertEquals( 'Test content', $resolved_blocks[0]['attrs']['content'] );
 	}
 
+	/**
+	 * Tests content retrieval from a post node.
+	 */
 	public function test_content_retrieved_from_post_node() {
 		$post_id         = self::factory()->post->create(
 			[
@@ -175,6 +182,9 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
 	}
 
+	/**
+	 * Tests that an empty array is returned when the post content is empty.
+	 */
 	public function test_returns_empty_array_for_empty_content() {
 		$post_id = self::factory()->post->create( [ 'post_content' => '' ] );
 		$post    = new Post( get_post( $post_id ) );
@@ -186,6 +196,9 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$this->assertEmpty( $resolved_blocks );
 	}
 
+	/**
+	 * Tests that the wpgraphql_content_blocks_allowed_blocks filter is applied.
+	 */
 	public function test_filters_allowed_blocks() {
 		$post_id         = self::factory()->post->create(
 			[
@@ -201,6 +214,9 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
 	}
 
+	/**
+	 * Tests that the wpgraphql_content_blocks_resolve_blocks filter is applied.
+	 */
 	public function test_filters_after_resolving_blocks() {
 		add_filter(
 			'wpgraphql_content_blocks_resolve_blocks',
