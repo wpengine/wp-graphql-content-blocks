@@ -41,7 +41,7 @@ final class CoreTableTest extends PluginTestCase {
 
 	public function test_retrieve_core_table_attribute_fields() {
 		$this->markTestSkipped( 'must be revisited since the test is failing on the CI for an unknown reason' );
-		$query  = '
+		$query = '
 			fragment CoreTableBlockFragment on CoreTable {
 				attributes {
 					caption
@@ -64,18 +64,18 @@ final class CoreTableTest extends PluginTestCase {
 
 		$actual = graphql( [ 'query' => $query ] );
 
-		$node   = $actual['data']['posts']['nodes'][0];
+		$node = $actual['data']['posts']['nodes'][0];
 
-		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/table' );
+		$this->assertEquals( 'core/table', $node['editorBlocks'][0]['name'] );
 		// There should be only one block using that query when not using flat: true
-		$this->assertEquals( count( $node['editorBlocks'] ), 1 );
+		$this->assertEquals( 1, count( $node['editorBlocks'] ) );
 		$this->assertEquals(
-			$node['editorBlocks'][0]['attributes'],
 			[
 				'caption' => 'Caption',
 				'align'   => null,
 				'anchor'  => null,
-			]
+			],
+			$node['editorBlocks'][0]['attributes']
 		);
 	}
 }

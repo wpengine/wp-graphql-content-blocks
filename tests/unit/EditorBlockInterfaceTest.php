@@ -66,7 +66,7 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 			],
 		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
-		$this->assertEquals( $response['data']['__type'], $expected );
+		$this->assertEquals( $expected, $response['data']['__type'] );
 
 		$queryContentBlockMeta = '
 		query ContentBlockMeta {
@@ -107,6 +107,6 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 		);
 		sort( $actual );
 		sort( $expected );
-		$this->assertEquals( $actual, $expected );
+		$this->assertEquals( $expected, $actual );
 	}
 }
