@@ -7,9 +7,9 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
+use WPGraphQL\ContentBlocks\Data\BlockAttributeResolver;
 use WPGraphQL\ContentBlocks\Registry\Registry;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
-use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 use WPGraphQL\Utils\Utils;
 use WP_Block_Type;
@@ -81,44 +81,48 @@ class Block {
 	 * Registers the block attributes GraphQL type and adds it as a field on the Block.
 	 */
 	private function register_block_attributes_as_fields(): void {
-		// Grab any additional block attributes attached into the class itself
-		if ( isset( $this->additional_block_attributes ) ) {
-			$block_attributes = ! empty( $this->block_attributes ) ? array_merge( $this->block_attributes, $this->additional_block_attributes ) : $this->additional_block_attributes;
-		} else {
-			$block_attributes = $this->block_attributes;
-		}
+		// Grab any additional block attributes attached into the class itself.
+		$block_attributes = array_merge(
+			$this->block_attributes ?? [],
+			$this->additional_block_attributes ?? [],
+		);
+
 		$block_attribute_fields = $this->get_block_attribute_fields( $block_attributes, $this->type_name . 'Attributes' );
+
+		// Bail early if no attributes are defined.
+		if ( empty( $block_attribute_fields ) ) {
+			return;
+		}
+
 		// For each attribute, register a new object type and attach it to the block type as a field
-		if ( ! empty( $block_attribute_fields ) ) {
-			$block_attribute_type_name = $this->type_name . 'Attributes';
-			register_graphql_object_type(
-				$block_attribute_type_name,
-				[
-					'description' => sprintf(
-						// translators: %s is the block type name.
-						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
-						$this->type_name
-					),
-					'interfaces'  => $this->get_block_attributes_interfaces(),
-					'fields'      => $block_attribute_fields,
-				]
-			);
-			register_graphql_field(
-				$this->type_name,
-				'attributes',
-				[
-					'type'        => $block_attribute_type_name,
-					'description' => sprintf(
-						// translators: %s is the block type name.
-						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
-						$this->type_name
-					),
-					'resolve'     => static function ( $block ) {
-						return $block;
-					},
-				]
-			);
-		}//end if
+		$block_attribute_type_name = $this->type_name . 'Attributes';
+		register_graphql_object_type(
+			$block_attribute_type_name,
+			[
+				'description' => sprintf(
+					// translators: %s is the block type name.
+					__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+					$this->type_name
+				),
+				'interfaces'  => $this->get_block_attributes_interfaces(),
+				'fields'      => $block_attribute_fields,
+			]
+		);
+		register_graphql_field(
+			$this->type_name,
+			'attributes',
+			[
+				'type'        => $block_attribute_type_name,
+				'description' => sprintf(
+					// translators: %s is the block type name.
+					__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
+					$this->type_name
+				),
+				'resolve'     => static function ( $block ) {
+					return $block;
+				},
+			]
+		);
 	}
 
 	/**
@@ -189,19 +193,19 @@ class Block {
 	 * @param string $prefix The current prefix string to use for the get_query_type
 	 */
 	private function get_block_attribute_fields( ?array $block_attributes, string $prefix = '' ): array {
-		$fields = [];
-
 		// Bail early if no attributes are defined.
 		if ( null === $block_attributes ) {
-			return $fields;
+			return [];
 		}
 
+		$fields = [];
 		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
 			$graphql_type = $this->get_attribute_type( $attribute_name, $attribute_config, $prefix );
 
 			if ( empty( $graphql_type ) ) {
 				continue;
 			}
+
 			// Create the field config.
 			$fields[ Utils::format_field_name( $attribute_name ) ] = [
 				'type'        => $graphql_type,
@@ -319,30 +323,9 @@ class Block {
 	}
 
 	/**
-	 * Gets the GraphQL interfaces that should be implemented by the block.
-	 *
-	 * @return string[]
-	 */
-	private function get_block_interfaces(): array {
-		return $this->block_registry->get_block_interfaces( $this->block->name );
-	}
-
-	/**
-	 * Gets the GraphQL interfaces that should be implemented by the block attributes object.
-	 *
-	 * @return string[]
-	 */
-	private function get_block_attributes_interfaces(): array {
-		return $this->block_registry->get_block_attributes_interfaces( $this->block->name );
-	}
-
-	/**
 	 * Register the Type for the block. This happens after all other object types are already registered.
 	 */
 	private function register_type(): void {
-		/**
-		 * Register the Block Object Type to the Schema
-		 */
 		register_graphql_object_type(
 			$this->type_name,
 			[
@@ -363,179 +346,42 @@ class Block {
 	}
 
 	/**
+	 * Gets the GraphQL interfaces that should be implemented by the block.
+	 *
+	 * @return string[]
+	 */
+	private function get_block_interfaces(): array {
+		return $this->block_registry->get_block_interfaces( $this->block->name );
+	}
+
+	/**
+	 * Gets the GraphQL interfaces that should be implemented by the block attributes object.
+	 *
+	 * @return string[]
+	 */
+	private function get_block_attributes_interfaces(): array {
+		return $this->block_registry->get_block_attributes_interfaces( $this->block->name );
+	}
+
+	/**
 	 * Resolved the value of the block attributes based on the specified config
 	 *
-	 * @param array<string,mixed> $attributes The block current attributes value.
+	 * @param array<string,mixed> $attribute_values The block current attributes value.
 	 * @param string              $html The block rendered html.
-	 * @param array<string,mixed> $config The block current attribute configuration, keyed to the attribute name.
+	 * @param array<string,mixed> $attribute_configs The block current attribute configuration, keyed to the attribute name.
 	 */
-	private function resolve_block_attributes_recursive( $attributes, string $html, array $config ): array {
+	private function resolve_block_attributes_recursive( $attribute_values, string $html, array $attribute_configs ): array {
 		$result = [];
 
 		// Clean up the html.
 		$html = trim( $html );
 
-		foreach ( $config as $key => $value ) {
-			// Get default value.
-			$default = $value['default'] ?? null;
-			$source  = $value['source'] ?? null;
+		foreach ( $attribute_configs as $key => $config ) {
+			$attribute_value = $attribute_values[ $key ] ?? null;
 
-			switch ( $source ) {
-				case 'rich-text':
-				case 'html':
-					// If there is no selector, we are dealing with single source.
-					if ( ! isset( $value['selector'] ) ) {
-						$result[ $key ] = $this->parse_single_source( $html, $source );
-						break;
-					}
-
-					$result[ $key ] = $this->parse_html_source( $html, $value );
-					break;
-				case 'attribute':
-					$result[ $key ] = $this->parse_attribute_source( $html, $value );
-					break;
-				case 'text':
-					$result[ $key ] = $this->parse_text_source( $html, $value );
-					break;
-				case 'query':
-					$result[ $key ] = $this->parse_query_source( $html, $value, $attributes );
-					break;
-			}
-
-			// Post processing of return value based on configured type
-			if ( array_key_exists( $key, $result ) ) {
-				switch ( $value['type'] ) {
-					case 'integer':
-						$result[ $key ] = intval( $result[ $key ] );
-						break;
-					case 'boolean':
-						if ( false === $result[ $key ] ) {
-							break;
-						}
-						if ( is_null( $result[ $key ] ) ) {
-							$result[ $key ] = false;
-							break;
-						}
-						$result[ $key ] = true;
-						break;
-				}
-			}
-
-			// Fallback to the attributes or default value if the result is empty.
-			if ( empty( $result[ $key ] ) ) {
-				$result[ $key ] = $attributes[ $key ] ?? $default;
-			}
-		}
-		return $result;
-	}
-
-	/**
-	 * Parses the block content of a source only block type
-	 *
-	 * @param string $html The html value
-	 * @param string $source The source type
-	 */
-	private function parse_single_source( string $html, $source ): ?string {
-		if ( empty( $html ) ) {
-			return null;
-		}
-
-		switch ( $source ) {
-			case 'html':
-				return DOMHelpers::find_nodes( $html )->innerHTML();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Parses the block content of an HTML source block type.
-	 *
-	 * Includes `multiline` handling.
-	 *
-	 * @param string              $html The html value.
-	 * @param array<string,mixed> $value The value configuration.
-	 */
-	private function parse_html_source( string $html, $value ): ?string {
-		if ( empty( $html ) || ! isset( $value['selector'] ) ) {
-			return null;
-		}
-
-		$result = DOMHelpers::parse_html( $html, $value['selector'] );
-
-		// Multiline values are located somewhere else.
-		if ( isset( $value['multiline'] ) && ! empty( $result ) ) {
-			$result = DOMHelpers::get_elements_from_html( $result, $value['multiline'] );
+			$result[ $key ] = BlockAttributeResolver::resolve_block_attribute( $config, $html, $attribute_value );
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Parses an attribute source block type.
-	 *
-	 * @param string              $html The html value.
-	 * @param array<string,mixed> $value The value configuration.
-	 */
-	private function parse_attribute_source( string $html, $value ): ?string {
-		if ( empty( $html ) || ! isset( $value['selector'] ) || ! isset( $value['attribute'] ) ) {
-			return null;
-		}
-
-		return DOMHelpers::parse_attribute( $html, $value['selector'], $value['attribute'] );
-	}
-
-	/**
-	 * Parses a text source block type.
-	 *
-	 * @param string              $html The html value.
-	 * @param array<string,mixed> $value The value configuration.
-	 */
-	private function parse_text_source( string $html, $value ): ?string {
-		if ( ! isset( $value['selector'] ) ) {
-			return null;
-		}
-
-		return DOMHelpers::parse_text( $html, $value['selector'] );
-	}
-
-	/**
-	 * Parses a query source block type.
-	 *
-	 * @param string              $html The html value.
-	 * @param array<string,mixed> $value The value configuration.
-	 * @param array<string,mixed> $attributes The block attributes.
-	 *
-	 * @return ?mixed[]
-	 */
-	private function parse_query_source( string $html, $value, $attributes ): ?array {
-		if ( ! isset( $value['selector'] ) || ! isset( $value['query'] ) ) {
-			return null;
-		}
-
-		$nodes = DOMHelpers::find_nodes( $html, $value['selector'] );
-
-		// Coerce nodes to an array if it's not already.
-		if ( ! is_array( $nodes ) ) {
-			$nodes = [ $nodes ];
-		}
-
-		$temp    = [];
-		$results = [];
-		foreach ( $nodes as $source_node ) {
-			foreach ( $value['query'] as $q_key => $q_value ) {
-				/** @var array<string,mixed> $temp_config */
-				$temp_config = [
-					$q_key => $q_value,
-				];
-
-				$res            = $this->resolve_block_attributes_recursive( $attributes, $source_node->html(), $temp_config );
-				$temp[ $q_key ] = $res[ $q_key ];
-			}
-
-			$results[] = $temp;
-		}
-
-		return $results;
 	}
 }
