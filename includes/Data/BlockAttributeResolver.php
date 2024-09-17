@@ -47,6 +47,9 @@ final class BlockAttributeResolver {
 				case 'query':
 					$value = self::parse_query_source( $html, $attribute, $attribute_value );
 					break;
+				case 'meta':
+					$value = self::parse_meta_source( $attribute );
+					break;
 			}
 
 			// Sanitize the value type.
@@ -180,5 +183,24 @@ final class BlockAttributeResolver {
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Parses a meta source block type.
+	 *
+	 * Note: Meta sources are considered deprecated but may still be used by legacy and third-party blocks.
+	 *
+	 * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-attributes.md#meta-source-deprecated
+	 *
+	 * @param array<string,mixed> $config The attribute configuration.
+	 */
+	private static function parse_meta_source( array $config ): ?string {
+		global $post_id;
+
+		if ( empty( $post_id ) || empty( $config['meta'] ) ) {
+			return null;
+		}
+
+		return get_post_meta( $post_id, $config['meta'], true );
 	}
 }
