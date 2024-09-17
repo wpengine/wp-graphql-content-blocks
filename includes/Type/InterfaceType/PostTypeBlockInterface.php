@@ -36,13 +36,7 @@ final class PostTypeBlockInterface {
 					],
 				],
 				'resolveType' => static function ( $block ) {
-					if ( empty( $block['blockName'] ) ) {
-						$block['blockName'] = 'core/freeform';
-					}
-
-					$type_name = lcfirst( ucwords( $block['blockName'], '/' ) );
-
-					return WPGraphQLHelpers::format_type_name( $type_name );
+					return WPGraphQLHelpers::get_type_name_for_block( $block['blockName'] ?? null );
 				},
 			]
 		);
