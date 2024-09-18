@@ -185,7 +185,7 @@ final class RegistryTestCase extends PluginTestCase {
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
 		$this->assertTrue( in_array( $contains_interface, $response['data']['__type']['interfaces'] ) );
-		$this->assertEquals( array_intersect_key( $contains_detail, $response['data']['__type'] ), $contains_detail );
+		$this->assertEquals( $contains_detail, array_intersect_key( $contains_detail, $response['data']['__type'] ) );
 		$this->assertEquals( $contains_possible_types, $response['data']['__type']['possibleTypes'] );
 
 		// Verify NodeWithPostEditorBlocks meta
@@ -209,6 +209,6 @@ final class RegistryTestCase extends PluginTestCase {
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$this->assertNotEmpty( $response['data']['__type']['interfaces'] );
 		$this->assertTrue( in_array( $contains_interface, $response['data']['__type']['interfaces'] ) );
-		$this->assertEquals( array_intersect_key( $contains_detail, $response['data']['__type'] ), $contains_detail );
+		$this->assertEquals( $contains_detail, array_intersect_key( $contains_detail, $response['data']['__type'] ) );
 	}
 }

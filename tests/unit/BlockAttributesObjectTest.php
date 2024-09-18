@@ -60,8 +60,8 @@ final class BlockAttributesObjectTest extends PluginTestCase {
 		// Verify that the ID of the first post matches the one we just created.
 		$this->assertEquals( $this->post_id, $node['databaseId'] );
 		// There should be only 1 block
-		$this->assertEquals( count( $node['editorBlocks'] ), 1 );
+		$this->assertEquals( 1, count( $node['editorBlocks'] ) );
 		// There should be a style attribute that matches the json for the content of the attribute
-		$this->assertEquals( $node['editorBlocks'][0]['attributes']['style'], '{"color":{"background":"#a62929"}}' );
+		$this->assertEquals( '{"color":{"background":"#a62929"}}', $node['editorBlocks'][0]['attributes']['style'] );
 	}
 }

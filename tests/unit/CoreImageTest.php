@@ -65,11 +65,11 @@ final class CoreImageTest extends PluginTestCase {
 		$node   = $actual['data']['posts']['nodes'][0];
 
 		$this->assertEquals(
-			$node['editorBlocks'][0]['mediaDetails'],
 			[
 				'width'  => 50,
 				'height' => 50,
-			]
+			],
+			$node['editorBlocks'][0]['mediaDetails']
 		);
 	}
 
@@ -111,11 +111,10 @@ final class CoreImageTest extends PluginTestCase {
 		// Verify that the ID of the first post matches the one we just created.
 		$this->assertEquals( $this->post_id, $node['databaseId'] );
 		// There should be only one block using that query when not using flat: true
-		$this->assertEquals( count( $node['editorBlocks'] ), 1 );
-		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/image' );
+		$this->assertEquals( 1, count( $node['editorBlocks'] ) );
+		$this->assertEquals( 'core/image', $node['editorBlocks'][0]['name'] );
 
 		$this->assertEquals(
-			$node['editorBlocks'][0]['attributes'],
 			[
 				'width'           => '500',
 				'height'          => 500.0,
@@ -130,7 +129,8 @@ final class CoreImageTest extends PluginTestCase {
 				'align'           => null,
 				'caption'         => '',
 				'cssClassName'    => 'wp-block-image size-full is-resized',
-			]
+			],
+			$node['editorBlocks'][0]['attributes']
 		);
 	}
 }

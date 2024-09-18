@@ -62,7 +62,7 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		$this->instance::register( $block );
 
 		// Verify BlockWithSupportsAnchor fields registration
-		$query    = '
+		$query = '
 		query BlockWithSupportsAnchorMeta {
 			__type(name: "BlockWithSupportsAnchor") {
 				fields {
@@ -92,7 +92,7 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 			],
 		];
 		$this->assertArrayHasKey( 'data', $actual, json_encode( $actual ) );
-		$this->assertEquals( $actual['data']['__type']['fields'], $expected['fields'] );
+		$this->assertEquals( $expected['fields'], $actual['data']['__type']['fields'] );
 		$this->assertContains( $expected['possibleTypes'][0], $actual['data']['__type']['possibleTypes'] );
 		$this->assertContains( $expected['possibleTypes'][1], $actual['data']['__type']['possibleTypes'] );
 	}
@@ -121,17 +121,17 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		$actual = graphql( [ 'query' => $query ] );
 		$node   = $actual['data']['posts']['nodes'][0];
 
-		$this->assertEquals( count( $node['editorBlocks'] ), 4 );
-		$this->assertEquals( $node['editorBlocks'][0]['name'], 'core/paragraph' );
-		$this->assertEquals( $node['editorBlocks'][0]['anchor'], 'example' );
+		$this->assertEquals( 4, count( $node['editorBlocks'] ) );
+		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][0]['name'] );
+		$this->assertEquals( 'example', $node['editorBlocks'][0]['anchor'] );
 
-		$this->assertEquals( $node['editorBlocks'][1]['name'], 'core/paragraph' );
+		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][1]['name'] );
 		$this->assertNull( $node['editorBlocks'][1]['anchor'] );
 
-		$this->assertEquals( $node['editorBlocks'][2]['name'], 'core/group' );
+		$this->assertEquals( 'core/group', $node['editorBlocks'][2]['name'] );
 		$this->assertNull( $node['editorBlocks'][2]['anchor'] );
 
-		$this->assertEquals( $node['editorBlocks'][3]['name'], 'core/paragraph' );
-		$this->assertEquals( $node['editorBlocks'][3]['anchor'], 'example-inner' );
+		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][3]['name'] );
+		$this->assertEquals( 'example-inner', $node['editorBlocks'][3]['anchor'] );
 	}
 }

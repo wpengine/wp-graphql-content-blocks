@@ -57,7 +57,7 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 			],
 		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
-		$this->assertEquals( $response['data']['__type'], $expected );
+		$this->assertEquals( $expected, $response['data']['__type'] );
 
 		// Verify PostEditorBlock fields registration
 		$queryContentBlockMeta = '
@@ -100,6 +100,6 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 		);
 		sort( $actual );
 		sort( $expected );
-		$this->assertEquals( $actual, $expected );
+		$this->assertEquals( $expected, $actual );
 	}
 }
