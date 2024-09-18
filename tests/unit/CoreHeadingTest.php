@@ -106,7 +106,7 @@ final class CoreHeadingTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'],  'The blockEditorCategoryName should be text' );
+		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
 		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
 
 		// @todo this is not working
@@ -162,22 +162,24 @@ final class CoreHeadingTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql([
-			'query' => $this->query(),
-			'variables' => ['id' => $this->post_id],
-		]);
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
 
-		$block = $actual['data']['post']['editorBlocks'][0];
+		$block      = $actual['data']['post']['editorBlocks'][0];
 		$attributes = $block['attributes'];
 
 		$this->assertEquals( 'Colored Heading', $attributes['content'] );
 		$this->assertEquals( 3.0, $attributes['level'] );
 		$this->assertEquals( 'right', $attributes['textAlign'] );
 		$this->assertEquals( 'wide', $attributes['align'] );
-		
-		$style = json_decode($attributes['style'], true);
-		$this->assertEquals('#cf2e2e', $style['color']['background']);
-		$this->assertEquals('#ffffff', $style['color']['text']);
+
+		$style = json_decode( $attributes['style'], true );
+		$this->assertEquals( '#cf2e2e', $style['color']['background'] );
+		$this->assertEquals( '#ffffff', $style['color']['text'] );
 	}
 
 	public function test_retrieve_core_heading_with_font_and_anchor() {
@@ -194,20 +196,22 @@ final class CoreHeadingTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql([
-			'query' => $this->query(),
-			'variables' => ['id' => $this->post_id],
-		]);
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
 
-		$block = $actual['data']['post']['editorBlocks'][0];
+		$block      = $actual['data']['post']['editorBlocks'][0];
 		$attributes = $block['attributes'];
 
 		$this->assertEquals( 'Custom Font Heading', $attributes['content'] );
 		$this->assertEquals( 'custom-id', $attributes['anchor'] );
-		
-		$style = json_decode($attributes['style'], true);
-		$this->assertEquals('Arial', $style['typography']['fontFamily']);
-		$this->assertEquals('32px', $style['typography']['fontSize']);
+
+		$style = json_decode( $attributes['style'], true );
+		$this->assertEquals( 'Arial', $style['typography']['fontFamily'] );
+		$this->assertEquals( '32px', $style['typography']['fontSize'] );
 	}
 
 	public function test_retrieve_core_heading_with_gradient() {
@@ -224,18 +228,20 @@ final class CoreHeadingTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql([
-			'query' => $this->query(),
-			'variables' => ['id' => $this->post_id],
-		]);
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
 
-		$block = $actual['data']['post']['editorBlocks'][0];
+		$block      = $actual['data']['post']['editorBlocks'][0];
 		$attributes = $block['attributes'];
 
 		$this->assertEquals( 'Gradient Heading', $attributes['content'] );
-		
-		$style = json_decode($attributes['style'], true);
-		$this->assertEquals('linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%)', $style['color']['gradient']);
+
+		$style = json_decode( $attributes['style'], true );
+		$this->assertEquals( 'linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%)', $style['color']['gradient'] );
 	}
 
 	public function test_retrieve_core_heading_with_background_color() {
@@ -252,16 +258,18 @@ final class CoreHeadingTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql([
-			'query' => $this->query(),
-			'variables' => ['id' => $this->post_id],
-		]);
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
 
-		$block = $actual['data']['post']['editorBlocks'][0];
+		$block      = $actual['data']['post']['editorBlocks'][0];
 		$attributes = $block['attributes'];
 
-		$this->assertEquals('Heading with Background Color', $attributes['content']);
-		$this->assertEquals('vivid-red-background-color', $attributes['backgroundColor']);
+		$this->assertEquals( 'Heading with Background Color', $attributes['content'] );
+		$this->assertEquals( 'vivid-red-background-color', $attributes['backgroundColor'] );
 	}
 
 	public function test_retrieve_core_heading_with_text_color() {
@@ -278,16 +286,18 @@ final class CoreHeadingTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql([
-			'query' => $this->query(),
-			'variables' => ['id' => $this->post_id],
-		]);
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
 
-		$block = $actual['data']['post']['editorBlocks'][0];
+		$block      = $actual['data']['post']['editorBlocks'][0];
 		$attributes = $block['attributes'];
 
-		$this->assertEquals('Heading with Text Color', $attributes['content']);
-		$this->assertEquals('vivid-red', $attributes['textColor']);
+		$this->assertEquals( 'Heading with Text Color', $attributes['content'] );
+		$this->assertEquals( 'vivid-red', $attributes['textColor'] );
 	}
 
 	public function test_retrieve_core_heading_with_font_size() {
@@ -304,16 +314,18 @@ final class CoreHeadingTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql([
-			'query' => $this->query(),
-			'variables' => ['id' => $this->post_id],
-		]);
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
 
-		$block = $actual['data']['post']['editorBlocks'][0];
+		$block      = $actual['data']['post']['editorBlocks'][0];
 		$attributes = $block['attributes'];
 
-		$this->assertEquals('Heading with Font Size', $attributes['content']);
-		$this->assertEquals('large', $attributes['fontSize']);
+		$this->assertEquals( 'Heading with Font Size', $attributes['content'] );
+		$this->assertEquals( 'large', $attributes['fontSize'] );
 	}
 
 	public function test_retrieve_core_heading_with_class_name() {
@@ -330,15 +342,17 @@ final class CoreHeadingTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql([
-			'query' => $this->query(),
-			'variables' => ['id' => $this->post_id],
-		]);
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
 
-		$block = $actual['data']['post']['editorBlocks'][0];
+		$block      = $actual['data']['post']['editorBlocks'][0];
 		$attributes = $block['attributes'];
 
-		$this->assertEquals('Heading with Custom Class', $attributes['content']);
-		$this->assertEquals('custom-class', $attributes['className']);
+		$this->assertEquals( 'Heading with Custom Class', $attributes['content'] );
+		$this->assertEquals( 'custom-class', $attributes['className'] );
 	}
 }
