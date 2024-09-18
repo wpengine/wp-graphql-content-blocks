@@ -32,4 +32,21 @@ final class WPGraphQLHelpers {
 
 		return ! empty( $type_name ) ? Utils::format_type_name( $type_name ) : $type_name;
 	}
+
+	/**
+	 * Gets the GraphQL type name for a provided block name.
+	 *
+	 * @internal This method will likely be removed in the future in favor of a block Model.
+	 *
+	 * @param ?string $block_name The name of the block.
+	 */
+	public static function get_type_name_for_block( ?string $block_name ): string {
+		if ( empty( $block_name ) ) {
+			$block_name = 'core/freeform';
+		}
+
+		$type_name = lcfirst( ucwords( $block_name, '/' ) );
+
+		return self::format_type_name( $type_name );
+	}
 }

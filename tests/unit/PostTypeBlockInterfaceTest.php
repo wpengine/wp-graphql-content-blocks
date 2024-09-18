@@ -89,6 +89,7 @@ final class PostTypeBlockInterfaceTest extends PluginTestCase {
 			'clientId',
 			'parentClientId',
 			'renderedHtml',
+			'type',
 		];
 		$this->assertArrayHasKey( 'data', $response, json_encode( $response ) );
 		$actual = array_map(
