@@ -13,7 +13,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
-
+		// Test comment.
 		$this->reusable_block_id = wp_insert_post(
 			[
 				'post_title'   => 'Reusable Block',
