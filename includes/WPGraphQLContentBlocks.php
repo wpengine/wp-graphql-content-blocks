@@ -133,23 +133,23 @@ final class WPGraphQLContentBlocks {
 	/**
 	 * Sets up deprecated constants.
 	 *
-	 * @deprecated @todo This can be removed in a major version bump.
+	 * @deprecated 4.2.0 This can be removed in a major version bump.
 	 */
 	private function deprecated_constants(): void {
 		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_FILE' ) ) {
-			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_FILE', 'The WPGRAPHQL_CONTENT_BLOCKS_VERSION constant has been deprecated. Use the WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE constant instead.', '@todo' );
+			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_FILE', 'The WPGRAPHQL_CONTENT_BLOCKS_VERSION constant has been deprecated. Use the WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE constant instead.', '4.2.0' );
 		} else {
 			define( 'WPGRAPHQL_CONTENT_BLOCKS_FILE', WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
 		}
 
 		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_PATH' ) ) {
-			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_PATH', 'The WPGRAPHQL_CONTENT_BLOCKS_PATH constant has been deprecated. Use the WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH constant instead.', '@todo' );
+			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_PATH', 'The WPGRAPHQL_CONTENT_BLOCKS_PATH constant has been deprecated. Use the WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH constant instead.', '4.2.0' );
 		} else {
 			define( 'WPGRAPHQL_CONTENT_BLOCKS_PATH', WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH );
 		}
 
 		if ( defined( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION' ) ) {
-			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', 'The WPGRAPHQL_CONTENT_BLOCKS_VERSION constant has been deprecated, with no replacement. It will be removed in a future release.', '@todo' );
+			_doing_it_wrong( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', 'The WPGRAPHQL_CONTENT_BLOCKS_VERSION constant has been deprecated, with no replacement. It will be removed in a future release.', '4.2.0' );
 		} else {
 			define( 'WPGRAPHQL_CONTENT_BLOCKS_MIN_PHP_VERSION', WPGRAPHQL_CONTENT_BLOCKS_VERSION );
 		}

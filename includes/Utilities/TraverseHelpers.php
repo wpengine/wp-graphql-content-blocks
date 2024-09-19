@@ -14,13 +14,13 @@ use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
  *
  * Provides utility functions to traverse and manipulate blocks.
  *
- * @deprecated @todo Blocks should be manipulated directly inside ContentBlocksResolver::handle_do_block()
+ * @deprecated 4.2.0 Blocks should be manipulated directly inside ContentBlocksResolver::handle_do_block()
  */
 final class TraverseHelpers {
 	/**
 	 * Traverse blocks and apply a callback with optional depth limit.
 	 *
-	 * @deprecated @todo Blocks should be manipulated directly inside ContentBlocksResolver::handle_do_block()
+	 * @deprecated 4.2.0 Blocks should be manipulated directly inside ContentBlocksResolver::handle_do_block()
 	 *
 	 * @param array    &$blocks The blocks to traverse.
 	 * @param callable $callback The callback function to apply to each block.
@@ -30,7 +30,7 @@ final class TraverseHelpers {
 	public static function traverse_blocks( &$blocks, $callback, $depth = 0, $max_depth = PHP_INT_MAX ): void {
 		_deprecated_function(
 			__METHOD__,
-			'@todo',
+			'4.2.0',
 			sprintf(
 			// translators: %s: class name
 				esc_html__( 'Manipulate blocks directly inside %s::handle_do_block', 'wp-graphql-content-blocks' ),
@@ -49,12 +49,12 @@ final class TraverseHelpers {
 	/**
 	 * Example callback function to replace reusable blocks.
 	 *
-	 * @deprecated @todo Blocks should be manipulated directly inside ContentBlocksResolver::handle_do_block()
+	 * @deprecated 4.2.0 Blocks should be manipulated directly inside ContentBlocksResolver::handle_do_block()
 	 *
 	 * @param array $block The block to potentially replace.
 	 */
 	public static function replace_reusable_blocks( &$block ): void {
-		_deprecated_function( __METHOD__, '@todo', ContentBlocksResolver::class . '::populate_reusable_blocks' );
+		_deprecated_function( __METHOD__, '4.2.0', ContentBlocksResolver::class . '::populate_reusable_blocks' );
 
 		if ( 'core/block' === $block['blockName'] && isset( $block['attrs']['ref'] ) ) {
 			$post            = get_post( $block['attrs']['ref'] );

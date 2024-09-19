@@ -23,7 +23,7 @@ if ( ! function_exists( 'wpgraphql_content_blocks_constants' ) ) {
 	/**
 	 * Defines plugin constants.
 	 *
-	 * @since @todo
+	 * @since 4.2.0
 	 */
 	function wpgraphql_content_blocks_constants(): void {
 		// Whether to autoload the files or not.
