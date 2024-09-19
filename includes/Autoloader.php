@@ -3,7 +3,7 @@
  * Includes the Composer Autoloader used for packages and classes in the includes/ directory.
  *
  * @package WPGraphQL\ContentBlocks
- * @since @todo
+ * @since 4.2.0
  */
 
 declare( strict_types = 1 );

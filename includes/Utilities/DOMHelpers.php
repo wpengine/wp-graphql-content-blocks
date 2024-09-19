@@ -208,10 +208,10 @@ final class DOMHelpers {
 	 * @param string $attribute The attribute to extract.
 	 * @param mixed  $default_value The default value to return if the selector is not found.
 	 *
-	 * @deprecated @todo Use parse_attribute instead.
+	 * @deprecated 4.2.0 Use parse_attribute instead.
 	 */
 	public static function parseAttribute( $html, $selector, $attribute, $default_value = null ): ?string {
-		_deprecated_function( __METHOD__, '@todo', self::class . '::parse_attribute' );
+		_deprecated_function( __METHOD__, '4.2.0', self::class . '::parse_attribute' );
 
 		return self::parse_attribute( $html, $selector, $attribute, $default_value );
 	}
@@ -226,10 +226,10 @@ final class DOMHelpers {
 	 *
 	 * @return string|null extracted attribute
 	 *
-	 * @deprecated @todo Use parse_first_node_attribute instead.
+	 * @deprecated 4.2.0 Use parse_first_node_attribute instead.
 	 */
 	public static function parseFirstNodeAttribute( $html, $attribute ) {
-		_deprecated_function( __METHOD__, '@todo', self::class . '::parse_first_node_attribute' );
+		_deprecated_function( __METHOD__, '4.2.0', self::class . '::parse_first_node_attribute' );
 
 		return self::parse_first_node_attribute( $html, $attribute );
 	}
@@ -245,10 +245,10 @@ final class DOMHelpers {
 	 *
 	 * @return string extracted innerHTML of selector
 	 *
-	 * @deprecated @todo Use parse_html instead.
+	 * @deprecated 4.2.0 Use parse_html instead.
 	 */
 	public static function parseHTML( $html, $selector, $default_value = null ) {
-		_deprecated_function( __METHOD__, '@todo', self::class . '::parse_html' );
+		_deprecated_function( __METHOD__, '4.2.0', self::class . '::parse_html' );
 
 		return (string) self::parse_html( $html, $selector, $default_value );
 	}
@@ -263,10 +263,10 @@ final class DOMHelpers {
 	 *
 	 * @return string the HTML string of the extracted elements
 	 *
-	 * @deprecated @todo Use get_elements_from_html instead.
+	 * @deprecated 4.2.0 Use get_elements_from_html instead.
 	 */
 	public static function getElementsFromHTML( $html, $selector ) {
-		_deprecated_function( __METHOD__, '@todo', self::class . '::get_elements_from_html' );
+		_deprecated_function( __METHOD__, '4.2.0', self::class . '::get_elements_from_html' );
 
 		return (string) self::get_elements_from_html( $html, $selector );
 	}
@@ -282,10 +282,10 @@ final class DOMHelpers {
 	 *
 	 * @return ?string The text content of the selector if found.
 	 *
-	 * @deprecated @todo Use parse_text instead.
+	 * @deprecated 4.2.0 Use parse_text instead.
 	 */
 	public static function parseText( $html, $selector ) {
-		_deprecated_function( __METHOD__, '@todo', self::class . '::parse_text' );
+		_deprecated_function( __METHOD__, '4.2.0', self::class . '::parse_text' );
 
 		return self::parse_text( $html, $selector );
 	}
@@ -300,10 +300,10 @@ final class DOMHelpers {
 	 *
 	 * @return \DiDom\Element[]|\DiDom\Element
 	 *
-	 * @deprecated @todo Use find_nodes instead.
+	 * @deprecated 4.2.0 Use find_nodes instead.
 	 */
 	public static function findNodes( $html, $selector = null ) {
-		_deprecated_function( __METHOD__, '@todo', self::class . '::find_nodes' );
+		_deprecated_function( __METHOD__, '4.2.0', self::class . '::find_nodes' );
 
 		return self::find_nodes( $html, $selector );
 	}
