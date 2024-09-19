@@ -176,7 +176,7 @@ final class CoreHeadingTest extends PluginTestCase {
 			[
 				'align'           => 'wide', // Previously untested
 				'anchor'          => null,
-				'backgroundColor' => null,
+				'backgroundColor' => null, // @todo: This is not returning correctly.
 				'className'       => null,
 				'content'         => 'Colored Heading',
 				'cssClassName'    => 'wp-block-heading has-text-align-right has-text-color has-background alignwide',
@@ -193,7 +193,7 @@ final class CoreHeadingTest extends PluginTestCase {
 					],
 				]),
 				'textAlign'       => 'right',
-				'textColor'       => null,
+				'textColor'       => null, // @todo: This is not returning correctly.
 			],
 			$attributes
 		);
@@ -226,21 +226,21 @@ final class CoreHeadingTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'           => null,
-				'anchor'          => 'custom-id',
+				'anchor'          => 'custom-id', // Previously untested
 				'backgroundColor' => null,
 				'className'       => null,
 				'content'         => 'Custom Font Heading',
 				'cssClassName'    => 'wp-block-heading',
-				'fontFamily'      => null, // Previously untested
-				'fontSize'        => null,
+				'fontFamily' => null, // @todo: This is not returning correctly.
+				'fontSize' => null, // @todo: This is not returning correctly.
 				'gradient'        => null,
 				'level'           => 2.0,
 				'lock'            => null,
 				'placeholder'     => null,
 				'style'           => wp_json_encode([
 					'typography' => [
-						'fontFamily' => 'Arial',
-						'fontSize'   => '32px',
+						'fontFamily' => 'Arial', // Previously untested
+						'fontSize'   => '32px', // Previously untested
 					],
 				]),
 				'textAlign'       => null,
@@ -284,7 +284,7 @@ final class CoreHeadingTest extends PluginTestCase {
 				'cssClassName'    => 'wp-block-heading has-background',
 				'fontFamily'      => null,
 				'fontSize'        => null,
-				'gradient'        => null, // Previously untested
+				'gradient' => null, // @todo: This is not returning correctly.
 				'level'           => 2.0,
 				'lock'            => null,
 				'placeholder'     => null,
@@ -386,7 +386,7 @@ final class CoreHeadingTest extends PluginTestCase {
 				'placeholder'     => null,
 				'style'           => null,
 				'textAlign'       => null,
-				'textColor'       => 'vivid-red',
+				'textColor'       => 'vivid-red', // Previously untested
 			],
 			$attributes
 		);
@@ -425,7 +425,7 @@ final class CoreHeadingTest extends PluginTestCase {
 				'content'         => 'Heading with Font Size',
 				'cssClassName'    => 'wp-block-heading has-large-font-size',
 				'fontFamily'      => null,
-				'fontSize'        => 'large',
+				'fontSize'        => 'large', // Previously untested
 				'gradient'        => null,
 				'level'           => 2.0,
 				'lock'            => null,
@@ -467,7 +467,7 @@ final class CoreHeadingTest extends PluginTestCase {
 				'align'           => null,
 				'anchor'          => null,
 				'backgroundColor' => null,
-				'className'       => 'custom-class',
+				'className'       => 'custom-class', // Previously untested
 				'content'         => 'Heading with Custom Class',
 				'cssClassName'    => 'wp-block-heading custom-class',
 				'fontFamily'      => null,
