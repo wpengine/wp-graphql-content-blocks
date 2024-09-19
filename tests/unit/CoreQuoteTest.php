@@ -3,6 +3,11 @@
 namespace WPGraphQL\ContentBlocks\Unit;
 
 final class CoreQuoteTest extends PluginTestCase {
+	/**
+	 * The ID of the post created for the test.
+	 *
+	 * @var int
+	 */
 	public $post_id;
 
 	public function setUp(): void {
@@ -39,8 +44,11 @@ final class CoreQuoteTest extends PluginTestCase {
 					fontFamily
 					fontSize
 					gradient
+					# layout
 					lock
+					# metadata
 					style
+					# textAlign
 					textColor
 					value
 				}
@@ -68,7 +76,7 @@ final class CoreQuoteTest extends PluginTestCase {
 		';
 	}
 
-	public function test_retrieve_core_quote_attributes() {
+	public function test_retrieve_core_quote_fields_and_attributes() {
 		$block_content = '
 			<!-- wp:quote {"className":"custom-quote-class"} -->
 			<blockquote class="wp-block-quote custom-quote-class"><p>This is a sample quote block content.</p><cite>Author Name</cite></blockquote>
@@ -101,40 +109,42 @@ final class CoreQuoteTest extends PluginTestCase {
 		// There should be only one block using that query when not using flat: true
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ), 'There should be only one block' );
 
-		// Verify the block data.
-		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $actual['data']['post']['editorBlocks'][0]['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['clientId'], 'The clientId should be present' );
+		$block = $actual['data']['post']['editorBlocks'][0];
 
-		$this->assertEmpty( $actual['data']['post']['editorBlocks'][0]['innerBlocks'], 'There should be no inner blocks' );
-		$this->assertEquals( 'core/quote', $actual['data']['post']['editorBlocks'][0]['name'], 'The block name should be core/quote' );
-		$this->assertEmpty( $actual['data']['post']['editorBlocks'][0]['parentClientId'], 'There should be no parentClientId' );
-		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['renderedHtml'], 'The renderedHtml should be present' );
+		// Verify the block data.
+		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
+		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
+		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
+		$this->assertEmpty( $block['cssClassNames'], 'There should be no cssClassNames' );
+		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
+		$this->assertEquals( 'core/quote', $block['name'], 'The block name should be core/quote' );
+		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
+		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
 		// Verify the attributes.
 		$this->assertEquals(
 			[
+				'anchor'          => null,
+				'backgroundColor' => null,
 				'citation'        => 'Author Name',
 				'className'       => 'custom-quote-class',
 				'cssClassName'    => 'wp-block-quote custom-quote-class',
-				'value'           => '<p>This is a sample quote block content.</p>',
-				'anchor'          => null,
-				'backgroundColor' => null,
 				'fontFamily'      => null,
 				'fontSize'        => null,
 				'gradient'        => null,
 				'lock'            => null,
 				'style'           => null,
 				'textColor'       => null,
+				'value'           => '<p>This is a sample quote block content.</p>',
 			],
-			$actual['data']['post']['editorBlocks'][0]['attributes'],
+			$block['attributes'],
 		);
 	}
 
-	public function test_retrieve_core_quote_attributes_two() {
+	public function test_retrieve_core_quote_untested_attributes() {
 		$block_content = '
-			<!-- wp:quote {"fontSize":"small","backgroundColor":"pale-cyan-blue","style":{"elements":{"heading":{"color":{"text":"var:preset|color|vivid-cyan-blue","background":"var:preset|color|cyan-bluish-gray"}}}},"textColor":"vivid-red","gradient":"pale-ocean"} -->
-			<blockquote class="wp-block-quote"><!-- wp:heading -->
+			<!-- wp:quote {"lock":{"move":true,"remove":true},"fontFamily":"body","fontSize":"small","backgroundColor":"pale-cyan-blue","style":{"elements":{"heading":{"color":{"text":"var:preset|color|vivid-cyan-blue","background":"var:preset|color|cyan-bluish-gray"}}}},"textColor":"vivid-red","gradient":"pale-ocean"} -->
+			<blockquote class="wp-block-quote" id="test-anchor"><!-- wp:heading -->
 			<h2 class="wp-block-heading">Quote, with heading color</h2>
 			<!-- /wp:heading --><cite>Citation</cite></blockquote>
 			<!-- /wp:quote -->
@@ -176,18 +186,18 @@ final class CoreQuoteTest extends PluginTestCase {
 		// Verify the attributes.
 		$this->assertEquals(
 			[
+				'anchor'          => 'test-anchor',
+				'backgroundColor' => 'pale-cyan-blue',
 				'citation'        => 'Citation',
 				'className'       => null,
 				'cssClassName'    => 'wp-block-quote',
-				'value'           => '',
-				'anchor'          => null, // @todo
-				'backgroundColor' => 'pale-cyan-blue',
-				'fontFamily'      => null, // @todo
+				'fontFamily'      => 'body',
 				'fontSize'        => 'small',
 				'gradient'        => 'pale-ocean',
-				'lock'            => null,
-				'style'           => '{"elements":{"heading":{"color":{"text":"var:preset|color|vivid-cyan-blue","background":"var:preset|color|cyan-bluish-gray"}}}}',
+				'lock'            => '{"move":true,"remove":true}',
+				'style'           => '{"elements":{"heading":{"color":{"text":"var:preset|color|vivid-cyan-blue","background":"var:preset|color|cyan-bluish-gray"}}}}', // @todo : use wp_json_encode here.
 				'textColor'       => 'vivid-red',
+				'value'           => '',
 			],
 			$actual['data']['post']['editorBlocks'][0]['attributes'],
 		);
