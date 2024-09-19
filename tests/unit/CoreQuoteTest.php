@@ -31,9 +31,17 @@ final class CoreQuoteTest extends PluginTestCase {
 		return '
 			fragment CoreQuoteBlockFragment on CoreQuote {
 				attributes {
+					anchor
+					backgroundColor
 					citation
 					className
 					cssClassName
+					fontFamily
+					fontSize
+					gradient
+					lock
+					style
+					textColor
 					value
 				}
 			}
@@ -106,10 +114,80 @@ final class CoreQuoteTest extends PluginTestCase {
 		// Verify the attributes.
 		$this->assertEquals(
 			[
-				'citation'     => 'Author Name',
-				'className'    => 'custom-quote-class',
-				'cssClassName' => 'wp-block-quote custom-quote-class',
-				'value'        => '<p>This is a sample quote block content.</p>',
+				'citation'        => 'Author Name',
+				'className'       => 'custom-quote-class',
+				'cssClassName'    => 'wp-block-quote custom-quote-class',
+				'value'           => '<p>This is a sample quote block content.</p>',
+				'anchor'          => null,
+				'backgroundColor' => null,
+				'fontFamily'      => null,
+				'fontSize'        => null,
+				'gradient'        => null,
+				'lock'            => null,
+				'style'           => null,
+				'textColor'       => null,
+			],
+			$actual['data']['post']['editorBlocks'][0]['attributes'],
+		);
+	}
+
+	public function test_retrieve_core_quote_attributes_two() {
+		$block_content = '
+			<!-- wp:quote {"fontSize":"small","backgroundColor":"pale-cyan-blue","style":{"elements":{"heading":{"color":{"text":"var:preset|color|vivid-cyan-blue","background":"var:preset|color|cyan-bluish-gray"}}}},"textColor":"vivid-red","gradient":"pale-ocean"} -->
+			<blockquote class="wp-block-quote"><!-- wp:heading -->
+			<h2 class="wp-block-heading">Quote, with heading color</h2>
+			<!-- /wp:heading --><cite>Citation</cite></blockquote>
+			<!-- /wp:quote -->
+		';
+
+		// Update the post content with the block content.
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		// Test the query.
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		// Verify that the ID of the first post matches the one we just created.
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		// Verify the block data.
+		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['apiVersion'], 'The apiVersion should be present' );
+		$this->assertEquals( 'text', $actual['data']['post']['editorBlocks'][0]['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
+		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['clientId'], 'The clientId should be present' );
+
+		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['innerBlocks'], 'There should be no inner blocks' );
+		$this->assertEquals( 'core/quote', $actual['data']['post']['editorBlocks'][0]['name'], 'The block name should be core/quote' );
+		$this->assertEmpty( $actual['data']['post']['editorBlocks'][0]['parentClientId'], 'There should be no parentClientId' );
+		$this->assertNotEmpty( $actual['data']['post']['editorBlocks'][0]['renderedHtml'], 'The renderedHtml should be present' );
+
+		// Verify the attributes.
+		$this->assertEquals(
+			[
+				'citation'        => 'Citation',
+				'className'       => null,
+				'cssClassName'    => 'wp-block-quote',
+				'value'           => '',
+				'anchor'          => null, // @todo
+				'backgroundColor' => 'pale-cyan-blue',
+				'fontFamily'      => null, // @todo
+				'fontSize'        => 'small',
+				'gradient'        => 'pale-ocean',
+				'lock'            => null,
+				'style'           => '{"elements":{"heading":{"color":{"text":"var:preset|color|vivid-cyan-blue","background":"var:preset|color|cyan-bluish-gray"}}}}',
+				'textColor'       => 'vivid-red',
 			],
 			$actual['data']['post']['editorBlocks'][0]['attributes'],
 		);
