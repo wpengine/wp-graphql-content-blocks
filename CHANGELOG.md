@@ -1,5 +1,26 @@
 # WPGraphQL Content Blocks
 
+## 4.2.0
+
+### Minor Changes
+
+- 766737d: fix: cleanup constants and refactor autoload handling to improve Composer compatibility.
+- 7514021: chore: Update Composer dev-dependencies to their latest (semver-compatible) versions.
+- b64583f: dev: Add `wpgraphql_content_blocks_pre_resolve_blocks` and `wp_graphql_content_blocks_resolve_blocks` filters.
+- 179948c: dev: make `PluginUpdater` namespaced functions PSR-4 compatible.
+- bced76d: feat: expose `EditorBlock.type` field
+
+### Patch Changes
+
+- de885f1: Skip the Sonar Qube workflow if the user that opened the PR is not a member of the Github org
+- 6ced628: Fix: prevent fatal errors when get_current_screen() is unset.
+- 58b6792: chore: remediate non-code PHPStan errors in phpstan-baseline.neon
+- c3e11b1: ci: test against WordPress 6.6
+- 27f459f: tests: fix PHP deprecation notices
+- 4f4b851: tests: fix order of expected/actual values passed to asserts.
+- 89b6c60: tests: lint and format PHPUnit tests
+- 65f0c2d: Update @since @todo tags and @todo placeholders in \_deprecated_function calls
+
 ## 4.1.0
 
 ### Minor Changes
