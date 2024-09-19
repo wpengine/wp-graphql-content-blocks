@@ -83,15 +83,18 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		);
 
 		$this->instance = new ContentBlocksResolver();
+
+		\WPGraphQL::clear_schema();
 	}
 
 	public function tearDown(): void {
 		// your tear down methods here
-		parent::tearDown();
-
 		wp_delete_post( $this->post_id, true );
 		wp_delete_post( $this->reusable_post_id, true );
 		wp_delete_post( $this->reusable_block_id, true );
+		\WPGraphQL::clear_schema();
+
+		parent::tearDown();
 	}
 
 	public function test_resolve_content_blocks_resolves_reusable_blocks() {

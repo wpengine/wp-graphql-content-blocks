@@ -48,10 +48,11 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 
 	public function tearDown(): void {
 		// your tear down methods here
-		parent::tearDown();
-
 		wp_delete_post( $this->post_id, true );
+		delete_option( 'graphql_general_settings' );
 		\WPGraphQL::clear_schema();
+
+		parent::tearDown();
 	}
 
 	/**

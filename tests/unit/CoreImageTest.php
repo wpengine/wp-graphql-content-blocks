@@ -10,7 +10,6 @@ final class CoreImageTest extends PluginTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		global $wpdb;
 		$this->attachment_id = $this->factory->attachment->create_upload_object( WP_TEST_DATA_DIR . '/images/test-image.jpg' );
 
 		$this->post_id = wp_insert_post(
@@ -30,13 +29,16 @@ final class CoreImageTest extends PluginTestCase {
 				'post_status'  => 'publish',
 			]
 		);
+
+		\WPGraphQL::clear_schema();
 	}
 
 	public function tearDown(): void {
 		// your tear down methods here
-		parent::tearDown();
-
 		wp_delete_post( $this->post_id, true );
+		\WPGraphQL::clear_schema();
+
+		parent::tearDown();
 	}
 
 	public function test_retrieve_core_image_media_details() {

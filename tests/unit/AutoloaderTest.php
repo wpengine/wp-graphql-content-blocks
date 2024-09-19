@@ -34,14 +34,13 @@ final class AutoloaderTest extends PluginTestCase {
 	}
 
 	public function testRequireAutoloader() {
-		$reflection = new \ReflectionClass( $this->autoloader );
-		$is_loaded_property   = $reflection->getProperty( 'is_loaded' );
+		$reflection         = new \ReflectionClass( $this->autoloader );
+		$is_loaded_property = $reflection->getProperty( 'is_loaded' );
 		$is_loaded_property->setAccessible( true );
 		$is_loaded_property->setValue( $this->autoloader, false );
 
 		$method = $reflection->getMethod( 'require_autoloader' );
 		$method->setAccessible( true );
-
 
 		$this->assertTrue( $method->invokeArgs( $this->autoloader, [ WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/vendor/autoload.php' ] ) );
 
