@@ -68,7 +68,7 @@ async function bumpStableTag(readmeTxt, version) {
 async function bumpVersionConstant(pluginFile, version) {
   return bumpVersion(
     pluginFile,
-    /^\s*\$this->define\(\s*'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '([0-9.]+)/gm,
+    /^\s*define\(\s*'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '([0-9.]+)/gm,
     version
   );
 }
