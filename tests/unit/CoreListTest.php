@@ -300,7 +300,7 @@ final class CoreListTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_list_attributes_start_and_styles() {
 		$block_content = '
-			<!-- wp:list {"ordered":true,"type":"upper-alpha","start":5,"className":"is-style-checkmark-list","textColor":"accent-3"} -->
+			<!-- wp:list {"ordered":true,"type":"upper-alpha","start":5,"className":"is-style-checkmark-list","style":{"typography":{"textTransform":"uppercase"},"spacing":{"margin":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"}}},"textColor":"accent-3"} -->
 				<ol start="5" style="list-style-type:upper-alpha" class="wp-block-list is-style-checkmark-list has-accent-3-color has-text-color">
 					<!-- wp:list-item --><li>Pizza</li><!-- /wp:list-item -->
 					<!-- wp:list-item --><li>Pasta</li><!-- /wp:list-item -->
@@ -332,6 +332,22 @@ final class CoreListTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
 
+		$style = wp_json_encode(
+			[
+				'typography' => [
+					'textTransform' => 'uppercase',
+				],
+				'spacing'    => [
+					'margin' => [
+						'top'    => 'var:preset|spacing|30',
+						'bottom' => 'var:preset|spacing|30',
+						'left'   => 'var:preset|spacing|30',
+						'right'  => 'var:preset|spacing|30',
+					],
+				],
+			]
+		);
+
 		$this->assertEquals(
 			[
 				'anchor'          => null,
@@ -346,7 +362,7 @@ final class CoreListTest extends PluginTestCase {
 				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
 				'reversed'        => null,
 				'start'           => 5.0,
-				'style'           => null,
+				'style'           => $style,
 				'textColor'       => 'accent-3',
 				'type'            => 'upper-alpha',
 				'values'          => '<li>Pizza</li><li>Pasta</li>',
