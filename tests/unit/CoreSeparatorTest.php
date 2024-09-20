@@ -71,6 +71,16 @@ final class CoreSeparatorTest extends PluginTestCase {
 		';
 	}
 
+	/**
+	 * Test the retrieval of core/separator block fields and attributes.
+	 *
+	 * This test verifies that the block attributes for the core/separator block are
+	 * properly returned via the GraphQL query. The test ensures that the block content,
+	 * client ID, block name, and rendered HTML are correctly returned and that the attributes
+	 * (such as align, className, gradient, opacity, style and lock) match the expected values.
+	 *
+	 * @return void
+	 */
 	public function test_core_separator_fields_and_attributes() {
 		$block_content = '
 		<!-- wp:separator {"lock":{"move":true,"remove":true},"align":"wide","className":"is-style-dots","style":{"color":{"gradient":"linear-gradient(135deg,rgb(6,147,227) 1%,rgb(155,81,224) 100%)"}}} -->
@@ -123,7 +133,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 				'backgroundColor' => null,
 				'className'       => 'is-style-dots',
 				'cssClassName'    => 'wp-block-separator alignwide has-alpha-channel-opacity',
-				'gradient'        => null, // @todo: getting null returned here, but should be the gradient value.
+				'gradient'        => null, // @todo: Getting null, but should be some valid gradient value.
 				'opacity'         => 'alpha-channel',
 				'style'           => '{"color":{"gradient":"linear-gradient(135deg,rgb(6,147,227) 1%,rgb(155,81,224) 100%)"}}',
 				'lock'            => '{"move":true,"remove":true}',
@@ -132,7 +142,17 @@ final class CoreSeparatorTest extends PluginTestCase {
 		);
 	}
 
-	public function test_core_separator_untested_attributes() {
+	/**
+	 * Test the retrieval of core/separator block fields and attributes.
+	 *
+	 * This test verifies that the block attributes for the core/separator block are
+	 * properly returned via the GraphQL query. The test ensures that the block content,
+	 * client ID, block name, and rendered HTML are correctly returned and that the attributes
+	 * (such as anchor, backgroundColor and cssClassName) match the expected values.
+	 *
+	 * @return void
+	 */
+	public function test_core_separator_attributes() {
 		$block_content = '
 			<!-- wp:separator {"backgroundColor":"accent-4"}  -->
 			<hr class="wp-block-separator has-text-color has-accent-4-color has-alpha-channel-opacity has-accent-4-background-color has-background" id="test-anchor"/>
