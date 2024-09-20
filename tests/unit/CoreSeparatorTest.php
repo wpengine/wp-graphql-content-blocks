@@ -83,9 +83,9 @@ final class CoreSeparatorTest extends PluginTestCase {
 	 */
 	public function test_core_separator_fields_and_attributes() {
 		$block_content = '
-		<!-- wp:separator {"lock":{"move":true,"remove":true},"align":"wide","className":"is-style-dots","style":{"color":{"gradient":"linear-gradient(135deg,rgb(6,147,227) 1%,rgb(155,81,224) 100%)"}}} -->
-		<hr class="wp-block-separator alignwide has-alpha-channel-opacity"/>
-		<!-- /wp:separator -->
+			<!-- wp:separator {"lock":{"move":true,"remove":true},"align":"wide","className":"is-style-dots","style":{"color":{"gradient":"linear-gradient(135deg,rgb(6,147,227) 1%,rgb(155,81,224) 100%)"}}} -->
+			<hr class="wp-block-separator alignwide has-alpha-channel-opacity"/>
+			<!-- /wp:separator -->
 		';
 
 		// Set post content.
@@ -106,11 +106,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
-
-		// Verify that the ID of the first post matches the one we just created.
 		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
-
-		// There should be only one block using that query when not using flat: true
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
 
 		$block = $actual['data']['post']['editorBlocks'][0];
@@ -125,6 +121,14 @@ final class CoreSeparatorTest extends PluginTestCase {
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
+		$style = wp_json_encode(
+			[
+				'color' => [
+					'gradient' => 'linear-gradient(135deg,rgb(6,147,227) 1%,rgb(155,81,224) 100%)',
+				],
+			]
+		);
+
 		// Verify the attributes.
 		$this->assertEquals(
 			[
@@ -135,8 +139,13 @@ final class CoreSeparatorTest extends PluginTestCase {
 				'cssClassName'    => 'wp-block-separator alignwide has-alpha-channel-opacity',
 				'gradient'        => null, // @todo: Getting null, but should be some valid gradient value.
 				'opacity'         => 'alpha-channel',
-				'style'           => '{"color":{"gradient":"linear-gradient(135deg,rgb(6,147,227) 1%,rgb(155,81,224) 100%)"}}',
-				'lock'            => '{"move":true,"remove":true}',
+				'style'           => $style,
+				'lock'            => wp_json_encode(
+					[
+						'move'   => true,
+						'remove' => true,
+					]
+				),
 			],
 			$block['attributes'],
 		);
@@ -177,11 +186,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
-
-		// Verify that the ID of the first post matches the one we just created.
 		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
-
-		// There should be only one block using that query when not using flat: true
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
 		$this->assertEquals( 'core/separator', $actual['data']['post']['editorBlocks'][0]['name'], 'The block name should be core/separator' );
 
