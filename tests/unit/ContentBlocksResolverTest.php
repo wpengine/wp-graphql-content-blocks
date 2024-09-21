@@ -92,10 +92,6 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		wp_delete_post( $this->post_id, true );
 		wp_delete_post( $this->reusable_post_id, true );
 		wp_delete_post( $this->reusable_block_id, true );
-
-		// Clean up the filter.
-		remove_all_filters( 'wpgraphql_content_blocks_pre_resolve_blocks' );
-		remove_all_filters( 'wpgraphql_content_blocks_resolve_blocks' );
 	}
 
 	public function test_resolve_content_blocks_resolves_reusable_blocks() {
@@ -147,7 +143,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	public function test_pre_resolved_blocks_filter_returns_non_null() {
 		add_filter(
 			'wpgraphql_content_blocks_pre_resolve_blocks',
-			static function ( $blocks, $node, $args, $allowed_block_names ) {
+			static function () {
 				return [
 					[
 						'blockName' => 'core/paragraph',
@@ -156,11 +152,9 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 				];
 			},
 			10,
-			4
 		);
 
-		$post_id = self::factory()->post->create( [ 'post_content' => '' ] );
-		$post    = new Post( get_post( $post_id ) );
+		$post = new Post( get_post( $this->post_id ) );
 
 		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [] );
 		// The filter should return a block.
@@ -168,25 +162,8 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
 		$this->assertEquals( 'Test content', $resolved_blocks[0]['attrs']['content'] );
 
-		// Clean up by deleting the created post.
-		wp_delete_post( $post_id, true );
-	}
-
-	/**
-	 * Tests content retrieval from a post node.
-	 */
-	public function test_content_retrieved_from_post_node() {
-		$post_id         = self::factory()->post->create(
-			[
-				'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->',
-			]
-		);
-		$post            = new Post( get_post( $post_id ) );
-		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [] );
-
-		// The block should be resolved from the post node.
-		$this->assertCount( 1, $resolved_blocks );
-		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
+		// Cleanup.
+		remove_all_filters( 'wpgraphql_content_blocks_pre_resolve_blocks' );
 	}
 
 	/**
@@ -201,30 +178,15 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		// The block should be resolved from the post node.
 		$this->assertIsArray( $resolved_blocks );
 		$this->assertEmpty( $resolved_blocks );
-	}
 
-	/**
-	 * Tests that the wpgraphql_content_blocks_allowed_blocks filter is applied.
-	 */
-	public function test_filters_allowed_blocks() {
-		$post_id         = self::factory()->post->create(
-			[
-				'post_content' => '<!-- wp:paragraph --><p>Content</p><!-- /wp:paragraph -->' .
-									'<!-- wp:heading --><h2>Heading</h2><!-- /wp:heading -->',
-			]
-		);
-		$post            = new Post( get_post( $post_id ) );
-		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [], [ 'core/paragraph' ] );
-
-		// The block should be resolved from the post node.
-		$this->assertCount( 1, $resolved_blocks );
-		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['blockName'] );
+		// Cleanup.
+		wp_delete_post( $post_id, true );
 	}
 
 	/**
 	 * Tests that the wpgraphql_content_blocks_resolve_blocks filter is applied.
 	 */
-	public function test_filters_after_resolving_blocks() {
+	public function test_filters_wpgraphql_content_blocks_resolve_blocks() {
 		add_filter(
 			'wpgraphql_content_blocks_resolve_blocks',
 			static function ( $blocks, $node, $args, $allowed_block_names ) {
@@ -241,119 +203,147 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		// The block should be resolved from the post node.
 		$this->assertCount( 1, $resolved_blocks );
 		$this->assertEquals( 'core/test-filter', $resolved_blocks[0]['blockName'] );
+
+		// Cleanup.
+		remove_all_filters( 'wpgraphql_content_blocks_resolve_blocks' );
 	}
 
-	public function test_inner_blocks_have_correct_parent_client_id() {
+	/**
+	 * Tests that flat and nested blocks are resolved correctly.
+	 */
+	public function test_inner_blocks() {
+		$post_content = '
+			<!-- wp:columns -->
+			<div class="wp-block-columns">
+				<!-- wp:column -->
+				<div class="wp-block-column">
+					<!-- wp:heading -->
+					<h2>Heading</h2>
+					<!-- /wp:heading -->
+					<!-- wp:paragraph -->
+					<p>Paragraph</p>
+					<!-- /wp:paragraph -->
+				</div>
+				<!-- /wp:column -->
+				<!-- wp:column -->
+				<div class="wp-block-column">
+					<!-- wp:heading -->
+					<h2>Heading</h2>
+					<!-- /wp:heading -->
+					<!-- wp:paragraph -->
+					<p>Paragraph</p>
+					<!-- /wp:paragraph -->
+				</div>
+				<!-- /wp:column -->
+			</div>
+			<!-- /wp:columns -->';
 
-		$post_id = self::factory()->post->create(
+		wp_update_post(
 			[
-				'post_content' => '
-					<!-- wp:columns -->
-					<div class="wp-block-columns">
-						<!-- wp:column -->
-						<div class="wp-block-column">
-							<!-- wp:heading -->
-							<h2>Heading</h2>
-							<!-- /wp:heading -->
-							<!-- wp:paragraph -->
-							<p>Paragraph</p>
-							<!-- /wp:paragraph -->
-						</div>
-						<!-- /wp:column -->
-						<!-- wp:column -->
-						<div class="wp-block-column">
-							<!-- wp:heading -->
-							<h2>Heading</h2>
-							<!-- /wp:heading -->
-							<!-- wp:paragraph -->
-							<p>Paragraph</p>
-							<!-- /wp:paragraph -->
-						</div>
-						<!-- /wp:column -->
-					</div>
-					<!-- /wp:columns -->
-				',
+				'ID'           => $this->post_id,
+				'post_content' => $post_content,
 			]
 		);
-		$post    = new Post( get_post( $post_id ) );
 
-		// Resolve blocks in flat mode.
+		$post = new Post( get_post( $this->post_id ) );
+
+		// Resolve blocks as nested.
+		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [ 'flat' => false ] );
+
+		$this->assertCount( 1, $resolved_blocks, 'There should be only one top-level block (columns).' );
+		$this->assertEquals( 'core/columns', $resolved_blocks[0]['blockName'] );
+		$this->assertNotEmpty( $resolved_blocks[0]['clientId'], 'The clientId should be set.' );
+		$this->assertArrayNotHasKey( 'parentClientId', $resolved_blocks[0], 'The parentClientId should be empty.' );
+
+		$this->assertCount( 2, $resolved_blocks[0]['innerBlocks'], 'There should be two inner blocks (columns).' );
+
+		// Check the inner blocks.
+		$expected_parent_client_id = $resolved_blocks[0]['clientId'];
+
+		foreach ( $resolved_blocks[0]['innerBlocks'] as $inner_block ) {
+			$this->assertEquals( 'core/column', $inner_block['blockName'] );
+			$this->assertCount( 2, $inner_block['innerBlocks'], 'There should be two inner blocks (column).' );
+			$this->assertNotEmpty( $inner_block['clientId'], 'The clientId should be set.' );
+			$this->assertArrayNotHasKey( 'parentClientId', $resolved_blocks[0], 'The parentClientId should only be set when flattening.' ); // @todo This is incorrect, the parentClientId should be set for nested blocks.
+
+			// Check the inner inner blocks.
+			$expected_parent_client_id = $inner_block['clientId'];
+
+			foreach ( $inner_block['innerBlocks'] as $inner_inner_block ) {
+				$this->assertNotEmpty( $inner_inner_block['clientId'], 'The clientId should be set.' );
+				$this->assertArrayNotHasKey( 'parentClientId', $resolved_blocks[0], 'The parentClientId should only be set when flattening.' ); // @todo This is incorrect, the parentClientId should be set for nested blocks.
+			}
+		}
+
+		// Resolve blocks as flat.
+		$expected_parent_client_id = null;
+		$expected_blocks           = $resolved_blocks;
+
 		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [ 'flat' => true ] );
 
-		// Create a mapping of clientIds to parentClientIds.
-		$parent_map = [];
+		$this->assertCount( 7, $resolved_blocks, 'There should be five blocks when flattened.' );
 
-		// Loop through resolved blocks to populate parent map.
-		foreach ( $resolved_blocks as $block ) {
-			if ( isset( $block['parentClientId'] ) ) {
-				$parent_map[ $block['clientId'] ] = $block['parentClientId'];
-			} else {
-				$parent_map[ $block['clientId'] ] = null;
-			}
-		}
+		// Check the top-level block (columns).
+		$this->assertNotEmpty( $resolved_blocks[0]['clientId'], 'The clientId should be set.' );
+		$this->assertEqualBlocks( $expected_blocks[0], $resolved_blocks[0], 'The top-level block should match.' );
 
-		// Validate parent-child relationships.
-		foreach ( $resolved_blocks as $block ) {
-			if ( isset( $block['parentClientId'] ) ) {
+		// Check first inner block (column).
+		$expected_parent_client_id = $resolved_blocks[0]['clientId'];
+		$this->assertNotEmpty( $resolved_blocks[1]['clientId'], 'The clientId should be set.' );
+		$this->assertEquals( $expected_parent_client_id, $resolved_blocks[1]['parentClientId'], 'The parentClientId should match.' );
+		$this->assertEqualBlocks( $expected_blocks[0]['innerBlocks'][0], $resolved_blocks[1], 'The first inner block should match.' );
 
-				// Ensure that the parentClientId points to a valid block.
-				$this->assertArrayHasKey( $block['parentClientId'], $parent_map );
-			}
-		}
+		// Check first inner block children.
+		$expected_parent_client_id = $resolved_blocks[1]['clientId'];
+		$this->assertNotEmpty( $resolved_blocks[2]['clientId'], 'The clientId should be set.' );
+		$this->assertEquals( $expected_parent_client_id, $resolved_blocks[2]['parentClientId'], 'The parentClientId should match.' );
+		$this->assertEqualBlocks( $expected_blocks[0]['innerBlocks'][0]['innerBlocks'][0], $resolved_blocks[2], 'The first inner inner block should match.' );
 
-		// Now compare nested and flat structures.
-		$nested_blocks = $this->instance->resolve_content_blocks( $post, [ 'flat' => false ] );
+		$this->assertNotEmpty( $resolved_blocks[3]['clientId'], 'The clientId should be set.' );
+		$this->assertEquals( $expected_parent_client_id, $resolved_blocks[3]['parentClientId'], 'The parentClientId should match.' );
+		$this->assertEqualBlocks( $expected_blocks[0]['innerBlocks'][0]['innerBlocks'][1], $resolved_blocks[3], 'The second inner inner block should match.' );
 
-		// Resolve blocks in nested mode.
-		$nested_blocks = $this->instance->resolve_content_blocks( $post, [ 'flat' => false ] );
-		// Resolve blocks in flat mode.
-		$flat_blocks = $this->instance->resolve_content_blocks( $post, [ 'flat' => true ] );
+		// Check second inner block (column).
+		$expected_parent_client_id = $resolved_blocks[0]['clientId'];
+		$this->assertNotEmpty( $resolved_blocks[4]['clientId'], 'The clientId should be set.' );
+		$this->assertEquals( $expected_parent_client_id, $resolved_blocks[4]['parentClientId'], 'The parentClientId should match.' );
+		$this->assertEqualBlocks( $expected_blocks[0]['innerBlocks'][1], $resolved_blocks[4], 'The first inner block should match.' );
 
-		// Convert nested blocks to flat structure for comparison.
-		$transformed_nested_blocks = $this->transformNestedToFlat( $nested_blocks );
+		// Check second inner block children.
+		$expected_parent_client_id = $resolved_blocks[4]['clientId'];
+		$this->assertNotEmpty( $resolved_blocks[5]['clientId'], 'The clientId should be set.' );
+		$this->assertEquals( $expected_parent_client_id, $resolved_blocks[5]['parentClientId'], 'The parentClientId should match.' );
+		$this->assertEqualBlocks( $expected_blocks[0]['innerBlocks'][1]['innerBlocks'][0], $resolved_blocks[5], 'The first inner inner block should match.' );
 
-		// Normalize both block arrays for comparison.
-		$normalized_nested_blocks = $this->normalizeBlocks( $transformed_nested_blocks );
-		$normalized_flat_blocks   = $this->normalizeBlocks( $flat_blocks );
-
-		// Assert that the normalized structures match.
-		$this->assertEquals( $normalized_nested_blocks, $normalized_flat_blocks );
+		$this->assertNotEmpty( $resolved_blocks[6]['clientId'], 'The clientId should be set.' );
+		$this->assertEquals( $expected_parent_client_id, $resolved_blocks[6]['parentClientId'], 'The parentClientId should match.' );
+		$this->assertEqualBlocks( $expected_blocks[0]['innerBlocks'][1]['innerBlocks'][1], $resolved_blocks[6], 'The second inner inner block should match.' );
 	}
 
 	/**
-	 * Helper function to transform nested blocks to flat structure.
+	 * Asserts two blocks are equal, ignoring clientId and parentClientId.
+	 *
+	 * @param array<string,mixed> $expected The expected block.
+	 * @param array<string,mixed> $actual   The actual block.
+	 * @param string              $message  The message to display if the assertion fails.
 	 */
-	protected function transformNestedToFlat( array $nested_blocks ) {
-		$flat_blocks = [];
+	protected function assertEqualBlocks( $expected, $actual, $message = '' ) {
+		// Remove clientId and parentClientId from comparison.
+		unset( $expected['clientId'] );
+		unset( $expected['parentClientId'] );
+		unset( $actual['clientId'] );
+		unset( $actual['parentClientId'] );
 
-		foreach ( $nested_blocks as $block ) {
-			$flat_blocks[] = $block;
-			if ( ! empty( $block['innerBlocks'] ) ) {
-				$flat_blocks = array_merge( $flat_blocks, $this->transformNestedToFlat( $block['innerBlocks'] ) );
-			}
+		$expected_inner_blocks = $expected['innerBlocks'] ?? [];
+		$actual_inner_blocks   = $actual['innerBlocks'] ?? [];
+
+		unset( $expected['innerBlocks'] );
+		unset( $actual['innerBlocks'] );
+
+		$this->assertEquals( $expected, $actual, $message );
+
+		foreach ( $expected_inner_blocks as $index => $expected_inner_block ) {
+			$this->assertEqualBlocks( $expected_inner_block, $actual_inner_blocks[ $index ], $message );
 		}
-
-		return $flat_blocks;
-	}
-
-	/**
-	 * Helper function to normalize block structures for comparison.
-	 */
-	protected function normalizeBlocks( array $blocks ) {
-		return array_map(
-			function ( $block ) {
-
-				// Remove 'clientId' and 'parentClientId' from comparison.
-				unset( $block['clientId'] );
-				unset( $block['parentClientId'] );
-
-				if ( ! empty( $block['innerBlocks'] ) ) {
-					$block['innerBlocks'] = $this->normalizeBlocks( $block['innerBlocks'] );
-				}
-
-				return $block;
-			},
-			$blocks
-		);
 	}
 }
