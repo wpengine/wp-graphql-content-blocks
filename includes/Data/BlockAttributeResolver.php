@@ -59,14 +59,15 @@ final class BlockAttributeResolver {
 						$value = intval( $value );
 						break;
 					case 'boolean':
-						$value = ! empty( $value );
+						// Boolean attributes can be an empty string.
+						$value = ( ! is_array( $value ) && isset( $value ) ) || ! empty( $value );
 						break;
 				}
 			}
 		}
 
 		// Fallback to the attributes or default value if the result is empty.
-		if ( empty( $value ) ) {
+		if ( null === $value ) {
 			$default = $attribute['default'] ?? null;
 
 			$value = $attribute_value ?? $default;
