@@ -148,13 +148,13 @@ final class BlockAttributeResolver {
 	/**
 	 * Parses a query source block type.
 	 *
-	 * @param string              $html The html value.
-	 * @param array<string,mixed> $config The value configuration.
-	 * @param array<string,mixed> $attribute_values The attribute values for the block.
+	 * @param string               $html The html value.
+	 * @param array<string,mixed>  $config The value configuration.
+	 * @param ?array<string,mixed> $attribute_values The attribute values for the block.
 	 *
 	 * @return ?mixed[]
 	 */
-	private static function parse_query_source( string $html, array $config, array $attribute_values ): ?array {
+	private static function parse_query_source( string $html, array $config, ?array $attribute_values ): ?array {
 		if ( ! isset( $config['selector'] ) || ! isset( $config['query'] ) ) {
 			return null;
 		}
