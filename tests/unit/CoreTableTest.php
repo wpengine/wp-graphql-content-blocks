@@ -107,7 +107,9 @@ final class CoreTableTest extends PluginTestCase {
 	 * Tested attributes:
 	 *  - caption
 	 *  - hasFixedLayout
-	 *  - body > cells > tag (Rest are not working)
+	 *  - body > cells:
+	 *    - content
+	 *    - tag
 	 */
 	public function test_retrieve_core_table_attribute_fields() {
 		$block_content = '
@@ -184,10 +186,10 @@ final class CoreTableTest extends PluginTestCase {
 		// Test the first row
 		$this->assertCount( 2, $body[0]['cells'], 'There should be 2 cells in the first row' );
 		$this->assertEquals(
-			[ // @todo These should be filled in
+			[
 				'align'   => null,
 				'colspan' => null,
-				'content' => null,
+				'content' => 'Cell 1',
 				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
@@ -199,7 +201,7 @@ final class CoreTableTest extends PluginTestCase {
 			[ // @todo These should be filled in
 				'align'   => null,
 				'colspan' => null,
-				'content' => null,
+				'content' => 'Cell 2',
 				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
@@ -211,10 +213,10 @@ final class CoreTableTest extends PluginTestCase {
 		// Test the second row
 		$this->assertCount( 2, $body[1]['cells'], 'There should be 2 cells in the second row' );
 		$this->assertEquals(
-			[ // @todo These should be filled in
+			[ 
 				'align'   => null,
 				'colspan' => null,
-				'content' => null,
+				'content' => 'Cell 3',
 				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
@@ -223,10 +225,10 @@ final class CoreTableTest extends PluginTestCase {
 			'The first cell in the second row does not match'
 		);
 		$this->assertEquals(
-			[ // @todo These should be filled in
+			[
 				'align'   => null,
 				'colspan' => null,
-				'content' => null,
+				'content' => 'Cell 4',
 				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
@@ -245,8 +247,15 @@ final class CoreTableTest extends PluginTestCase {
 	 *  - fontFamily
 	 *  - fontSize
 	 *  - style
-	 *  - head > cells > tag (Rest are not working)
-	 *  - foot > cells > tag (Rest are not working)
+	 *  - body > cells > align
+	 *  - head > cells:
+	 *    - align
+	 *    - content
+	 *    - tag
+	 *  - foot > cells:
+	 *    - align
+	 *    - content
+	 *    - tag
 	 */
 	public function test_retrieve_core_table_attribute_fields_header_footer() {
 		$block_content = '
@@ -316,15 +325,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertCount( 1, $head, 'There should be 1 row in the head' );
 		$this->assertCount( 2, $head[0]['cells'], 'There should be 2 cells in the head' );
 
-		// Test the foot cells.
-		// @todo This is duplicated after the `markTestIncomplete` call and should be removed once fixed.
-		$this->assertNotEmpty( $foot, 'The foot should have cells' );
-		$this->assertCount( 1, $foot, 'There should be 1 row in the foot' );
-		$this->assertCount( 2, $foot[0]['cells'], 'There should be 2 cells in the foot' );
-
-		$this->markTestIncomplete( 'Cell attributes are not returned' );
-
-		$this->assertEquals(
+		$this->assertEquals( // Previously untested
 			[
 				'align'   => 'left',
 				'colspan' => null,
@@ -356,7 +357,7 @@ final class CoreTableTest extends PluginTestCase {
 		// Test the left cell.
 		$this->assertEquals(
 			[
-				'align'   => 'left',
+				'align'   => 'left', // Previously untested
 				'colspan' => null,
 				'content' => 'This column has "align column left"',
 				'rowspan' => null,
@@ -377,6 +378,8 @@ final class CoreTableTest extends PluginTestCase {
 				'scope'   => null,
 				'tag'     => 'td',
 			],
+			$body[0]['cells'][1],
+			'The second cell in the first row does not match'
 		);
 
 		// Test the foot cells.
@@ -384,7 +387,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertCount( 1, $foot, 'There should be 1 row in the foot' );
 		$this->assertCount( 2, $foot[0]['cells'], 'There should be 2 cells in the foot' );
 
-		$this->assertEquals(
+		$this->assertEquals( // Previously untested
 			[
 				'align'   => 'left',
 				'colspan' => null,
@@ -554,6 +557,148 @@ final class CoreTableTest extends PluginTestCase {
 			],
 			$block['attributes'],
 			'The block attributes do not match'
+		);
+	}
+
+	/**
+	 * Test custom cell markup in the CoreTable block.
+	 *
+	 * Tested attributes:
+	 *   - body > cells:
+	 *     - colspan
+	 *     - rowspan
+	 *     - scope
+	 *   - foot > cells:
+	 *     - colspan
+	 *     - rowspan
+	 *     - scope
+	 *   - head > cells:
+	 *     - colspan
+	 *     - rowspan
+	 *     - scope
+	 */
+	public function test_retrieve_core_table_custom_cell_markup(): void {
+		$block_markup = '
+			<!-- wp:table -->
+			<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th scope="col" colspan="2">Header label</th><th>Header label</th></tr></thead><tbody><tr><td rowspan="2">Cell 1</td><td colspan="2">Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></tbody><tfoot><tr><td colspan="3">Footer label</td></tr></tfoot></table><figcaption class="wp-element-caption">Caption</figcaption></figure>
+			<!-- /wp:table -->
+		';
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_markup,
+			]
+		);
+
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		// We only need to test the cells.
+		$body = $block['attributes']['body'];
+		$head = $block['attributes']['head'];
+		$foot = $block['attributes']['foot'];
+
+		// No need to test the cells again.
+
+		// Test the head cells.
+		$this->assertNotEmpty( $head, 'The head should have cells' );
+		$this->assertCount( 1, $head, 'There should be 1 row in the head' );
+		$this->assertCount( 2, $head[0]['cells'], 'There should be 2 cells in the head' );
+
+		// Test the first cell in the head.
+		$this->assertEquals(
+			[
+				'align'   => null,
+				'colspan' => 2, // Previously untested
+				'content' => 'Header label',
+				'rowspan' => null,
+				'scope'   => 'col', // Previously untested
+				'tag'     => 'th',
+			],
+			$head[0]['cells'][0],
+			'The first cell in the head does not match'
+		);
+
+		// Test the second cell in the head.
+		$this->assertEquals(
+			[
+				'align'   => null,
+				'colspan' => null,
+				'content' => 'Header label',
+				'rowspan' => null,
+				'scope'   => null,
+				'tag'     => 'th',
+			],
+			$head[0]['cells'][1],
+			'The second cell in the head does not match'
+		);
+
+		// Test the body cells.
+		$this->assertNotEmpty( $body, 'The body should have cells' );
+		$this->assertCount( 2, $body, 'There should be 2 rows' );
+
+		// Test the first row.
+		$this->assertCount( 2, $body[0]['cells'], 'There should be 2 cells in the first row' );
+
+		// Test the first cell in the first row.
+		$this->assertEquals(
+			[
+				'align'   => null,
+				'colspan' => null,
+				'content' => 'Cell 1',
+				'rowspan' => 2, // Previously untested
+				'scope'   => null,
+				'tag'     => 'td',
+			],
+			$body[0]['cells'][0],
+			'The first cell in the first row does not match'
+		);
+
+		// Test the second cell in the first row.
+
+		$this->assertEquals(
+			[
+				'align'   => null,
+				'colspan' => 2,
+				'content' => 'Cell 2',
+				'rowspan' => null,
+				'scope'   => null,
+				'tag'     => 'td',
+			],
+			$body[0]['cells'][1],
+			'The second cell in the first row does not match'
+		);
+
+		// Test the footer cells.
+		$this->assertNotEmpty( $foot, 'The foot should have cells' );
+		$this->assertCount( 1, $foot, 'There should be 1 row in the foot' );
+		$this->assertCount( 1, $foot[0]['cells'], 'There should be 1 cell in the foot' );
+
+		// Test the first cell in the foot.
+		$this->assertEquals(
+			[
+				'align'   => null,
+				'colspan' => 3,
+				'content' => 'Footer label',
+				'rowspan' => null,
+				'scope'   => null,
+				'tag'     => 'td',
+			],
+			$foot[0]['cells'][0],
+			'The first cell in the foot does not match'
 		);
 	}
 }

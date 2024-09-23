@@ -28,15 +28,16 @@ final class BlockAttributeResolver {
 		$value = null;
 
 		if ( isset( $attribute['source'] ) ) {
+			// @todo parse remaining sources: https://github.com/WordPress/gutenberg/blob/trunk/packages/blocks/src/api/parser/get-block-attributes.js#L198
 			switch ( $attribute['source'] ) {
 				case 'attribute':
 					$value = self::parse_attribute_source( $html, $attribute );
 					break;
 				case 'html':
 				case 'rich-text':
-					// If there is no selector, we are dealing with single source.
+					// If there is no selector, the source is the node's innerHTML.
 					if ( ! isset( $attribute['selector'] ) ) {
-						$value = self::parse_single_source( $html, $attribute['source'] );
+						$value = ! empty( $html ) ? DOMHelpers::find_nodes( $html )->innerHTML() : null;
 						break;
 					}
 					$value = self::parse_html_source( $html, $attribute );
@@ -46,6 +47,9 @@ final class BlockAttributeResolver {
 					break;
 				case 'query':
 					$value = self::parse_query_source( $html, $attribute, $attribute_value );
+					break;
+				case 'tag':
+					$value = self::parse_tag_source( $html );
 					break;
 				case 'meta':
 					$value = self::parse_meta_source( $attribute );
@@ -74,25 +78,6 @@ final class BlockAttributeResolver {
 		}
 
 		return $value;
-	}
-
-	/**
-	 * Parses the block content of a source only block type
-	 *
-	 * @param string $html The html value
-	 * @param string $source The source type
-	 */
-	private static function parse_single_source( string $html, $source ): ?string {
-		if ( empty( $html ) ) {
-			return null;
-		}
-
-		switch ( $source ) {
-			case 'html':
-				return DOMHelpers::find_nodes( $html )->innerHTML();
-		}
-
-		return null;
 	}
 
 	/**
@@ -125,11 +110,11 @@ final class BlockAttributeResolver {
 	 * @param array<string,mixed> $config The value configuration.
 	 */
 	private static function parse_attribute_source( string $html, array $config ): ?string {
-		if ( empty( $html ) || ! isset( $config['selector'] ) || ! isset( $config['attribute'] ) ) {
+		if ( empty( $html ) || ! isset( $config['attribute'] ) ) {
 			return null;
 		}
 
-		return DOMHelpers::parse_attribute( $html, $config['selector'], $config['attribute'] );
+		return DOMHelpers::parse_attribute( $html, $config['selector'] ?? '', $config['attribute'] );
 	}
 
 	/**
@@ -203,5 +188,14 @@ final class BlockAttributeResolver {
 		}
 
 		return get_post_meta( $post_id, $config['meta'], true );
+	}
+
+	/**
+	 * Parses a tag source.
+	 *
+	 * @param string $html The html value.
+	 */
+	private static function parse_tag_source( string $html ): ?string {
+		return DOMHelpers::get_first_node_tag_name( $html );
 	}
 }
