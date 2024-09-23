@@ -51,11 +51,11 @@ final class CoreQuoteTest extends PluginTestCase {
 					fontFamily
 					fontSize
 					gradient
-					# layout
+					layout
 					lock
 					# metadata
 					style
-					# textAlign
+					textAlign
 					textColor
 					value
 				}
@@ -151,6 +151,8 @@ final class CoreQuoteTest extends PluginTestCase {
 				'style'           => null,
 				'textColor'       => null,
 				'value'           => '<p>This is a sample quote block content.</p>',
+				'layout'          => null,
+				'textAlign'       => null,
 			],
 			$block['attributes'],
 		);
@@ -206,14 +208,15 @@ final class CoreQuoteTest extends PluginTestCase {
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
+		unset( $block['attributes']['citation'] ); // Tested above.
+		unset( $block['attributes']['className'] ); // Tested above.
+		unset( $block['attributes']['cssClassName'] ); // Tested above.
+
 		// Verify the attributes.
 		$this->assertEquals(
 			[
 				'anchor'          => 'test-anchor', // Previously untested.
 				'backgroundColor' => 'pale-cyan-blue', // Previously untested.
-				'citation'        => 'Citation',
-				'className'       => null,
-				'cssClassName'    => 'wp-block-quote',
 				'fontFamily'      => 'body', // Previously untested.
 				'fontSize'        => 'small', // Previously untested.
 				'gradient'        => 'pale-ocean', // Previously untested.
@@ -237,6 +240,8 @@ final class CoreQuoteTest extends PluginTestCase {
 				),
 				'textColor'       => 'vivid-red', // Previously untested.
 				'value'           => '<p>Sample Quote</p>', // Previously untested.
+				'layout'          => null,
+				'textAlign'       => null,
 			],
 			$block['attributes'],
 		);
