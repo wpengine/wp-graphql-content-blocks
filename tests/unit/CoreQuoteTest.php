@@ -79,16 +79,9 @@ final class CoreQuoteTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core quote block fields and attributes.
 	 *
-	 * The following aspects are tested:
-	 * - The absence of errors in the GraphQL response.
-	 * - Presence of the 'data' and 'post' keys in the response.
-	 * - Matching post ID.
-	 * - Correct block name ('core/quote').
-	 * - Correct retrieval of the block's attributes, especially 'citation', 'className', 'cssClassName' and 'value'.
-	 *
-	 * @return void
+	 * Covers : 'citation', 'className', 'cssClassName' and 'value'.
 	 */
-	public function test_retrieve_core_quote_fields_and_attributes() {
+	public function test_retrieve_core_quote_fields_and_attributes(): void {
 		$block_content = '
 			<!-- wp:quote {"className":"custom-quote-class"} -->
 			<blockquote class="wp-block-quote custom-quote-class"><p>This is a sample quote block content.</p><cite>Author Name</cite></blockquote>
@@ -149,24 +142,9 @@ final class CoreQuoteTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core quote block untested attributes.
 	 *
-	 * The following aspects are tested:
-	 * - The absence of errors in the GraphQL response.
-	 * - Presence of the 'data' and 'post' keys in the response.
-	 * - Matching post ID.
-	 * - Correct block name ('core/quote').
-	 * - Correct retrieval of the block's attributes, especially:
-	 *   - 'anchor'
-	 *   - 'backgroundColor'
-	 *   - 'fontFamily'
-	 *   - 'fontSize'
-	 *   - 'gradient'
-	 *   - 'lock'
-	 *   - 'style'
-	 *   - 'textColor'
-	 *
-	 * @return void
+	 * Covers : 'anchor', 'backgroundColor', 'fontFamily', 'fontSize', 'gradient', 'lock', 'style' and 'textColor'.
 	 */
-	public function test_retrieve_core_quote_attributes() {
+	public function test_retrieve_core_quote_attributes(): void {
 		$block_content = '
 			<!-- wp:quote {"lock":{"move":true,"remove":true},"fontFamily":"body","fontSize":"small","backgroundColor":"pale-cyan-blue","style":{"elements":{"heading":{"color":{"text":"var:preset|color|vivid-cyan-blue","background":"var:preset|color|cyan-bluish-gray"}}}},"textColor":"vivid-red","gradient":"pale-ocean"} -->
 			<blockquote class="wp-block-quote" id="test-anchor"><!-- wp:heading -->
@@ -205,38 +183,36 @@ final class CoreQuoteTest extends PluginTestCase {
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
-		$style = wp_json_encode(
-			[
-				'elements' => [
-					'heading' => [
-						'color' => [
-							'text'       => 'var:preset|color|vivid-cyan-blue',
-							'background' => 'var:preset|color|cyan-bluish-gray',
-						],
-					],
-				],
-			]
-		);
-
 		// Verify the attributes.
 		$this->assertEquals(
 			[
-				'anchor'          => 'test-anchor',
-				'backgroundColor' => 'pale-cyan-blue',
+				'anchor'          => 'test-anchor', // Previously untested.
+				'backgroundColor' => 'pale-cyan-blue', // Previously untested.
 				'citation'        => 'Citation',
 				'className'       => null,
 				'cssClassName'    => 'wp-block-quote',
-				'fontFamily'      => 'body',
-				'fontSize'        => 'small',
-				'gradient'        => 'pale-ocean',
-				'lock'            => wp_json_encode(
+				'fontFamily'      => 'body', // Previously untested.
+				'fontSize'        => 'small', // Previously untested.
+				'gradient'        => 'pale-ocean', // Previously untested.
+				'lock'            => wp_json_encode( // Previously untested.
 					[
 						'move'   => true,
 						'remove' => true,
 					]
 				),
-				'style'           => $style,
-				'textColor'       => 'vivid-red',
+				'style'           => wp_json_encode( // Previously untested.
+					[
+						'elements' => [
+							'heading' => [
+								'color' => [
+									'text'       => 'var:preset|color|vivid-cyan-blue',
+									'background' => 'var:preset|color|cyan-bluish-gray',
+								],
+							],
+						],
+					]
+				),
+				'textColor'       => 'vivid-red', // Previously untested.
 				'value'           => '',
 			],
 			$block['attributes'],
