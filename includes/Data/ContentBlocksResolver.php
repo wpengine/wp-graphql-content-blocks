@@ -19,6 +19,8 @@ final class ContentBlocksResolver {
 	 * @param \WPGraphQL\Model\Model|mixed $node The node we are resolving.
 	 * @param array<string,mixed>          $args GraphQL query args to pass to the connection resolver.
 	 * @param string[]                     $allowed_block_names The list of allowed block names to filter.
+	 *
+	 * @return array<string,mixed> The resolved parsed blocks.
 	 */
 	public static function resolve_content_blocks( $node, $args, $allowed_block_names = [] ): array {
 		/**

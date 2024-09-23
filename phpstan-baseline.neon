@@ -3,7 +3,7 @@ parameters:
 		-
 			message: "#^Cannot call method innerHTML\\(\\) on array\\<DiDom\\\\Element\\>\\|DiDom\\\\Element\\.$#"
 			count: 1
-			path: includes/Blocks/Block.php
+			path: includes/Data/BlockAttributeResolver.php  
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$response\\.$#"
