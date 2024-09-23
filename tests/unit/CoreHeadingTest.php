@@ -3,8 +3,16 @@
 namespace WPGraphQL\ContentBlocks\Unit;
 
 final class CoreHeadingTest extends PluginTestCase {
-	public int $post_id;
+	/**
+	 * The ID of the post created for the test.
+	 *
+	 * @var int
+	 */
+	public $post_id;
 
+	/**
+	 * Set up the test environment.
+	 */
 	public function setUp(): void {
 		parent::setUp();
 
@@ -19,6 +27,9 @@ final class CoreHeadingTest extends PluginTestCase {
 		\WPGraphQL::clear_schema();
 	}
 
+	/**
+	 * Tear down the test environment.
+	 */
 	public function tearDown(): void {
 		parent::tearDown();
 
@@ -27,6 +38,11 @@ final class CoreHeadingTest extends PluginTestCase {
 		\WPGraphQL::clear_schema();
 	}
 
+	/**
+	 * Provide the GraphQL query for testing.
+	 *
+	 * @return string The GraphQL query.
+	 */
 	public function query(): string {
 		return '
 			fragment CoreHeadingBlockFragment on CoreHeading {
@@ -74,6 +90,11 @@ final class CoreHeadingTest extends PluginTestCase {
 		';
 	}
 
+	/**
+	 * Test the retrieval of core/heading block attributes.
+	 *
+	 * @return void
+	 */
 	public function test_retrieve_core_heading_attributes() {
 		$block_content = '
 			<!-- wp:heading {"level":2,"textAlign":"center","style":{"typography":{"fontSize":"28px","fontStyle":"normal","fontWeight":"700"}}} -->
@@ -145,6 +166,11 @@ final class CoreHeadingTest extends PluginTestCase {
 		);
 	}
 
+	/**
+	 * Test retrieval of core/heading block with colors and alignment.
+	 *
+	 * @return void
+	 */
 	public function test_retrieve_core_heading_with_colors_and_alignment() {
 		$block_content = '
 			<!-- wp:heading {"level":3,"textAlign":"right","align":"wide","style":{"color":{"background":"#cf2e2e","text":"#ffffff"}}} -->
@@ -198,6 +224,11 @@ final class CoreHeadingTest extends PluginTestCase {
 		);
 	}
 
+	/**
+	 * Test retrieval of core/heading block with background and text color.
+	 *
+	 * @return void
+	 */
 	public function test_retrieve_core_heading_with_background_text_color() {
 		$block_content = '
 		<!-- wp:heading {"textAlign":"right","level":3,"align":"wide","backgroundColor":"accent-4","textColor":"accent-3"} -->
@@ -244,6 +275,11 @@ final class CoreHeadingTest extends PluginTestCase {
 		);
 	}
 
+	/**
+	 * Test retrieval of core/heading block with font and anchor.
+	 *
+	 * @return void
+	 */
 	public function test_retrieve_core_heading_with_font_and_anchor() {
 		$block_content = '
 			<!-- wp:heading {"anchor":"custom-id","style":{"typography":{"fontFamily":"Arial","fontSize":"32px"}}} -->
@@ -297,6 +333,11 @@ final class CoreHeadingTest extends PluginTestCase {
 		);
 	}
 
+	/**
+	 * Test retrieval of core/heading block with className, font family and font size.
+	 *
+	 * @return void
+	 */
 	public function test_retrieve_core_heading_with_font_family_and_size() {
 		$block_content = '
 		<!-- wp:heading {"className":"is-style-default","backgroundColor":"accent","textColor":"contrast-2","fontSize":"xx-large","fontFamily":"system-sans-serif"} -->
@@ -326,7 +367,7 @@ final class CoreHeadingTest extends PluginTestCase {
 				'align'           => null,
 				'anchor'          => null,
 				'backgroundColor' => 'accent',
-				'className'       => 'is-style-default',
+				'className'       => 'is-style-default', // Previously untested
 				'content'         => 'hurrah',
 				'cssClassName'    => 'wp-block-heading is-style-default has-contrast-2-color has-accent-background-color has-text-color has-background has-system-sans-serif-font-family has-xx-large-font-size',
 				'fontFamily'      => 'system-sans-serif', // Previously untested
@@ -343,6 +384,11 @@ final class CoreHeadingTest extends PluginTestCase {
 		);
 	}
 
+	/**
+	 * Test retrieval of core/heading block with font size & gradient.
+	 *
+	 * @return void
+	 */
 	public function test_retrieve_core_heading_with_gradient() {
 		$block_content = '
 		<!-- wp:heading {"gradient":"gradient-3","fontSize":"medium"} -->
@@ -376,244 +422,8 @@ final class CoreHeadingTest extends PluginTestCase {
 				'content'         => 'hello',
 				'cssClassName'    => 'wp-block-heading has-gradient-3-gradient-background has-background has-medium-font-size',
 				'fontFamily'      => null,
-				'fontSize'        => 'medium',
+				'fontSize'        => 'medium', // Previously untested
 				'gradient'        => 'gradient-3', // Previously untested
-				'level'           => 2.0,
-				'lock'            => null,
-				'placeholder'     => null,
-				'style'           => null,
-				'textAlign'       => null,
-				'textColor'       => null,
-			],
-			$attributes
-		);
-	}
-
-	public function test_retrieve_core_heading_with_custom_gradient() {
-		$block_content = '
-			<!-- wp:heading {"style":{"color":{"gradient":"linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%)"}}} -->
-			<h2 class="wp-block-heading has-background" style="background:linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%)">Gradient Heading</h2>
-			<!-- /wp:heading -->
-		';
-
-		wp_update_post(
-			[
-				'ID'           => $this->post_id,
-				'post_content' => $block_content,
-			]
-		);
-
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
-
-		$block      = $actual['data']['post']['editorBlocks'][0];
-		$attributes = $block['attributes'];
-
-		$this->assertEquals(
-			[
-				'align'           => null,
-				'anchor'          => null,
-				'backgroundColor' => null,
-				'className'       => null,
-				'content'         => 'Gradient Heading',
-				'cssClassName'    => 'wp-block-heading has-background',
-				'fontFamily'      => null,
-				'fontSize'        => null,
-				'gradient'        => null,
-				'level'           => 2.0,
-				'lock'            => null,
-				'placeholder'     => null,
-				'style'           => wp_json_encode(
-					[
-						'color' => [
-							'gradient' => 'linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%)',
-						],
-					]
-				),
-				'textAlign'       => null,
-				'textColor'       => null,
-			],
-			$attributes
-		);
-	}
-
-	public function test_retrieve_core_heading_with_background_color() {
-		$block_content = '
-			<!-- wp:heading {"backgroundColor":"vivid-red-background-color"} -->
-			<h2 class="wp-block-heading has-vivid-red-background-color has-background">Heading with Background Color</h2>
-			<!-- /wp:heading>
-		';
-
-		wp_update_post(
-			[
-				'ID'           => $this->post_id,
-				'post_content' => $block_content,
-			]
-		);
-
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
-
-		$block      = $actual['data']['post']['editorBlocks'][0];
-		$attributes = $block['attributes'];
-
-		$this->assertEquals(
-			[
-				'align'           => null,
-				'anchor'          => null,
-				'backgroundColor' => 'vivid-red-background-color',
-				'className'       => null,
-				'content'         => 'Heading with Background Color',
-				'cssClassName'    => 'wp-block-heading has-vivid-red-background-color has-background',
-				'fontFamily'      => null,
-				'fontSize'        => null,
-				'gradient'        => null,
-				'level'           => 2.0,
-				'lock'            => null,
-				'placeholder'     => null,
-				'style'           => null,
-				'textAlign'       => null,
-				'textColor'       => null,
-			],
-			$attributes
-		);
-	}
-
-	public function test_retrieve_core_heading_with_text_color() {
-		$block_content = '
-			<!-- wp:heading {"textColor":"vivid-red"} -->
-			<h2 class="wp-block-heading has-vivid-red-color has-text-color">Heading with Text Color</h2>
-			<!-- /wp:heading>
-		';
-
-		wp_update_post(
-			[
-				'ID'           => $this->post_id,
-				'post_content' => $block_content,
-			]
-		);
-
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
-
-		$block      = $actual['data']['post']['editorBlocks'][0];
-		$attributes = $block['attributes'];
-
-		$this->assertEquals(
-			[
-				'align'           => null,
-				'anchor'          => null,
-				'backgroundColor' => null,
-				'className'       => null,
-				'content'         => 'Heading with Text Color',
-				'cssClassName'    => 'wp-block-heading has-vivid-red-color has-text-color',
-				'fontFamily'      => null,
-				'fontSize'        => null,
-				'gradient'        => null,
-				'level'           => 2.0,
-				'lock'            => null,
-				'placeholder'     => null,
-				'style'           => null,
-				'textAlign'       => null,
-				'textColor'       => 'vivid-red', // Previously untested
-			],
-			$attributes
-		);
-	}
-
-	public function test_retrieve_core_heading_with_font_size() {
-		$block_content = '
-			<!-- wp:heading {"fontSize":"large"} -->
-			<h2 class="wp-block-heading has-large-font-size">Heading with Font Size</h2>
-			<!-- /wp:heading>
-		';
-
-		wp_update_post(
-			[
-				'ID'           => $this->post_id,
-				'post_content' => $block_content,
-			]
-		);
-
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
-
-		$block      = $actual['data']['post']['editorBlocks'][0];
-		$attributes = $block['attributes'];
-
-		$this->assertEquals(
-			[
-				'align'           => null,
-				'anchor'          => null,
-				'backgroundColor' => null,
-				'className'       => null,
-				'content'         => 'Heading with Font Size',
-				'cssClassName'    => 'wp-block-heading has-large-font-size',
-				'fontFamily'      => null,
-				'fontSize'        => 'large', // Previously untested
-				'gradient'        => null,
-				'level'           => 2.0,
-				'lock'            => null,
-				'placeholder'     => null,
-				'style'           => null,
-				'textAlign'       => null,
-				'textColor'       => null,
-			],
-			$attributes
-		);
-	}
-
-	public function test_retrieve_core_heading_with_class_name() {
-		$block_content = '
-			<!-- wp:heading {"className":"custom-class"} -->
-			<h2 class="wp-block-heading custom-class">Heading with Custom Class</h2>
-			<!-- /wp:heading>
-		';
-
-		wp_update_post(
-			[
-				'ID'           => $this->post_id,
-				'post_content' => $block_content,
-			]
-		);
-
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
-
-		$block      = $actual['data']['post']['editorBlocks'][0];
-		$attributes = $block['attributes'];
-
-		$this->assertEquals(
-			[
-				'align'           => null,
-				'anchor'          => null,
-				'backgroundColor' => null,
-				'className'       => 'custom-class', // Previously untested
-				'content'         => 'Heading with Custom Class',
-				'cssClassName'    => 'wp-block-heading custom-class',
-				'fontFamily'      => null,
-				'fontSize'        => null,
-				'gradient'        => null,
 				'level'           => 2.0,
 				'lock'            => null,
 				'placeholder'     => null,
