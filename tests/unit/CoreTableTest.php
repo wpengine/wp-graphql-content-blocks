@@ -36,9 +36,7 @@ final class CoreTableTest extends PluginTestCase {
 					body {
 						cells {
 							align
-							colspan
 							content
-							rowspan
 							scope
 							tag
 						}
@@ -51,9 +49,7 @@ final class CoreTableTest extends PluginTestCase {
 					foot {
 						cells {
 							align
-							colspan
 							content
-							rowspan
 							scope
 							tag
 						}
@@ -63,9 +59,7 @@ final class CoreTableTest extends PluginTestCase {
 					head {
 						cells {
 							align
-							colspan
 							content
-							rowspan
 							scope
 							tag
 						}
@@ -188,9 +182,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'   => null,
-				'colspan' => null,
 				'content' => 'Cell 1',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -200,9 +192,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[ // @todo These should be filled in
 				'align'   => null,
-				'colspan' => null,
 				'content' => 'Cell 2',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -215,9 +205,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[ 
 				'align'   => null,
-				'colspan' => null,
 				'content' => 'Cell 3',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -227,9 +215,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'   => null,
-				'colspan' => null,
 				'content' => 'Cell 4',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -328,9 +314,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals( // Previously untested
 			[
 				'align'   => 'left',
-				'colspan' => null,
 				'content' => 'Header label',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'th',
 			],
@@ -340,9 +324,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'   => 'right',
-				'colspan' => null,
 				'content' => 'Header label',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'th',
 			],
@@ -358,9 +340,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'   => 'left', // Previously untested
-				'colspan' => null,
 				'content' => 'This column has "align column left"',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -372,9 +352,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'   => 'right',
-				'colspan' => null,
 				'content' => 'This column has "align column center"',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -390,9 +368,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals( // Previously untested
 			[
 				'align'   => 'left',
-				'colspan' => null,
 				'content' => 'Footer label',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -403,9 +379,7 @@ final class CoreTableTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'   => 'right',
-				'colspan' => null,
 				'content' => 'Footer label',
-				'rowspan' => null,
 				'scope'   => null,
 				'tag'     => 'td',
 			],
@@ -578,6 +552,11 @@ final class CoreTableTest extends PluginTestCase {
 	 *     - scope
 	 */
 	public function test_retrieve_core_table_custom_cell_markup(): void {
+		// colspan and rowspan are only supported in WP 6.2+.
+		if ( ! is_wp_version_compatible( '6.2' ) ) {
+			$this->markTestSkipped( 'This test requires WP 6.2 or higher.' );
+		}
+
 		$block_markup = '
 			<!-- wp:table -->
 			<figure class="wp-block-table"><table class="has-fixed-layout"><thead><tr><th scope="col" colspan="2">Header label</th><th>Header label</th></tr></thead><tbody><tr><td rowspan="2">Cell 1</td><td colspan="2">Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></tbody><tfoot><tr><td colspan="3">Footer label</td></tr></tfoot></table><figcaption class="wp-element-caption">Caption</figcaption></figure>
@@ -591,7 +570,51 @@ final class CoreTableTest extends PluginTestCase {
 			]
 		);
 
-		$query     = $this->query();
+		$query     = '
+			fragment CoreTableBlockFragment on CoreTable {
+				attributes {
+					body {
+						cells {
+							align
+							colspan
+							content
+							rowspan
+							scope
+							tag
+						}
+					}
+					foot {
+						cells {
+							align
+							colspan
+							content
+							rowspan
+							scope
+							tag
+						}
+					}
+					head {
+						cells {
+							align
+							colspan
+							content
+							rowspan
+							scope
+							tag
+						}
+					}
+				}
+			}
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						...CoreTableBlockFragment
+					}
+				}
+			}
+		';
+
 		$variables = [
 			'id' => $this->post_id,
 		];
