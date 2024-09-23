@@ -81,16 +81,9 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * The following aspects are tested:
-	 * - The absence of errors in the GraphQL response.
-	 * - Presence of the 'data' and 'post' keys in the response.
-	 * - Matching post ID.
-	 * - Correct block name ('core/list').
-	 * - Correct retrieval of the block's attributes, especially 'anchor', 'backgroundColor', 'className', and 'cssClassName'.
-	 *
-	 * @return void
+	 * Covers : 'anchor', 'backgroundColor', 'className', and 'cssClassName'.
 	 */
-	public function test_retrieve_core_list_fields_and_attribute() {
+	public function test_retrieve_core_list_fields_and_attribute(): void {
 		$block_content = '
 			<!-- wp:list {"className":"test-css-class-name","backgroundColor":"accent-4"} -->
 				<ul id="test-anchor" class="wp-block-list test-css-class-name has-accent-4-background-color has-background">
@@ -119,9 +112,17 @@ final class CoreListTest extends PluginTestCase {
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+		$this->assertEquals( 3, count( $actual['data']['post']['editorBlocks'] ) );
 
 		$block = $actual['data']['post']['editorBlocks'][0];
-		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
+		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' ); 
+		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' ); 
+		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' ); 
+		$this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' ); 
+		$this->assertNotEmpty( $block['innerBlocks'], 'There should be ListItem inner blocks' ); 
+		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' ); 
+		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' ); 
+		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' ); 
 
 		$this->assertEquals(
 			[
@@ -134,7 +135,7 @@ final class CoreListTest extends PluginTestCase {
 				'gradient'        => null,
 				'lock'            => null,
 				'ordered'         => false,
-				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
+				'placeholder'     => null,
 				'reversed'        => null,
 				'start'           => null,
 				'style'           => null,
@@ -149,16 +150,9 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * The following aspects are tested:
-	 * - The absence of errors in the GraphQL response.
-	 * - Presence of the 'data' and 'post' keys in the response.
-	 * - Matching post ID.
-	 * - Correct block name ('core/list').
-	 * - Correct retrieval of the block's attributes, especially 'fontFamily', 'fontSize', 'gradient', and 'lock'.
-	 *
-	 * @return void
+	 * Covers : 'fontFamily', 'fontSize', 'gradient', and 'lock'.
 	 */
-	public function test_retrieve_core_list_attributes_typography_and_lock() {
+	public function test_retrieve_core_list_attributes_typography_and_lock(): void {
 		$block_content = '
 			<!-- wp:list {"lock":{"move":true,"remove":true},"gradient":"gradient-4","fontSize":"large","fontFamily":"heading"} -->
 				<ul class="wp-block-list has-gradient-4-gradient-background has-background has-heading-font-family has-large-font-size">
@@ -197,10 +191,10 @@ final class CoreListTest extends PluginTestCase {
 				'backgroundColor' => null,
 				'className'       => null,
 				'cssClassName'    => 'wp-block-list has-gradient-4-gradient-background has-background has-heading-font-family has-large-font-size',
-				'fontFamily'      => 'heading',
-				'fontSize'        => 'large',
-				'gradient'        => 'gradient-4',
-				'lock'            => '{"move":true,"remove":true}',
+				'fontFamily'      => 'heading', // Previously untested.
+				'fontSize'        => 'large', // Previously untested.
+				'gradient'        => 'gradient-4', // Previously untested.
+				'lock'            => '{"move":true,"remove":true}', // Previously untested.
 				'ordered'         => false,
 				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
 				'reversed'        => null,
@@ -216,19 +210,12 @@ final class CoreListTest extends PluginTestCase {
 
 	/**
 	 * Test case for retrieving core list block fields and attributes.
-	 *
-	 * The following aspects are tested:
-	 * - The absence of errors in the GraphQL response.
-	 * - Presence of the 'data' and 'post' keys in the response.
-	 * - Matching post ID.
-	 * - Correct block name ('core/list').
-	 * - Correct retrieval of the block's attributes, especially 'ordered' and 'reversed'.
+	 * 
+	 * Covers : 'ordered' and 'reversed'.
 	 *
 	 * @todo : The 'placeholder' attribute is not tested as it is getting returned as null.
-	 *
-	 * @return void
 	 */
-	public function test_retrieve_core_list_attributes_ordered_and_reversed() {
+	public function test_retrieve_core_list_attributes_ordered_and_reversed(): void {
 		$block_content = '
 			<!-- wp:list {"ordered":true,"reversed":true} -->
 				<ol reversed class="wp-block-list">
@@ -273,9 +260,9 @@ final class CoreListTest extends PluginTestCase {
 				'fontSize'        => null,
 				'gradient'        => null,
 				'lock'            => null,
-				'ordered'         => true,
+				'ordered'         => true, // Previously untested.
 				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
-				'reversed'        => true,
+				'reversed'        => true, // Previously untested.
 				'start'           => null,
 				'style'           => null,
 				'textColor'       => null,
@@ -289,16 +276,9 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * The following aspects are tested:
-	 * - The absence of errors in the GraphQL response.
-	 * - Presence of the 'data' and 'post' keys in the response.
-	 * - Matching post ID.
-	 * - Correct block name ('core/list').
-	 * - Correct retrieval of the block's attributes, especially 'start', 'style', and 'textColor'.
-	 *
-	 * @return void
+	 * Covers : 'start', 'style', and 'textColor'.
 	 */
-	public function test_retrieve_core_list_attributes_start_and_styles() {
+	public function test_retrieve_core_list_attributes_start_and_styles(): void {
 		$block_content = '
 			<!-- wp:list {"ordered":true,"type":"upper-alpha","start":5,"className":"is-style-checkmark-list","style":{"typography":{"textTransform":"uppercase"},"spacing":{"margin":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"}}},"textColor":"accent-3"} -->
 				<ol start="5" style="list-style-type:upper-alpha" class="wp-block-list is-style-checkmark-list has-accent-3-color has-text-color">
@@ -332,22 +312,6 @@ final class CoreListTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
 
-		$style = wp_json_encode(
-			[
-				'typography' => [
-					'textTransform' => 'uppercase',
-				],
-				'spacing'    => [
-					'margin' => [
-						'top'    => 'var:preset|spacing|30',
-						'bottom' => 'var:preset|spacing|30',
-						'left'   => 'var:preset|spacing|30',
-						'right'  => 'var:preset|spacing|30',
-					],
-				],
-			]
-		);
-
 		$this->assertEquals(
 			[
 				'anchor'          => null,
@@ -361,8 +325,22 @@ final class CoreListTest extends PluginTestCase {
 				'ordered'         => true,
 				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
 				'reversed'        => null,
-				'start'           => 5.0,
-				'style'           => $style,
+				'start'           => 5.0, // Previously untested.
+				'style'           => wp_json_encode(  // Previously untested.
+					[
+						'typography' => [
+							'textTransform' => 'uppercase',
+						],
+						'spacing'    => [
+							'margin' => [
+								'top'    => 'var:preset|spacing|30',
+								'bottom' => 'var:preset|spacing|30',
+								'left'   => 'var:preset|spacing|30',
+								'right'  => 'var:preset|spacing|30',
+							],
+						],
+					]
+				),
 				'textColor'       => 'accent-3',
 				'type'            => 'upper-alpha',
 				'values'          => '<li>Pizza</li><li>Pasta</li>',
