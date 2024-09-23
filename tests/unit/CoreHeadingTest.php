@@ -93,6 +93,14 @@ final class CoreHeadingTest extends PluginTestCase {
 	/**
 	 * Test the retrieval of core/heading block attributes.
 	 *
+	 * This test covers the basic functionality of retrieving and validating
+	 * core/heading block attributes through GraphQL. It checks:
+	 *    - content
+	 *    - cssClassName
+	 *    - level
+	 *    - style (typography settings)
+	 *    - textAlign
+	 *
 	 * @return void
 	 */
 	public function test_retrieve_core_heading_attributes() {
