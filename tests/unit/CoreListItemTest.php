@@ -185,7 +185,7 @@ final class CoreListItemTest extends PluginTestCase {
 				'fontFamily'  => null,
 				'fontSize'    => null,
 				'lock'        => null,
-				'placeholder' => null,
+				'placeholder' => null, // Previously untested.
 				'style'       => wp_json_encode( [ 'typography' => [ 'textDecoration' => 'underline' ] ] ), // Previously untested.
 			],
 			$block['attributes'],

@@ -196,7 +196,7 @@ final class CoreListTest extends PluginTestCase {
 				'gradient'        => 'gradient-4', // Previously untested.
 				'lock'            => '{"move":true,"remove":true}', // Previously untested.
 				'ordered'         => false,
-				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
+				'placeholder'     => null,
 				'reversed'        => null,
 				'start'           => null,
 				'style'           => null,
@@ -261,7 +261,7 @@ final class CoreListTest extends PluginTestCase {
 				'gradient'        => null,
 				'lock'            => null,
 				'ordered'         => true, // Previously untested.
-				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
+				'placeholder'     => null,
 				'reversed'        => true, // Previously untested.
 				'start'           => null,
 				'style'           => null,
@@ -323,7 +323,7 @@ final class CoreListTest extends PluginTestCase {
 				'gradient'        => null,
 				'lock'            => null,
 				'ordered'         => true,
-				'placeholder'     => null, // @todo : Untested as it is getting returned as null.
+				'placeholder'     => null,
 				'reversed'        => null,
 				'start'           => 5.0, // Previously untested.
 				'style'           => wp_json_encode(  // Previously untested.
