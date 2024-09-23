@@ -168,7 +168,7 @@ final class CoreTableTest extends PluginTestCase {
 				'fontSize'        => null,
 				'foot'            => [],
 				'gradient'        => null,
-				'hasFixedLayout'  => true,
+				'hasFixedLayout'  => is_wp_version_compatible( '6.6' ) ? true : false, // WP 6.6 changes the unset default value to true.
 				'head'            => [],
 				'lock'            => null,
 				'style'           => null,
