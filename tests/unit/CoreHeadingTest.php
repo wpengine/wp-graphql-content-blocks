@@ -434,4 +434,60 @@ final class CoreHeadingTest extends PluginTestCase {
 			$attributes
 		);
 	}
+
+	/**
+	 * Test retrieval of core/heading block with lock attribute.
+	 *
+	 * @return void
+	 */
+	public function test_retrieve_core_heading_with_lock() {
+		$block_content = '
+        <!-- wp:heading {"lock":{"move":true,"remove":true},"level":2} -->
+        <h2 class="wp-block-heading">Locked Heading</h2>
+        <!-- /wp:heading>
+        ';
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$actual = graphql(
+			[
+				'query'     => $this->query(),
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
+
+		$block      = $actual['data']['post']['editorBlocks'][0];
+		$attributes = $block['attributes'];
+
+		$this->assertEquals(
+			[
+				'align'           => null,
+				'anchor'          => null,
+				'backgroundColor' => null,
+				'className'       => null,
+				'content'         => 'Locked Heading',
+				'cssClassName'    => 'wp-block-heading',
+				'fontFamily'      => null,
+				'fontSize'        => null,
+				'gradient'        => null,
+				'level'           => 2.0,
+				'lock'            => wp_json_encode(
+					[
+						'move'   => true,
+						'remove' => true,
+					]
+				),
+				'placeholder'     => null,
+				'style'           => null,
+				'textAlign'       => null,
+				'textColor'       => null,
+			],
+			$attributes
+		);
+	}
 }
