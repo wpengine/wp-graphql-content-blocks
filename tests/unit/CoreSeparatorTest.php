@@ -122,7 +122,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 				'backgroundColor' => null,
 				'className'       => 'is-style-dots',
 				'cssClassName'    => 'wp-block-separator alignwide has-alpha-channel-opacity',
-				'gradient'        => null, // @todo: Getting null, but should be some valid gradient value!!
+				'gradient'        => null,
 				'opacity'         => 'alpha-channel',
 				'style'           => wp_json_encode(
 					[
@@ -149,7 +149,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_separator_attributes(): void {
 		$block_content = '
-			<!-- wp:separator {"backgroundColor":"accent-4"}  -->
+			<!-- wp:separator {"gradient":"gradient-10","backgroundColor":"accent-4"}  -->
 			<hr class="wp-block-separator has-text-color has-accent-4-color has-alpha-channel-opacity has-accent-4-background-color has-background" id="test-anchor"/>
 			<!-- /wp:separator -->
 		';
@@ -184,7 +184,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 				'backgroundColor' => 'accent-4', // Previously untested.
 				'className'       => null,
 				'cssClassName'    => 'wp-block-separator has-text-color has-accent-4-color has-alpha-channel-opacity has-accent-4-background-color has-background',
-				'gradient'        => null,
+				'gradient'        => 'gradient-10', // Previously untested.
 				'opacity'         => 'alpha-channel',
 				'style'           => null,
 				'lock'            => null,
