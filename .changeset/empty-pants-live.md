@@ -2,4 +2,4 @@
 "@wpengine/wp-graphql-content-blocks": patch
 ---
 
-tests : Core list blocks and core list-item blocks
+tests : Add tests for `CoreList` and `CoreListItem` blocks.

@@ -103,7 +103,7 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * Covers : 'anchor', 'backgroundColor', 'className', and 'cssClassName'.
+	 * Covers : 'anchor', 'backgroundColor', 'className', 'cssClassName' and 'values'.
 	 */
 	public function test_retrieve_core_list_fields_and_attribute(): void {
 		$block_content = '
@@ -330,7 +330,7 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * Covers : 'start', 'style', and 'textColor'.
+	 * Covers : 'start', 'style', 'textColor' and 'type'.
 	 */
 	public function test_retrieve_core_list_attributes_start_and_styles(): void {
 		$block_content = '
@@ -557,7 +557,7 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list item block fields and attributes.
 	 *
-	 * Covers : 'placeholder' and 'style' attribute.
+	 * Covers : 'style' attribute.
 	 */
 	public function test_retrieve_core_list_item_untested_attributes(): void {
 		// fontFamily, fontSize and style are only supported in WP 6.2+.
@@ -682,7 +682,7 @@ final class CoreListTest extends PluginTestCase {
 				'fontFamily'  => null,
 				'fontSize'    => null,
 				'lock'        => null,
-				'placeholder' => null, // Previously untested.
+				'placeholder' => null,
 				'style'       => wp_json_encode( [ 'typography' => [ 'textDecoration' => 'underline' ] ] ), // Previously untested.
 			],
 			$block['attributes'],
