@@ -45,36 +45,49 @@ final class CoreParagraphTest extends PluginTestCase {
 	 */
 	public function query(): string {
 		return '
-            fragment CoreParagraphBlockFragment on CoreParagraph {
-                attributes {
-                    align
-                    anchor
-                    backgroundColor
-                    className
-                    content
-                    cssClassName
-                    dropCap
-                    direction
-                    fontFamily
-                    fontSize
-                    gradient
-                    lock
-                    metadata
-                    placeholder
-                    style
-                    textColor
-                }
-            }
-            query Post( $id: ID! ) {
-                post(id: $id, idType: DATABASE_ID) {
-                    databaseId
-                    editorBlocks {
-                        name
-                        ...CoreParagraphBlockFragment
-                    }
-                }
-            }
-        ';
+			fragment CoreParagraphBlockFragment on CoreParagraph {
+				attributes {
+					align
+					anchor
+					backgroundColor
+					className
+					content
+					cssClassName
+					dropCap
+					direction
+					fontFamily
+					fontSize
+					gradient
+					lock
+					metadata
+					placeholder
+					style
+					textColor
+				}
+			}
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						innerBlocks {
+							name
+						}
+						isDynamic
+						name
+						parentClientId
+						renderedHtml
+						... on BlockWithSupportsAnchor {
+							anchor
+						}
+						...CoreParagraphBlockFragment
+					}
+				}
+			}
+		';
 	}
 
 	/**
@@ -93,10 +106,10 @@ final class CoreParagraphTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_paragraph_attributes() {
 		$block_content = '
-            <!-- wp:paragraph {"align":"center","backgroundColor":"pale-cyan-blue","textColor":"vivid-red","fontSize":"large","fontFamily":"helvetica-arial"} -->
-            <p class="has-text-align-center has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-helvetica-arial-font-family">This is a test paragraph with various attributes.</p>
-            <!-- /wp:paragraph -->
-        ';
+			<!-- wp:paragraph {"align":"center","backgroundColor":"pale-cyan-blue","textColor":"vivid-red","fontSize":"large","fontFamily":"helvetica-arial"} -->
+			<p class="has-text-align-center has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-helvetica-arial-font-family">This is a test paragraph with various attributes.</p>
+			<!-- /wp:paragraph -->
+		';
 
 		wp_update_post(
 			[
@@ -105,21 +118,33 @@ final class CoreParagraphTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
 
-		$this->assertArrayNotHasKey( 'errors', $actual );
-		$this->assertArrayHasKey( 'data', $actual );
-		$this->assertArrayHasKey( 'post', $actual['data'] );
+		$actual = graphql( compact( 'query', 'variables' ) );
 
-		$block      = $actual['data']['post']['editorBlocks'][0];
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
+		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
+		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
+
+		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
+		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
+		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
+
 		$attributes = $block['attributes'];
-
-		$this->assertEquals( 'core/paragraph', $block['name'] );
 		$this->assertEquals(
 			[
 				'align'           => 'center',
@@ -156,10 +181,10 @@ final class CoreParagraphTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_paragraph_with_drop_cap_and_custom_styles() {
 		$block_content = '
-            <!-- wp:paragraph {"dropCap":true,"style":{"typography":{"lineHeight":"2","textTransform":"uppercase"},"spacing":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}}}} -->
-            <p class="has-drop-cap" style="padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;line-height:2;text-transform:uppercase">This is a paragraph with drop cap and custom styles.</p>
-            <!-- /wp:paragraph -->
-        ';
+			<!-- wp:paragraph {"dropCap":true,"style":{"typography":{"lineHeight":"2","textTransform":"uppercase"},"spacing":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}}}} -->
+			<p class="has-drop-cap" style="padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px;line-height:2;text-transform:uppercase">This is a paragraph with drop cap and custom styles.</p>
+			<!-- /wp:paragraph -->
+		';
 
 		wp_update_post(
 			[
@@ -168,16 +193,26 @@ final class CoreParagraphTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
 
-		$block      = $actual['data']['post']['editorBlocks'][0];
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+
 		$attributes = $block['attributes'];
-
 		$this->assertEquals(
 			[
 				'align'           => null,
@@ -219,7 +254,7 @@ final class CoreParagraphTest extends PluginTestCase {
 	/**
 	 * Test retrieval of core/paragraph block with direction and gradient.
 	 *
-	 * Attributes covered:
+	 * - Attributes covered:
 	 * - align
 	 * - direction
 	 * - gradient
@@ -230,10 +265,10 @@ final class CoreParagraphTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_paragraph_with_direction_and_gradient() {
 		$block_content = '
-            <!-- wp:paragraph {"align":"right","direction":"rtl","gradient":"vivid-cyan-blue-to-vivid-purple"} -->
-            <p class="has-text-align-right has-vivid-cyan-blue-to-vivid-purple-gradient-background" style="direction:rtl">This is a right-aligned RTL paragraph with a gradient background.</p>
-            <!-- /wp:paragraph -->
-        ';
+			<!-- wp:paragraph {"align":"right","direction":"rtl","gradient":"vivid-cyan-blue-to-vivid-purple"} -->
+			<p class="has-text-align-right has-vivid-cyan-blue-to-vivid-purple-gradient-background" style="direction:rtl">This is a right-aligned RTL paragraph with a gradient background.</p>
+			<!-- /wp:paragraph -->
+		';
 
 		wp_update_post(
 			[
@@ -242,16 +277,26 @@ final class CoreParagraphTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
 
-		$block      = $actual['data']['post']['editorBlocks'][0];
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+
 		$attributes = $block['attributes'];
-
 		$this->assertEquals(
 			[
 				'align'           => 'right',
@@ -289,10 +334,10 @@ final class CoreParagraphTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_paragraph_with_additional_attributes() {
 		$block_content = '
-            <!-- wp:paragraph {"anchor":"test-anchor","className":"custom-class","lock":{"move":true,"remove":true},"metadata":{"someKey":"someValue"},"placeholder":"Type here..."} -->
-            <p class="custom-class" id="test-anchor">This is a paragraph with additional attributes.</p>
-            <!-- /wp:paragraph -->
-        ';
+			<!-- wp:paragraph {"anchor":"test-anchor","className":"custom-class","lock":{"move":true,"remove":true},"metadata":{"someKey":"someValue"},"placeholder":"Type here..."} -->
+			<p class="custom-class" id="test-anchor">This is a paragraph with additional attributes.</p>
+			<!-- /wp:paragraph -->
+		';
 
 		wp_update_post(
 			[
@@ -301,16 +346,26 @@ final class CoreParagraphTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
 
-		$block      = $actual['data']['post']['editorBlocks'][0];
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+
 		$attributes = $block['attributes'];
-
 		$this->assertEquals(
 			[
 				'align'           => null,
