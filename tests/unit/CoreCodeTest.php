@@ -47,7 +47,6 @@ final class CoreCodeTest extends PluginTestCase {
 		return '
 			fragment CoreCodeBlockFragment on CoreCode {
 				attributes {
-					align
 					anchor
 					backgroundColor
 					borderColor
@@ -123,7 +122,6 @@ final class CoreCodeTest extends PluginTestCase {
 		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
-		error_log( print_r( $actual, true ) );
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
@@ -147,7 +145,6 @@ final class CoreCodeTest extends PluginTestCase {
 		$attributes = $block['attributes'];
 		$this->assertEquals(
 			[
-				'align'           => null,
 				'anchor'          => null,
 				'backgroundColor' => 'pale-cyan-blue', // previously untested
 				'borderColor'     => null,
@@ -172,7 +169,6 @@ final class CoreCodeTest extends PluginTestCase {
 	 * - borderColor
 	 * - style
 	 * - className
-	 * - align
 	 *
 	 * @return void
 	 */
@@ -196,7 +192,6 @@ final class CoreCodeTest extends PluginTestCase {
 		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
-		error_log( print_r( $actual, true ) );
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
@@ -213,7 +208,6 @@ final class CoreCodeTest extends PluginTestCase {
 		$attributes = $block['attributes'];
 		$this->assertEquals(
 			[
-				'align'           => 'wide', // previously untested
 				'anchor'          => null,
 				'backgroundColor' => null,
 				'borderColor'     => 'vivid-cyan-blue', // previously untested
@@ -275,7 +269,6 @@ final class CoreCodeTest extends PluginTestCase {
 		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
-		error_log( print_r( $actual, true ) );
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
@@ -292,7 +285,6 @@ final class CoreCodeTest extends PluginTestCase {
 		$attributes = $block['attributes'];
 		$this->assertEquals(
 			[
-				'align'           => null,
 				'anchor'          => 'test-anchor', // previously untested
 				'backgroundColor' => null,
 				'borderColor'     => null,
@@ -303,6 +295,89 @@ final class CoreCodeTest extends PluginTestCase {
 				'fontSize'        => null,
 				'gradient'        => 'vivid-cyan-blue-to-vivid-purple', // previously untested
 				'lock'            => '{"move":true,"remove":true}', // previously untested
+				'style'           => null,
+				'textColor'       => null,
+			],
+			$attributes
+		);
+	}
+
+	/**
+	 * Test the retrieval of the align attribute for core/code block.
+	 */
+	public function test_retrieve_core_code_align_attribute(): void {
+		// The align attribute is only supported in WP 6.3+
+		if ( ! is_wp_version_compatible( '6.3' ) ) {
+			$this->markTestSkipped( 'This test requires WP 6.3 or higher.' );
+		}
+
+		$block_content = '
+        <!-- wp:code {"align":"wide","anchor":"test-anchor","gradient":"vivid-cyan-blue-to-vivid-purple","lock":{"move":true,"remove":true}} -->
+        <pre id="test-anchor" class="wp-block-code alignwide has-vivid-cyan-blue-to-vivid-purple-gradient-background"><code>function test() { return "aligned code"; }</code></pre>
+        <!-- /wp:code>
+        ';
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$query = '
+        query CoreCodeAlignTest($id: ID!) {
+            post(id: $id, idType: DATABASE_ID) {
+                editorBlocks {
+                    ... on CoreCode {
+                        attributes {
+                            align
+                            anchor
+                            backgroundColor
+                            borderColor
+                            className
+                            content
+                            cssClassName
+                            fontFamily
+                            fontSize
+                            gradient
+                            lock
+                            style
+                            textColor
+                        }
+                    }
+                }
+            }
+        }
+        ';
+
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The response should have a data key' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The data should have a post key' );
+		$this->assertArrayHasKey( 'editorBlocks', $actual['data']['post'], 'The post should have editorBlocks' );
+		$this->assertCount( 1, $actual['data']['post']['editorBlocks'], 'There should be one editor block' );
+
+		$block      = $actual['data']['post']['editorBlocks'][0];
+		$attributes = $block['attributes'];
+
+		$this->assertEquals(
+			[
+				'align'           => 'wide', // previously untested
+				'anchor'          => 'test-anchor',
+				'backgroundColor' => null,
+				'borderColor'     => null,
+				'className'       => null,
+				'content'         => 'function test() { return "aligned code"; }',
+				'cssClassName'    => 'wp-block-code alignwide has-vivid-cyan-blue-to-vivid-purple-gradient-background',
+				'fontFamily'      => null,
+				'fontSize'        => null,
+				'gradient'        => 'vivid-cyan-blue-to-vivid-purple',
+				'lock'            => '{"move":true,"remove":true}',
 				'style'           => null,
 				'textColor'       => null,
 			],
