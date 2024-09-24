@@ -367,7 +367,7 @@ final class CoreQuoteTest extends PluginTestCase {
 			[
 				'value'           => '<p>Sample Quote</p>',
 				'layout'          => 'test-layout', // Previously untested.
-				'textAlign'       => 'test-align', // Previously untested.
+				'textAlign'       => 'center', // Previously untested.
 			],
 			$block['attributes'],
 		);
