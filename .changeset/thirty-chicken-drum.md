@@ -2,4 +2,4 @@
 "@wpengine/wp-graphql-content-blocks": patch
 ---
 
-test : Core Quote block fields and attributes.
+tests : Add tests for `CoreQuote` block.
