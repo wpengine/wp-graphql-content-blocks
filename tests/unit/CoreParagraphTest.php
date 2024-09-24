@@ -324,7 +324,6 @@ final class CoreParagraphTest extends PluginTestCase {
 	 * - anchor
 	 * - className
 	 * - lock
-	 * - metadata
 	 * - placeholder
 	 *
 	 * @return void
