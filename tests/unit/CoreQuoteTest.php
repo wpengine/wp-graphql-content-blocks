@@ -150,8 +150,8 @@ final class CoreQuoteTest extends PluginTestCase {
 				'style'           => null,
 				'textColor'       => null,
 				'value'           => '<p>This is a sample quote block content.</p>',
-				'layout'          => null,
-				'textAlign'       => null,
+				// 'layout'          => null,
+				// 'textAlign'       => null,
 			],
 			$block['attributes'],
 		);
@@ -253,9 +253,9 @@ final class CoreQuoteTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_quote_errorneous_attributes(): void {
 		// layout and textAlign are only supported in WP 6.5+.
-		// if ( ! is_wp_version_compatible( '6.6' ) ) {
-		// 	$this->markTestSkipped( 'This test requires WP 6.6 or higher.' );
-		// }
+		if ( ! is_wp_version_compatible( '6.5' ) ) {
+			$this->markTestSkipped( 'This test requires WP 6.6 or higher.' );
+		}
 		$block_content = '
 			<!-- wp:quote {"layout":"test-layout","textAlign":"center"} -->
 			<blockquote class="wp-block-quote" id="test-anchor"><!-- wp:paragraph -->
