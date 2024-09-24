@@ -251,13 +251,13 @@ final class CoreQuoteTest extends PluginTestCase {
 	 *
 	 * Covers : 'layout' and 'textAlign'.
 	 */
-	public function test_retrieve_core_quote_errorneous_attributes(): void {
+	public function test_retrieve_core_quote_layout_text_align_attributes(): void {
 		// layout and textAlign are only supported in WP 6.5+.
 		if ( ! is_wp_version_compatible( '6.5' ) ) {
 			$this->markTestSkipped( 'This test requires WP 6.6 or higher.' );
 		}
 		$block_content = '
-			<!-- wp:quote {"layout":"test-layout","textAlign":"center"} -->
+			<!-- wp:quote {"layout":{"type":"flex","flexWrap":"nowrap"},"textAlign":"center"} -->
 			<blockquote class="wp-block-quote" id="test-anchor"><!-- wp:paragraph -->
 			<p>Sample Quote</p>
 			<!-- /wp:paragraph --><cite>Citation</cite></blockquote>
@@ -366,7 +366,12 @@ final class CoreQuoteTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'value'           => '<p>Sample Quote</p>',
-				'layout'          => 'test-layout', // Previously untested.
+				'layout'          => wp_json_encode( // Previously untested.
+					[
+						'type'     => 'flex',
+						'flexWrap' => 'nowrap',
+					]
+				),
 				'textAlign'       => 'center', // Previously untested.
 			],
 			$block['attributes'],
