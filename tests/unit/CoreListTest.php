@@ -103,9 +103,11 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * Covers : 'anchor', 'backgroundColor', 'className', 'cssClassName' and 'values'.
+	 * Covers
+	 * - CoreListAttributes: 'anchor', 'backgroundColor', 'className', 'cssClassName' and 'values'.
+	 * - CoreListItemAttributes: 'content'.
 	 */
-	public function test_retrieve_core_list_fields_and_attribute(): void {
+	public function test_retrieve_core_list_fields_and_attributes(): void {
 		$block_content = '
 			<!-- wp:list {"className":"test-css-class-name","backgroundColor":"accent-4"} -->
 				<ul id="test-anchor" class="wp-block-list test-css-class-name has-accent-4-background-color has-background">
@@ -138,6 +140,7 @@ final class CoreListTest extends PluginTestCase {
 
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
 
+		// Test the `CoreList` block.
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
@@ -145,7 +148,6 @@ final class CoreListTest extends PluginTestCase {
 		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
 		$this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
 
-		$this->assertNotEmpty( $block['innerBlocks'], 'There should be ListItem inner blocks' );
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
@@ -171,12 +173,46 @@ final class CoreListTest extends PluginTestCase {
 			],
 			$block['attributes'],
 		);
+
+		// Test the inner blocks.
+		$this->assertNotEmpty( $block['innerBlocks'], 'There should be inner blocks' );
+		$this->assertCount( 2, $block['innerBlocks'] );
+
+		$block['innerBlocks'][0];
+		$this->assertNotEmpty( $block['innerBlocks'][0]['apiVersion'], 'The apiVersion should be present' );
+		$this->assertEquals( 'text', $block['innerBlocks'][0]['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
+		$this->assertEmpty( $block['innerBlocks'][0]['cssClassNames'], 'The cssClassNames should be present' );
+		$this->assertNotEmpty( $block['innerBlocks'][0]['clientId'], 'The clientId should be present' );
+		$this->assertEquals( 'core/list-item', $block['innerBlocks'][0]['name'], 'The block name should be core/list-item' );
+		$this->assertNotEmpty( $block['innerBlocks'][0]['renderedHtml'], 'The renderedHtml should be present' );
+
+		$this->assertEquals(
+			[
+				'className'   => null,
+				'content'     => 'Truck',
+				'lock'        => null,
+				'placeholder' => null,
+			],
+			$block['innerBlocks'][0]['attributes'],
+			'The first inner block attributes should match'
+		);
+
+		$this->assertEquals(
+			[
+				'className'   => null,
+				'content'     => 'Train',
+				'lock'        => null,
+				'placeholder' => null,
+			],
+			$block['innerBlocks'][1]['attributes'],
+			'The second inner block attributes should match'
+		);
 	}
 
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * Covers : 'fontFamily', 'fontSize', 'gradient', and 'lock'.
+	 * Covers CoreListAttributes: 'fontFamily', 'fontSize', 'gradient', and 'lock'.
 	 */
 	public function test_retrieve_core_list_attributes_typography_and_lock(): void {
 		$block_content = '
@@ -213,17 +249,6 @@ final class CoreListTest extends PluginTestCase {
 
 		$block = $actual['data']['post']['editorBlocks'][0];
 
-		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
-
-		// @todo : his is not working.
-		// $this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
-
-		$this->assertNotEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
-		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
-		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
-
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
 
 		$this->assertEquals(
@@ -252,7 +277,7 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * Covers : 'ordered' and 'reversed'.
+	 * Covers CoreListAttributes: 'ordered' and 'reversed'.
 	 *
 	 * @todo : The 'placeholder' attribute is not tested as it is getting returned as null.
 	 */
@@ -292,17 +317,7 @@ final class CoreListTest extends PluginTestCase {
 
 		$block = $actual['data']['post']['editorBlocks'][0];
 
-		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
-
-		// @todo : This is not working.
-		// $this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
-
-		$this->assertNotEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
-		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
-		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
 		$this->assertEquals(
 			[
@@ -330,7 +345,7 @@ final class CoreListTest extends PluginTestCase {
 	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * Covers : 'start', 'style', 'textColor' and 'type'.
+	 * Covers CoreListAttributes: 'start', 'style', 'textColor' and 'type'.
 	 */
 	public function test_retrieve_core_list_attributes_start_and_styles(): void {
 		$block_content = '
@@ -367,17 +382,7 @@ final class CoreListTest extends PluginTestCase {
 
 		$block = $actual['data']['post']['editorBlocks'][0];
 
-		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
-		$this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
-		$this->assertNotEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
-
-		// @todo : The 'parentClientId' attribute is NULL in the response.
-		// $this->assertNotEmpty( $block['parentClientId'], 'There should be no parentClientId' );
-
-		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
 		$this->assertEquals(
 			[
@@ -417,11 +422,105 @@ final class CoreListTest extends PluginTestCase {
 	}
 
 	/**
+	 * Tests the retrieval of CoreListItem attributes.
+	 * 
+	 * `editorBlocks` is flat to test the `parentClientId` attribute.
+	 *
+	 * Covers : CoreListItemAttributes: 'className', 'lock'.
+	 */
+	public function test_retrieve_core_list_item_flat(): void {
+		$block_content = '
+			<!-- wp:list -->
+				<ul class="wp-block-list">
+					<!-- wp:list-item {"lock":{"move":true,"remove":true},"className":"test-css-class-item-1","fontSize":"large","fontFamily":"heading"} -->
+						<li class="test-css-class-item-1 has-heading-font-family has-large-font-size">List item 1</li>
+					<!-- /wp:list-item -->
+				</ul>
+			<!-- /wp:list -->
+		';
+
+		// Set post content.
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$query     = '
+			fragment CoreListItemBlockFragment on CoreListItem {
+				attributes {
+					className
+					content
+					lock
+					# metadata
+				}
+			}
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						clientId
+						name
+						parentClientId
+						innerBlocks {
+							... on CoreListItem {
+								clientId
+								name
+								parentClientId
+								...CoreListItemBlockFragment
+							}
+						}
+						... on CoreListItem {
+							...CoreListItemBlockFragment
+						}
+					}
+				}
+			}
+		';
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+		$this->assertEquals( 2, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][1];
+
+		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
+		$this->assertEquals( 'core/list-item', $block['name'], 'The block name should be core/list' );
+
+		$this->assertNotEmpty( $block['parentClientId'], 'There should be some parentClientId for the block' );
+		$this->assertEquals( $actual['data']['post']['editorBlocks'][0]['clientId'], $block['parentClientId'], 'The parentClientId should match' );
+		$this->assertEquals( $block['clientId'], $actual['data']['post']['editorBlocks'][0]['innerBlocks'][0]['clientId'], 'The inner block clientId should match' );
+
+		$this->assertEquals(
+			[
+				'className'   => 'test-css-class-item-1', // Previously untested.
+				'content'     => 'List item 1',
+				'lock'        => wp_json_encode( // Previously untested.
+					[
+						'move'   => true,
+						'remove' => true,
+					]
+				),
+			],
+			$block['attributes'],
+		);
+	}
+
+	/**
 	 * Test case for retrieving core list block fields and attributes.
 	 *
-	 * Covers : 'className', 'content', 'fontSize', 'fontFamily' and 'lock' attributes.
+	 * Covers CoreListItemAttributes: 'fontSize', 'fontFamily'
 	 */
-	public function test_retrieve_core_list_item_fields_and_attribute(): void {
+	public function test_retrieve_core_list_item_font_family_size(): void {
 		// fontFamily, fontSize and style are only supported in WP 6.2+.
 		if ( ! is_wp_version_compatible( '6.2' ) ) {
 			$this->markTestSkipped( 'This test requires WP 6.2 or higher.' );
@@ -446,66 +545,29 @@ final class CoreListTest extends PluginTestCase {
 		);
 
 		$query     = '
-			fragment CoreListBlockFragment on CoreList {
-				attributes {
-					anchor
-					backgroundColor
-					className
-					cssClassName
-					fontFamily
-					fontSize
-					gradient
-					lock
-					# metadata
-					ordered
-					placeholder
-					reversed
-					start
-					style
-					textColor
-					type
-					values
-				}
-			}
-
 			fragment CoreListItemBlockFragment on CoreListItem {
 				attributes {
 					className
 					content
+					lock
 					fontFamily
 					fontSize
-					lock
-					# metadata
-					placeholder
 					style
 				}
 			}
-
 			query Post( $id: ID! ) {
 				post(id: $id, idType: DATABASE_ID) {
 					databaseId
 					editorBlocks( flat: false ) {
-						apiVersion
-						blockEditorCategoryName
 						clientId
-						cssClassNames
+						name
+						parentClientId
 						innerBlocks {
-							apiVersion
-							blockEditorCategoryName
-							clientId
-							cssClassNames
-							name
-							parentClientId
-							renderedHtml
 							... on CoreListItem {
+								name
 								...CoreListItemBlockFragment
 							}
 						}
-						isDynamic
-						name
-						parentClientId
-						renderedHtml
-						...CoreListBlockFragment
 					}
 				}
 			}
@@ -524,30 +586,20 @@ final class CoreListTest extends PluginTestCase {
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
 
 		$block = $actual['data']['post']['editorBlocks'][0]['innerBlocks'][0];
-
-		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
-		$this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
 		$this->assertEquals( 'core/list-item', $block['name'], 'The block name should be core/list' );
 
-		// @todo : The 'parentClientId' attribute is NULL in the response.
-		// $this->assertNotEmpty( $block['parentClientId'], 'There should be some parentClientId for the block' );
-
-		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 		$this->assertEquals(
 			[
 				'className'   => 'test-css-class-item-1',
 				'content'     => 'List item 1',
-				'fontFamily'  => 'heading',
-				'fontSize'    => 'large',
+				'fontFamily'  => 'heading', // Previously untested.
+				'fontSize'    => 'large', // Previously untested.
 				'lock'        => wp_json_encode(
 					[
 						'move'   => true,
 						'remove' => true,
 					]
 				),
-				'placeholder' => null,
 				'style'       => null,
 			],
 			$block['attributes'],
@@ -556,70 +608,9 @@ final class CoreListTest extends PluginTestCase {
 
 
 	/**
-	 * Test case for retrieving parentClientId.
-	 *
-	 * Covers : 'parentClientId' attribute.
-	 */
-	public function test_retrieve_core_list_item_parentClientId(): void {
-		$block_content = '
-			<!-- wp:list -->
-				<ul class="wp-block-list">
-					<!-- wp:list-item {"lock":{"move":true,"remove":true},"className":"test-css-class-item-1","fontSize":"large","fontFamily":"heading"} -->
-						<li class="test-css-class-item-1 has-heading-font-family has-large-font-size">List item 1</li>
-					<!-- /wp:list-item -->
-				</ul>
-			<!-- /wp:list -->
-		';
-
-		// Set post content.
-		wp_update_post(
-			[
-				'ID'           => $this->post_id,
-				'post_content' => $block_content,
-			]
-		);
-
-		$query     = '
-			query Post( $id: ID! ) {
-				post(id: $id, idType: DATABASE_ID) {
-					databaseId
-					editorBlocks {
-						clientId
-						innerBlocks {
-							... on CoreListItem {
-								name
-							}
-						}
-						name
-						parentClientId
-					}
-				}
-			}
-		';
-		$variables = [
-			'id' => $this->post_id,
-		];
-
-		$actual = graphql( compact( 'query', 'variables' ) );
-
-		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
-		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
-		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
-
-		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
-		$this->assertEquals( 2, count( $actual['data']['post']['editorBlocks'] ) );
-
-		$block = $actual['data']['post']['editorBlocks'][1];
-
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
-		$this->assertEquals( 'core/list-item', $block['name'], 'The block name should be core/list' );
-		$this->assertNotEmpty( $block['parentClientId'], 'There should be some parentClientId for the block' );
-	}
-
-	/**
 	 * Test case for retrieving core list item block fields and attributes.
 	 *
-	 * Covers : 'style' attribute.
+	 * Covers CoreListItemAttributes: 'style' attribute.
 	 */
 	public function test_retrieve_core_list_item_untested_attributes(): void {
 		// fontFamily, fontSize and style are only supported in WP 6.2+.
@@ -646,70 +637,34 @@ final class CoreListTest extends PluginTestCase {
 		);
 
 		$query     = '
-			fragment CoreListBlockFragment on CoreList {
-				attributes {
-					anchor
-					backgroundColor
-					className
-					cssClassName
-					fontFamily
-					fontSize
-					gradient
-					lock
-					# metadata
-					ordered
-					placeholder
-					reversed
-					start
-					style
-					textColor
-					type
-					values
-				}
-			}
-
 			fragment CoreListItemBlockFragment on CoreListItem {
 				attributes {
 					className
 					content
+					lock
 					fontFamily
 					fontSize
-					lock
-					# metadata
-					placeholder
 					style
 				}
 			}
-
 			query Post( $id: ID! ) {
 				post(id: $id, idType: DATABASE_ID) {
 					databaseId
 					editorBlocks( flat: false ) {
-						apiVersion
-						blockEditorCategoryName
 						clientId
-						cssClassNames
+						name
+						parentClientId
 						innerBlocks {
-							apiVersion
-							blockEditorCategoryName
-							clientId
-							cssClassNames
-							name
-							parentClientId
-							renderedHtml
 							... on CoreListItem {
+								name
 								...CoreListItemBlockFragment
 							}
 						}
-						isDynamic
-						name
-						parentClientId
-						renderedHtml
-						...CoreListBlockFragment
 					}
 				}
 			}
 		';
+
 		$variables = [
 			'id' => $this->post_id,
 		];
@@ -721,21 +676,10 @@ final class CoreListTest extends PluginTestCase {
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
 		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
-
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
 
 		$block = $actual['data']['post']['editorBlocks'][0]['innerBlocks'][0];
-
-		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
 		$this->assertEquals( 'core/list-item', $block['name'], 'The block name should be core/list' );
-
-		// @todo : The 'parentClientId' attribute is NULL in the response.
-		// $this->assertNotEmpty( $block['parentClientId'], 'There should be some parentClientId for the block' );
-
-		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
 		$this->assertEquals(
 			[
@@ -744,7 +688,6 @@ final class CoreListTest extends PluginTestCase {
 				'fontFamily'  => null,
 				'fontSize'    => null,
 				'lock'        => null,
-				'placeholder' => null,
 				'style'       => wp_json_encode( [ 'typography' => [ 'textDecoration' => 'underline' ] ] ), // Previously untested.
 			],
 			$block['attributes'],
