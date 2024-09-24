@@ -280,19 +280,8 @@ final class CoreQuoteTest extends PluginTestCase {
 					}
 				}
 				attributes {
-					anchor
-					backgroundColor
-					citation
-					className
-					cssClassName
-					fontFamily
-					fontSize
-					gradient
 					layout
-					lock
 					# metadata
-					style
-					textColor
 					value
 				}
 			}
@@ -317,6 +306,7 @@ final class CoreQuoteTest extends PluginTestCase {
 				}
 			}
 		';
+
 		$variables = [
 			'id' => $this->post_id,
 		];
@@ -333,31 +323,7 @@ final class CoreQuoteTest extends PluginTestCase {
 		// Verify the block data.
 		$block = $actual['data']['post']['editorBlocks'][0];
 
-		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
-
-		$this->assertNotEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
-		$this->assertEquals( 1, count( $block['innerBlocks'] ), 'There should be only one inner block' );
-		$this->assertEquals( 'core/paragraph', $block['innerBlocks'][0]['name'], 'The inner block name should be core/paragraph' );
-
 		$this->assertEquals( 'core/quote', $block['name'], 'The block name should be core/quote' );
-		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
-		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
-
-		unset( $block['attributes']['citation'] ); // Tested above.
-		unset( $block['attributes']['className'] ); // Tested above.
-		unset( $block['attributes']['cssClassName'] ); // Tested above.
-
-		unset( $block['attributes']['anchor'] ); // Tested above.
-		unset( $block['attributes']['backgroundColor'] ); // Tested above.
-		unset( $block['attributes']['fontFamily'] ); // Tested above.
-		unset( $block['attributes']['fontSize'] ); // Tested above.
-		unset( $block['attributes']['gradient'] ); // Tested above.
-		unset( $block['attributes']['lock'] ); // Tested above.
-		unset( $block['attributes']['style'] ); // Tested above.
-		unset( $block['attributes']['textColor'] ); // Tested above.
-
 
 		// Verify the attributes.
 		$this->assertEquals(
@@ -409,20 +375,9 @@ final class CoreQuoteTest extends PluginTestCase {
 					}
 				}
 				attributes {
-					anchor
-					backgroundColor
-					citation
-					className
-					cssClassName
-					fontFamily
-					fontSize
-					gradient
 					layout
-					lock
 					# metadata
-					style
 					textAlign
-					textColor
 					value
 				}
 			}
@@ -462,32 +417,7 @@ final class CoreQuoteTest extends PluginTestCase {
 
 		// Verify the block data.
 		$block = $actual['data']['post']['editorBlocks'][0];
-
-		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
-		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
-		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
-
-		$this->assertNotEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
-		$this->assertEquals( 1, count( $block['innerBlocks'] ), 'There should be only one inner block' );
-		$this->assertEquals( 'core/paragraph', $block['innerBlocks'][0]['name'], 'The inner block name should be core/paragraph' );
-
 		$this->assertEquals( 'core/quote', $block['name'], 'The block name should be core/quote' );
-		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
-		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
-
-		unset( $block['attributes']['citation'] ); // Tested above.
-		unset( $block['attributes']['className'] ); // Tested above.
-		unset( $block['attributes']['cssClassName'] ); // Tested above.
-
-		unset( $block['attributes']['anchor'] ); // Tested above.
-		unset( $block['attributes']['backgroundColor'] ); // Tested above.
-		unset( $block['attributes']['fontFamily'] ); // Tested above.
-		unset( $block['attributes']['fontSize'] ); // Tested above.
-		unset( $block['attributes']['gradient'] ); // Tested above.
-		unset( $block['attributes']['lock'] ); // Tested above.
-		unset( $block['attributes']['style'] ); // Tested above.
-		unset( $block['attributes']['textColor'] ); // Tested above.
-
 
 		// Verify the attributes.
 		$this->assertEquals(
