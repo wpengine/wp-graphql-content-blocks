@@ -60,12 +60,12 @@ final class CoreListTest extends PluginTestCase {
 				attributes {
 					className
 					content
-					fontFamily
-					fontSize
+					# fontFamily
+					# fontSize
 					lock
 					# metadata
 					placeholder
-					style
+					# style
 				}
 			}
 
@@ -426,6 +426,11 @@ final class CoreListTest extends PluginTestCase {
 	 * Covers : 'className', 'content', 'fontSize', 'fontFamily' and 'lock' attributes.
 	 */
 	public function test_retrieve_core_list_item_fields_and_attribute(): void {
+		// fontFamily, fontSize and style are only supported in WP 6.2+.
+		if ( ! is_wp_version_compatible( '6.2' ) ) {
+			$this->markTestSkipped( 'This test requires WP 6.2 or higher.' );
+		}
+
 		$block_content = '
 			<!-- wp:list -->
 				<ul class="wp-block-list">
@@ -444,7 +449,71 @@ final class CoreListTest extends PluginTestCase {
 			]
 		);
 
-		$query     = $this->query();
+		$query     = '
+			fragment CoreListBlockFragment on CoreList {
+				attributes {
+					anchor
+					backgroundColor
+					className
+					cssClassName
+					fontFamily
+					fontSize
+					gradient
+					lock
+					# metadata
+					ordered
+					placeholder
+					reversed
+					start
+					style
+					textColor
+					type
+					values
+				}
+			}
+
+			fragment CoreListItemBlockFragment on CoreListItem {
+				attributes {
+					className
+					content
+					fontFamily
+					fontSize
+					lock
+					# metadata
+					placeholder
+					style
+				}
+			}
+
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks( flat: false ) {
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						innerBlocks {
+							apiVersion
+							blockEditorCategoryName
+							clientId
+							cssClassNames
+							name
+							parentClientId
+							renderedHtml
+							... on CoreListItem {
+								...CoreListItemBlockFragment
+							}
+						}
+						isDynamic
+						name
+						parentClientId
+						renderedHtml
+						...CoreListBlockFragment
+					}
+				}
+			}
+		';
 		$variables = [
 			'id' => $this->post_id,
 		];
@@ -496,6 +565,11 @@ final class CoreListTest extends PluginTestCase {
 	 * Covers : 'placeholder' and 'style' attribute.
 	 */
 	public function test_retrieve_core_list_item_untested_attributes(): void {
+		// fontFamily, fontSize and style are only supported in WP 6.2+.
+		if ( ! is_wp_version_compatible( '6.2' ) ) {
+			$this->markTestSkipped( 'This test requires WP 6.2 or higher.' );
+		}
+
 		$block_content = '
 			<!-- wp:list -->
 				<ul class="wp-block-list">
@@ -514,7 +588,71 @@ final class CoreListTest extends PluginTestCase {
 			]
 		);
 
-		$query     = $this->query();
+		$query     = '
+			fragment CoreListBlockFragment on CoreList {
+				attributes {
+					anchor
+					backgroundColor
+					className
+					cssClassName
+					fontFamily
+					fontSize
+					gradient
+					lock
+					# metadata
+					ordered
+					placeholder
+					reversed
+					start
+					style
+					textColor
+					type
+					values
+				}
+			}
+
+			fragment CoreListItemBlockFragment on CoreListItem {
+				attributes {
+					className
+					content
+					fontFamily
+					fontSize
+					lock
+					# metadata
+					placeholder
+					style
+				}
+			}
+
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks( flat: false ) {
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						innerBlocks {
+							apiVersion
+							blockEditorCategoryName
+							clientId
+							cssClassNames
+							name
+							parentClientId
+							renderedHtml
+							... on CoreListItem {
+								...CoreListItemBlockFragment
+							}
+						}
+						isDynamic
+						name
+						parentClientId
+						renderedHtml
+						...CoreListBlockFragment
+					}
+				}
+			}
+		';
 		$variables = [
 			'id' => $this->post_id,
 		];
