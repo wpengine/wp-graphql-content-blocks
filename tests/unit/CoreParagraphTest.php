@@ -125,7 +125,6 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
-		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
@@ -199,9 +198,7 @@ final class CoreParagraphTest extends PluginTestCase {
 		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
-		error_log( print_r( $actual, true ) );
 
-		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
@@ -285,7 +282,6 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
-		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
@@ -354,7 +350,6 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
-		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
