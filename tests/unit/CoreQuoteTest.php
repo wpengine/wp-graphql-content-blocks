@@ -149,8 +149,6 @@ final class CoreQuoteTest extends PluginTestCase {
 				'style'           => null,
 				'textColor'       => null,
 				'value'           => '<p>This is a sample quote block content.</p>',
-				// 'layout'          => null,
-				// 'textAlign'       => null,
 			],
 			$block['attributes'],
 		);
