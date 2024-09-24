@@ -45,34 +45,47 @@ final class CoreCodeTest extends PluginTestCase {
 	 */
 	public function query(): string {
 		return '
-            fragment CoreCodeBlockFragment on CoreCode {
-                attributes {
-                    align
-                    anchor
-                    backgroundColor
-                    borderColor
-                    className
-                    content
-                    cssClassName
-                    fontFamily
-                    fontSize
-                    gradient
-                    lock
-                    metadata
-                    style
-                    textColor
-                }
-            }
-            query Post( $id: ID! ) {
-                post(id: $id, idType: DATABASE_ID) {
-                    databaseId
-                    editorBlocks {
-                        name
-                        ...CoreCodeBlockFragment
-                    }
-                }
-            }
-        ';
+			fragment CoreCodeBlockFragment on CoreCode {
+				attributes {
+					align
+					anchor
+					backgroundColor
+					borderColor
+					className
+					content
+					cssClassName
+					fontFamily
+					fontSize
+					gradient
+					lock
+					# metadata
+					style
+					textColor
+				}
+			}
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						innerBlocks {
+							name
+						}
+						isDynamic
+						name
+						parentClientId
+						renderedHtml
+						... on BlockWithSupportsAnchor {
+							anchor
+						}
+						...CoreCodeBlockFragment
+					}
+				}
+			}
+		';
 	}
 
 	/**
@@ -90,12 +103,12 @@ final class CoreCodeTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_code_attributes() {
 		$block_content = '
-            <!-- wp:code {"backgroundColor":"pale-cyan-blue","textColor":"vivid-red","fontSize":"large","fontFamily":"monospace"} -->
-            <pre class="wp-block-code has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-monospace-font-family"><code>function hello_world() {
-    console.log("Hello, World!");
-}</code></pre>
-            <!-- /wp:code -->
-        ';
+			<!-- wp:code {"backgroundColor":"pale-cyan-blue","textColor":"vivid-red","fontSize":"large","fontFamily":"monospace"} -->
+			<pre class="wp-block-code has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-monospace-font-family"><code>function hello_world() {
+				console.log("Hello, World!");
+			}</code></pre>
+			<!-- /wp:code -->
+		';
 
 		wp_update_post(
 			[
@@ -104,33 +117,48 @@ final class CoreCodeTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
 
-		$block      = $actual['data']['post']['editorBlocks'][0];
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
+		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
+		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
+
+		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
+		$this->assertEquals( 'core/code', $block['name'], 'The block name should be core/code' );
+		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
+		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
+
 		$attributes = $block['attributes'];
-
-		$this->assertEquals( 'core/code', $block['name'] );
 		$this->assertEquals(
 			[
 				'align'           => null,
 				'anchor'          => null,
-				'backgroundColor' => 'pale-cyan-blue',
+				'backgroundColor' => 'pale-cyan-blue', // previously untested
 				'borderColor'     => null,
 				'className'       => null,
-				'content'         => "function hello_world() {\n    console.log(\"Hello, World!\");\n}",
-				'cssClassName'    => 'wp-block-code has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-monospace-font-family',
-				'fontFamily'      => 'monospace',
-				'fontSize'        => 'large',
+				'content'         => "function hello_world() {\n\t\t\t\tconsole.log(\"Hello, World!\");\n\t\t\t}", // previously untested
+				'cssClassName'    => 'wp-block-code has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-monospace-font-family', // previously untested
+				'fontFamily'      => 'monospace', // previously untested
+				'fontSize'        => 'large', // previously untested
 				'gradient'        => null,
 				'lock'            => null,
-				'metadata'        => null,
 				'style'           => null,
-				'textColor'       => 'vivid-red',
+				'textColor'       => 'vivid-red', // previously untested
 			],
 			$attributes
 		);
@@ -149,10 +177,10 @@ final class CoreCodeTest extends PluginTestCase {
 	 */
 	public function test_retrieve_core_code_with_custom_styles() {
 		$block_content = '
-            <!-- wp:code {"borderColor":"vivid-cyan-blue","className":"custom-class","align":"wide","style":{"border":{"width":"2px"},"spacing":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}}}} -->
-            <pre class="wp-block-code alignwide custom-class has-border-color has-vivid-cyan-blue-border-color" style="border-width:2px;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px"><code>const greeting = "Hello, styled code!";</code></pre>
-            <!-- /wp:code -->
-        ';
+			<!-- wp:code {"borderColor":"vivid-cyan-blue","className":"custom-class","align":"wide","style":{"border":{"width":"2px"},"spacing":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}}}} -->
+			<pre class="wp-block-code alignwide custom-class has-border-color has-vivid-cyan-blue-border-color" style="border-width:2px;padding-top:20px;padding-right:20px;padding-bottom:20px;padding-left:20px"><code>const greeting = "Hello, styled code!";</code></pre>
+			<!-- /wp:code -->
+		';
 
 		wp_update_post(
 			[
@@ -161,31 +189,40 @@ final class CoreCodeTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
 
-		$block      = $actual['data']['post']['editorBlocks'][0];
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertEquals( 'core/code', $block['name'], 'The block name should be core/code' );
+
 		$attributes = $block['attributes'];
-
 		$this->assertEquals(
 			[
-				'align'           => 'wide',
+				'align'           => 'wide', // previously untested
 				'anchor'          => null,
 				'backgroundColor' => null,
-				'borderColor'     => 'vivid-cyan-blue',
-				'className'       => 'custom-class',
+				'borderColor'     => 'vivid-cyan-blue', // previously untested
+				'className'       => 'custom-class', // previously untested
 				'content'         => 'const greeting = "Hello, styled code!";',
 				'cssClassName'    => 'wp-block-code alignwide custom-class has-border-color has-vivid-cyan-blue-border-color',
 				'fontFamily'      => null,
 				'fontSize'        => null,
 				'gradient'        => null,
 				'lock'            => null,
-				'metadata'        => null,
-				'style'           => wp_json_encode(
+				'style'           => wp_json_encode( // previously untested
 					[
 						'border'  => [
 							'width' => '2px',
@@ -213,16 +250,15 @@ final class CoreCodeTest extends PluginTestCase {
 	 * - gradient
 	 * - anchor
 	 * - lock
-	 * - metadata
 	 *
 	 * @return void
 	 */
 	public function test_retrieve_core_code_with_gradient_and_additional_attributes() {
 		$block_content = '
-            <!-- wp:code {"anchor":"test-anchor","gradient":"vivid-cyan-blue-to-vivid-purple","lock":{"move":true,"remove":true},"metadata":{"someKey":"someValue"}} -->
-            <pre id="test-anchor" class="wp-block-code has-vivid-cyan-blue-to-vivid-purple-gradient-background"><code>console.log("Gradient and locked code block");</code></pre>
-            <!-- /wp:code -->
-        ';
+			<!-- wp:code {"anchor":"test-anchor","gradient":"vivid-cyan-blue-to-vivid-purple","lock":{"move":true,"remove":true},"metadata":{"someKey":"someValue"}} -->
+			<pre id="test-anchor" class="wp-block-code has-vivid-cyan-blue-to-vivid-purple-gradient-background"><code>console.log("Gradient and locked code block");</code></pre>
+			<!-- /wp:code -->
+		';
 
 		wp_update_post(
 			[
@@ -231,20 +267,30 @@ final class CoreCodeTest extends PluginTestCase {
 			]
 		);
 
-		$actual = graphql(
-			[
-				'query'     => $this->query(),
-				'variables' => [ 'id' => $this->post_id ],
-			]
-		);
+		$query     = $this->query();
+		$variables = [
+			'id' => $this->post_id,
+		];
 
-		$block      = $actual['data']['post']['editorBlocks'][0];
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertEquals( 'core/code', $block['name'], 'The block name should be core/code' );
+
 		$attributes = $block['attributes'];
-
 		$this->assertEquals(
 			[
 				'align'           => null,
-				'anchor'          => 'test-anchor',
+				'anchor'          => 'test-anchor', // previously untested
 				'backgroundColor' => null,
 				'borderColor'     => null,
 				'className'       => null,
@@ -252,9 +298,8 @@ final class CoreCodeTest extends PluginTestCase {
 				'cssClassName'    => 'wp-block-code has-vivid-cyan-blue-to-vivid-purple-gradient-background',
 				'fontFamily'      => null,
 				'fontSize'        => null,
-				'gradient'        => 'vivid-cyan-blue-to-vivid-purple',
-				'lock'            => '{"move":true,"remove":true}',
-				'metadata'        => '{"someKey":"someValue"}',
+				'gradient'        => 'vivid-cyan-blue-to-vivid-purple', // previously untested
+				'lock'            => '{"move":true,"remove":true}', // previously untested
 				'style'           => null,
 				'textColor'       => null,
 			],
