@@ -59,7 +59,7 @@ final class CoreParagraphTest extends PluginTestCase {
 					fontSize
 					gradient
 					lock
-					metadata
+					# metadata
 					placeholder
 					style
 					textColor
@@ -125,6 +125,7 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
@@ -146,22 +147,21 @@ final class CoreParagraphTest extends PluginTestCase {
 		$attributes = $block['attributes'];
 		$this->assertEquals(
 			[
-				'align'           => 'center',
+				'align'           => 'center', // previously untested
 				'anchor'          => null,
-				'backgroundColor' => 'pale-cyan-blue',
+				'backgroundColor' => 'pale-cyan-blue', // previously untested
 				'className'       => null,
-				'content'         => 'This is a test paragraph with various attributes.',
-				'cssClassName'    => 'has-text-align-center has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-helvetica-arial-font-family',
+				'content'         => 'This is a test paragraph with various attributes.', // previously untested
+				'cssClassName'    => 'has-text-align-center has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-helvetica-arial-font-family', // previously untested
 				'dropCap'         => false,
 				'direction'       => null,
-				'fontFamily'      => 'helvetica-arial',
-				'fontSize'        => 'large',
+				'fontFamily'      => 'helvetica-arial', // previously untested
+				'fontSize'        => 'large', // previously untested
 				'gradient'        => null,
 				'lock'            => null,
-				'metadata'        => null,
 				'placeholder'     => null,
 				'style'           => null,
-				'textColor'       => 'vivid-red',
+				'textColor'       => 'vivid-red', // previously untested
 			],
 			$attributes
 		);
@@ -199,6 +199,7 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
@@ -219,15 +220,14 @@ final class CoreParagraphTest extends PluginTestCase {
 				'className'       => null,
 				'content'         => 'This is a paragraph with drop cap and custom styles.',
 				'cssClassName'    => 'has-drop-cap',
-				'dropCap'         => true,
+				'dropCap'         => true, // previously untested
 				'direction'       => null,
 				'fontFamily'      => null,
 				'fontSize'        => null,
 				'gradient'        => null,
 				'lock'            => null,
-				'metadata'        => null,
 				'placeholder'     => null,
-				'style'           => wp_json_encode(
+				'style'           => wp_json_encode( // previously untested
 					[
 						'typography' => [
 							'lineHeight'    => '2',
@@ -282,6 +282,7 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
@@ -303,12 +304,11 @@ final class CoreParagraphTest extends PluginTestCase {
 				'content'         => 'This is a right-aligned RTL paragraph with a gradient background.',
 				'cssClassName'    => 'has-text-align-right has-vivid-cyan-blue-to-vivid-purple-gradient-background',
 				'dropCap'         => false,
-				'direction'       => 'rtl',
+				'direction'       => 'rtl', // previously untested
 				'fontFamily'      => null,
 				'fontSize'        => null,
-				'gradient'        => 'vivid-cyan-blue-to-vivid-purple',
+				'gradient'        => 'vivid-cyan-blue-to-vivid-purple', // previously untested
 				'lock'            => null,
-				'metadata'        => null,
 				'placeholder'     => null,
 				'style'           => null,
 				'textColor'       => null,
@@ -350,6 +350,7 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
 		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
@@ -365,9 +366,9 @@ final class CoreParagraphTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'align'           => null,
-				'anchor'          => 'test-anchor',
+				'anchor'          => 'test-anchor', // previously untested
 				'backgroundColor' => null,
-				'className'       => 'custom-class',
+				'className'       => 'custom-class', // previously untested
 				'content'         => 'This is a paragraph with additional attributes.',
 				'cssClassName'    => 'custom-class',
 				'dropCap'         => false,
@@ -375,9 +376,8 @@ final class CoreParagraphTest extends PluginTestCase {
 				'fontFamily'      => null,
 				'fontSize'        => null,
 				'gradient'        => null,
-				'lock'            => '{"move":true,"remove":true}',
-				'metadata'        => '{"someKey":"someValue"}',
-				'placeholder'     => 'Type here...',
+				'lock'            => '{"move":true,"remove":true}', // previously untested
+				'placeholder'     => 'Type here...', // previously untested
 				'style'           => null,
 				'textColor'       => null,
 			],
