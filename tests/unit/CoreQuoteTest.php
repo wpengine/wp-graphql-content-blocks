@@ -363,7 +363,12 @@ final class CoreQuoteTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'value'           => '<p>Sample Quote</p>',
-				'textAlign'       => 'center', // Previously untested.
+				'layout'          => wp_json_encode( // Previously untested.
+					[
+						'type'     => 'flex',
+						'flexWrap' => 'nowrap',
+					]
+				),
 			],
 			$block['attributes'],
 		);
@@ -488,13 +493,13 @@ final class CoreQuoteTest extends PluginTestCase {
 		$this->assertEquals(
 			[
 				'value'           => '<p>Sample Quote</p>',
-				'layout'          => wp_json_encode( // Previously untested.
+				'layout'          => wp_json_encode(
 					[
 						'type'     => 'flex',
 						'flexWrap' => 'nowrap',
 					]
 				),
-				'textAlign'       => 'center',
+				'textAlign'       => 'center', // Previously untested.
 			],
 			$block['attributes'],
 		);
