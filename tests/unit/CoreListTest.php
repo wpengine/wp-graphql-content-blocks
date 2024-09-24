@@ -554,6 +554,68 @@ final class CoreListTest extends PluginTestCase {
 		);
 	}
 
+
+	/**
+	 * Test case for retrieving parentClientId.
+	 *
+	 * Covers : 'parentClientId' attribute.
+	 */
+	public function test_retrieve_core_list_item_parentClientId(): void {
+		$block_content = '
+			<!-- wp:list -->
+				<ul class="wp-block-list">
+					<!-- wp:list-item {"lock":{"move":true,"remove":true},"className":"test-css-class-item-1","fontSize":"large","fontFamily":"heading"} -->
+						<li class="test-css-class-item-1 has-heading-font-family has-large-font-size">List item 1</li>
+					<!-- /wp:list-item -->
+				</ul>
+			<!-- /wp:list -->
+		';
+
+		// Set post content.
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$query     = '
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						clientId
+						innerBlocks {
+							... on CoreListItem {
+								name
+							}
+						}
+						name
+						parentClientId
+					}
+				}
+			}
+		';
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+		$this->assertEquals( 2, count( $actual['data']['post']['editorBlocks'] ) );
+
+		$block = $actual['data']['post']['editorBlocks'][1];
+
+		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
+		$this->assertEquals( 'core/list-item', $block['name'], 'The block name should be core/list' );
+		$this->assertNotEmpty( $block['parentClientId'], 'There should be some parentClientId for the block' );
+	}
+
 	/**
 	 * Test case for retrieving core list item block fields and attributes.
 	 *
