@@ -247,13 +247,135 @@ final class CoreQuoteTest extends PluginTestCase {
 
 
 	/**
-	 * Test case for retrieving core quote block untested attributes.
-	 *
-	 * Covers : 'layout' and 'textAlign'.
+	 * Test case for retrieving core quote block layout attribute.
 	 */
-	public function test_retrieve_core_quote_layout_text_align_attributes(): void {
-		// layout and textAlign are only supported in WP 6.5+.
+	public function test_retrieve_core_quote_layout_attributes(): void {
+		// layout are only supported in WP 6.5+.
 		if ( ! is_wp_version_compatible( '6.5' ) ) {
+			$this->markTestSkipped( 'This test requires WP 6.5 or higher.' );
+		}
+		$block_content = '
+			<!-- wp:quote {"layout":{"type":"flex","flexWrap":"nowrap"},"textAlign":"center"} -->
+			<blockquote class="wp-block-quote" id="test-anchor"><!-- wp:paragraph -->
+			<p>Sample Quote</p>
+			<!-- /wp:paragraph --><cite>Citation</cite></blockquote>
+			<!-- /wp:quote -->
+		';
+
+		// Update the post content with the block content.
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$query     = '
+			fragment CoreQuoteBlockFragment on CoreQuote {
+				innerBlocks {
+					... on CoreParagraph{
+						attributes {
+							content
+						}
+					}
+				}
+				attributes {
+					anchor
+					backgroundColor
+					citation
+					className
+					cssClassName
+					fontFamily
+					fontSize
+					gradient
+					layout
+					lock
+					# metadata
+					style
+					textColor
+					value
+				}
+			}
+
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						innerBlocks {
+							name
+						}
+						isDynamic
+						name
+						parentClientId
+						renderedHtml
+						...CoreQuoteBlockFragment
+					}
+				}
+			}
+		';
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+		error_log( print_r( $actual, true ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
+
+		// Verify the block data.
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertNotEmpty( $block['apiVersion'], 'The apiVersion should be present' );
+		$this->assertEquals( 'text', $block['blockEditorCategoryName'], 'The blockEditorCategoryName should be text' );
+		$this->assertNotEmpty( $block['clientId'], 'The clientId should be present' );
+
+		$this->assertNotEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
+		$this->assertEquals( 1, count( $block['innerBlocks'] ), 'There should be only one inner block' );
+		$this->assertEquals( 'core/paragraph', $block['innerBlocks'][0]['name'], 'The inner block name should be core/paragraph' );
+
+		$this->assertEquals( 'core/quote', $block['name'], 'The block name should be core/quote' );
+		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
+		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
+
+		unset( $block['attributes']['citation'] ); // Tested above.
+		unset( $block['attributes']['className'] ); // Tested above.
+		unset( $block['attributes']['cssClassName'] ); // Tested above.
+
+		unset( $block['attributes']['anchor'] ); // Tested above.
+		unset( $block['attributes']['backgroundColor'] ); // Tested above.
+		unset( $block['attributes']['fontFamily'] ); // Tested above.
+		unset( $block['attributes']['fontSize'] ); // Tested above.
+		unset( $block['attributes']['gradient'] ); // Tested above.
+		unset( $block['attributes']['lock'] ); // Tested above.
+		unset( $block['attributes']['style'] ); // Tested above.
+		unset( $block['attributes']['textColor'] ); // Tested above.
+
+
+		// Verify the attributes.
+		$this->assertEquals(
+			[
+				'value'           => '<p>Sample Quote</p>',
+				'textAlign'       => 'center', // Previously untested.
+			],
+			$block['attributes'],
+		);
+	}
+
+
+	/**
+	 * Test case for retrieving core quote block 'textAlign' attribute.
+	 */
+	public function test_retrieve_core_quote_text_align_attributes(): void {
+		// textAlign is only supported in WP 6.6+.
+		if ( ! is_wp_version_compatible( '6.6' ) ) {
 			$this->markTestSkipped( 'This test requires WP 6.6 or higher.' );
 		}
 		$block_content = '
@@ -372,7 +494,7 @@ final class CoreQuoteTest extends PluginTestCase {
 						'flexWrap' => 'nowrap',
 					]
 				),
-				'textAlign'       => 'center', // Previously untested.
+				'textAlign'       => 'center',
 			],
 			$block['attributes'],
 		);
