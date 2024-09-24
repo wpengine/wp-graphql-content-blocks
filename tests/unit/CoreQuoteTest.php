@@ -272,7 +272,54 @@ final class CoreQuoteTest extends PluginTestCase {
 			]
 		);
 
-		$query     = $this->query();
+		$query     = '
+			fragment CoreQuoteBlockFragment on CoreQuote {
+				innerBlocks {
+					... on CoreParagraph{
+						attributes {
+							content
+						}
+					}
+				}
+				attributes {
+					anchor
+					backgroundColor
+					citation
+					className
+					cssClassName
+					fontFamily
+					fontSize
+					gradient
+					layout
+					lock
+					# metadata
+					style
+					textAlign
+					textColor
+					value
+				}
+			}
+
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						innerBlocks {
+							name
+						}
+						isDynamic
+						name
+						parentClientId
+						renderedHtml
+						...CoreQuoteBlockFragment
+					}
+				}
+			}
+		';
 		$variables = [
 			'id' => $this->post_id,
 		];
