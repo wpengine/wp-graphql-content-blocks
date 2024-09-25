@@ -24,6 +24,7 @@ final class RegistryTestCase extends PluginTestCase {
 
 	public function tearDown(): void {
 		// your tear down methods here
+		delete_option( 'graphql_general_settings' );
 		\WPGraphQL::clear_schema();
 
 		parent::tearDown();

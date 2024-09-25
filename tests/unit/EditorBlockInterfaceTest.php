@@ -11,10 +11,14 @@ final class EditorBlockInterfaceTest extends PluginTestCase {
 		$settings                                 = get_option( 'graphql_general_settings', [] );
 		$settings['public_introspection_enabled'] = 'on';
 		update_option( 'graphql_general_settings', $settings );
+
+		\WPGraphQL::clear_schema();
 	}
 
 	public function tearDown(): void {
 		// your tear down methods here
+		delete_option( 'graphql_general_settings' );
+		\WPGraphQL::clear_schema();
 
 		// then
 		parent::tearDown();

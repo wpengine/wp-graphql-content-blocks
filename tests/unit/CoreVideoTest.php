@@ -9,8 +9,6 @@ final class CoreVideoTest extends PluginTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		global $wpdb;
-
 		$this->post_id = wp_insert_post(
 			[
 				'post_title'   => 'Post Title',
@@ -28,17 +26,19 @@ final class CoreVideoTest extends PluginTestCase {
 				'post_status'  => 'publish',
 			]
 		);
+
+		\WPGraphQL::clear_schema();
 	}
 
 	public function tearDown(): void {
 		// your tear down methods here
-		parent::tearDown();
-
 		wp_delete_post( $this->post_id, true );
+		\WPGraphQL::clear_schema();
+
+		parent::tearDown();
 	}
 
 	public function test_retrieve_core_video_attributes() {
-		$this->markTestSkipped( 'must be revisited since the test is failing on the CI for an unknown reason' );
 		$query  = '	
 			fragment CoreVideoBlockFragment on CoreVideo {
 				attributes {
