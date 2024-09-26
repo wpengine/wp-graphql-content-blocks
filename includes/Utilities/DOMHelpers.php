@@ -165,6 +165,33 @@ final class DOMHelpers {
 	}
 
 	/**
+	 * Gets the tag name of the first node.
+	 *
+	 * @internal This method should only be used internally. There are no guarantees for backwards compatibility.
+	 *
+	 * @param string $html The HTML string to parse.
+	 */
+	public static function get_first_node_tag_name( string $html ): ?string {
+		// Bail early if there's no html to parse.
+		if ( empty( trim( $html ) ) ) {
+			return null;
+		}
+
+		$doc = new Document();
+		$doc->loadHtml( $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+
+		/** @var \DiDom\Element[] $nodes */
+		$nodes = $doc->find( '*' );
+
+		if ( count( $nodes ) === 0 ) {
+			return null;
+		}
+
+		// Lowercase the tag name.
+		return strtolower( $nodes[0]->tagName() );
+	}
+
+	/**
 	 * Parses the html into DOMElement and searches the DOM tree for a given XPath expression or CSS selector.
 	 *
 	 * @param string      $html The HTML string to parse.

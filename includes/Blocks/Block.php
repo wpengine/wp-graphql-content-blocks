@@ -279,9 +279,10 @@ class Block {
 						$name,
 						$prefix
 					),
-					'resolve'     => function ( $attributes ) use ( $name, $default_value ) {
+					'resolve'     => function ( $attributes ) use ( $name, $default_value, $type ) {
 						$value = $attributes[ $name ] ?? $default_value;
-						return $this->normalize_attribute_value( $value, $attributes['__type'][ $name ]['type'] );
+
+						return $this->normalize_attribute_value( $value, $type );
 					},
 				];
 			}
@@ -305,10 +306,11 @@ class Block {
 		}
 
 		switch ( $type ) {
-			case 'rich-text':
 			case 'array':
 				// If we're here, we want an array type, even though the value is not an array.
-				return isset( $value ) ? [ $value ] : [];
+				// @todo This should return null if the value is empty.
+				return ! empty( $value ) ? [ $value ] : [];
+			case 'rich-text':
 			case 'string':
 				return (string) $value;
 			case 'number':
