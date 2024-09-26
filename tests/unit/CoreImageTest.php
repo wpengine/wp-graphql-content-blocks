@@ -259,7 +259,7 @@ final class CoreImageTest extends PluginTestCase {
 				'align'           => 'left',
 				'caption'         => 'Align left',
 				'className'       => 'test-css-class-name',
-				'cssClassName'    => ( ! is_wp_version_compatible( '6.3' ) ) ? 'wp-duotone-varpresetduotonepurple-green-19 wp-block-image size-full is-resized  wp-duotone-purple-green' : 'wp-block-image size-full is-resized', // This uses the old class name for WP < 6.3 which is wp-duotone-varpresetduotonepurple-green-19.
+				'cssClassName'    => ( ! is_wp_version_compatible( '6.3' ) ) ? 'wp-duotone-varpresetduotonepurple-green-19 wp-block-image size-full is-resized' : 'wp-block-image size-full is-resized wp-duotone-purple-green', // This uses the old class name for WP < 6.3 which is wp-duotone-varpresetduotonepurple-green-19.
 				'url'             => 'http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg',
 				'borderColor'     => 'vivid-red',
 				'title'           => 'test-title',
