@@ -46,43 +46,43 @@ final class CoreImageTest extends PluginTestCase {
 
 	public function test_retrieve_core_image_media_details(): void {
 		$block_content = '<!-- wp:image {"lightbox":{"enabled":false},"align":"left","width":500,"height":500,"aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none", "id":' . $this->attachment_id . ',"className":"is-style-rounded", "style":{"color":{"duotone":"var:preset|duotone|purple-green"}},"borderColor":"vivid-red","lock":{"move":true,"remove":true},"className":"test-css-class-name"} -->
-                            <figure class="wp-block-image size-full is-resized" id="test-anchor">
-                            <a class="test-link-css-class" href="http://decoupled.local/dcf-1-0/" target="_blank" rel="https://www.youtube.com/ noreferrer noopener">
-                            <img src="http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg" alt="alt-text" class="wp-image-1432" width="500" height="500" title="test-title"/></figure>
-                            </a>
-                            <figcaption class="wp-element-caption">Align left</figcaption>
-                            <!-- /wp:image -->';
+							<figure class="wp-block-image size-full is-resized" id="test-anchor">
+							<a class="test-link-css-class" href="http://decoupled.local/dcf-1-0/" target="_blank" rel="https://www.youtube.com/ noreferrer noopener">
+							<img src="http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg" alt="alt-text" class="wp-image-1432" width="500" height="500" title="test-title"/></figure>
+							</a>
+							<figcaption class="wp-element-caption">Align left</figcaption>
+							<!-- /wp:image -->';
 
 		$query = '
-            fragment CoreImageBlockFragment on CoreImage {
-                attributes {
-                    id
-                }
-                mediaDetails {
-                    height
-                    width
-                }
-            }
-            
-            query Post( $id: ID! ) {
-                post(id: $id, idType: DATABASE_ID) {
-                    editorBlocks {
-                        # databaseId
-                        apiVersion
-                        blockEditorCategoryName
-                        clientId
-                        cssClassNames
-                        name
-                        innerBlocks {
-                            name
-                        }
-                        parentClientId
-                        renderedHtml
-                        ...CoreImageBlockFragment
-                    }
-                }
-            }
-        ';
+			fragment CoreImageBlockFragment on CoreImage {
+				attributes {
+					id
+				}
+				mediaDetails {
+					height
+					width
+				}
+			}
+		
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					editorBlocks {
+						# databaseId
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						name
+						innerBlocks {
+							name
+						}
+						parentClientId
+						renderedHtml
+						...CoreImageBlockFragment
+					}
+				}
+			}
+		';
 
 		// Set post content.
 		wp_update_post(
@@ -136,62 +136,62 @@ final class CoreImageTest extends PluginTestCase {
 	public function test_retrieve_core_image_attributes(): void {
 
 		$block_content = '<!-- wp:image {"lightbox":{"enabled":false},"align":"left","width":500,"height":500,"aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none", "id":' . $this->attachment_id . ',"className":"is-style-rounded", "style":{"color":{"duotone":"var:preset|duotone|purple-green"}},"borderColor":"vivid-red","lock":{"move":true,"remove":true},"className":"test-css-class-name"} -->
-                            <figure class="wp-block-image size-full is-resized" id="test-anchor">
-                            <a class="test-link-css-class" href="http://decoupled.local/dcf-1-0/" target="_blank" rel="https://www.youtube.com/ noreferrer noopener">
-                            <img src="http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg" alt="alt-text" class="wp-image-1432" width="500" height="500" title="test-title"/></figure>
-                            </a>
-                            <figcaption class="wp-element-caption">Align left</figcaption>
-                            <!-- /wp:image -->';
+							<figure class="wp-block-image size-full is-resized" id="test-anchor">
+							<a class="test-link-css-class" href="http://decoupled.local/dcf-1-0/" target="_blank" rel="https://www.youtube.com/ noreferrer noopener">
+							<img src="http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg" alt="alt-text" class="wp-image-1432" width="500" height="500" title="test-title"/></figure>
+							</a>
+							<figcaption class="wp-element-caption">Align left</figcaption>
+							<!-- /wp:image -->';
 
 		$query = '
-            fragment CoreImageBlockFragment on CoreImage {
-                attributes {
-                    id
-                    width
-                    height
-                    alt
-                    align
-                    src
-                    style
-                    sizeSlug
-                    # lightbox # not supported yet
-                    # aspectRatio # not supported yet
-                    # scale # not supported yet
-                    linkClass
-                    linkTarget
-                    linkDestination
-                    borderColor
-                    caption
-                    className
-                    cssClassName
-                    url
-                    rel
-                    href
-                    title
-                    lock
-                    anchor
-                }
-            }
-            
-            query Post( $id: ID! ) {
-                post(id: $id, idType: DATABASE_ID) {
-                    databaseId
-                    editorBlocks {
-                        apiVersion
-                        blockEditorCategoryName
-                        clientId
-                        cssClassNames
-                        innerBlocks {
-                            name
-                        }
-                        parentClientId
-                        renderedHtml
-                        name
-                        ...CoreImageBlockFragment
-                    }
-                }
-            }
-        ';
+			fragment CoreImageBlockFragment on CoreImage {
+				attributes {
+					id
+					width
+					height
+					alt
+					align
+					src
+					style
+					sizeSlug
+					# lightbox # not supported yet
+					# aspectRatio # not supported yet
+					# scale # not supported yet
+					linkClass
+					linkTarget
+					linkDestination
+					borderColor
+					caption
+					className
+					cssClassName
+					url
+					rel
+					href
+					title
+					lock
+					anchor
+				}
+			}
+
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						apiVersion
+						blockEditorCategoryName
+						clientId
+						cssClassNames
+						innerBlocks {
+							name
+						}
+						parentClientId
+						renderedHtml
+						name
+						...CoreImageBlockFragment
+					}
+				}
+			}
+		';
 
 		// Set post content.
 		wp_update_post(
@@ -259,7 +259,7 @@ final class CoreImageTest extends PluginTestCase {
 				'align'           => 'left',
 				'caption'         => 'Align left',
 				'className'       => 'test-css-class-name',
-				'cssClassName'    => ( ! is_wp_version_compatible( '6.3' ) ) ? 'wp-duotone-varpresetduotonepurple-green-19 wp-block-image size-full is-resized  wp-duotone-purple-green' : 'wp-block-image size-full is-resized wp-duotone-purple-green', // This uses the old class name for WP < 6.3 which is wp-duotone-varpresetduotonepurple-green-19.
+				'cssClassName'    => ( ! is_wp_version_compatible( '6.3' ) ) ? 'wp-duotone-varpresetduotonepurple-green-19 wp-block-image size-full is-resized  wp-duotone-purple-green' : 'wp-block-image size-full is-resized', // This uses the old class name for WP < 6.3 which is wp-duotone-varpresetduotonepurple-green-19.
 				'url'             => 'http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg',
 				'borderColor'     => 'vivid-red',
 				'title'           => 'test-title',
