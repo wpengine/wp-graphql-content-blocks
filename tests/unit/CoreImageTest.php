@@ -96,8 +96,22 @@ final class CoreImageTest extends PluginTestCase {
 		';
 	}
 
+	/**
+	 * Test that the CoreImage block is retrieved correctly.
+	 * 
+	 * Covers the following attributes:
+	 * - apiVersion
+	 * - blockEditorCategoryName
+	 * - clientId
+	 * - cssClassNames
+	 * - innerBlocks
+	 * - name
+	 * - parentClientId
+	 * - renderedHtml
+	 * - attributes
+	 * 
+	 */
 	public function test_retrieve_core_image_fields_attributes(): void {
-
 		$block_content = '
 			<!-- wp:image {"align":"left","id":' . $this->attachment_id . ',"className":"test-css-class-name"} -->
 				<figure class="wp-block-image">
@@ -107,7 +121,7 @@ final class CoreImageTest extends PluginTestCase {
 
 		$query = $this->query();
 
-		// Set post content.
+		// Update the post content with the block content.
 		wp_update_post(
 			[
 				'ID'           => $this->post_id,
@@ -175,6 +189,14 @@ final class CoreImageTest extends PluginTestCase {
 		);
 	}
 
+	/**
+	 * Test that the CoreImage block mediaDetails are retrieved correctly.
+	 * 
+	 * Covers the following attributes:
+	 * - height
+	 * - width
+	 * 
+	 */
 	public function test_retrieve_core_image_media_details(): void {
 		$block_content = '
 			<!-- wp:image {"lightbox":{"enabled":false},"align":"left","width":500,"height":500,"aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none", "id":' . $this->attachment_id . ',"className":"is-style-rounded", "style":{"color":{"duotone":"var:preset|duotone|purple-green"}},"borderColor":"vivid-red","lock":{"move":true,"remove":true},"className":"test-css-class-name"} -->
@@ -211,7 +233,7 @@ final class CoreImageTest extends PluginTestCase {
 			}
 		';
 
-		// Set post content.
+		// Update the post content with the block content.
 		wp_update_post(
 			[
 				'ID'           => $this->post_id,
@@ -234,13 +256,39 @@ final class CoreImageTest extends PluginTestCase {
 
 		$this->assertEquals(
 			[
-				'width'  => 50,
-				'height' => 50,
+				'width'  => 50, // Previously untested.
+				'height' => 50, // Previously untested.
 			],
 			$block['mediaDetails']
 		);
 	}
 
+	/**
+	 * Test that the CoreImage block attributes are retrieved correctly.
+	 * 
+	 * Covers the following attributes:
+	 * - width
+	 * - height
+	 * - alt
+	 * - id
+	 * - src
+	 * - style
+	 * - sizeSlug
+	 * - linkClass
+	 * - linkTarget
+	 * - linkDestination
+	 * - align
+	 * - caption
+	 * - className
+	 * - url
+	 * - borderColor
+	 * - title
+	 * - lock
+	 * - anchor
+	 * - rel
+	 * - href
+	 * 
+	 */
 	public function test_retrieve_core_image_attributes(): void {
 
 		$block_content = '
@@ -254,7 +302,7 @@ final class CoreImageTest extends PluginTestCase {
 
 		$query = $this->query();
 
-		// Set post content.
+		// Update the post content with the block content.
 		wp_update_post(
 			[
 				'ID'           => $this->post_id,
@@ -269,7 +317,6 @@ final class CoreImageTest extends PluginTestCase {
 
 		$actual = graphql( compact( 'query', 'variables' ) );
 
-		// error_log( print_r( $actual, true ) );
 		$node = $actual['data']['post'];
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
@@ -284,7 +331,7 @@ final class CoreImageTest extends PluginTestCase {
 		$this->assertStringContainsString( 'is-resized', $block['attributes']['cssClassName'] );
 		unset( $block['attributes']['cssClassName'] );
 
-		$this->assertEquals(
+		$this->assertEquals( // Previously untested.
 			[
 				'width'           => '500',
 				'height'          => 500.0,
