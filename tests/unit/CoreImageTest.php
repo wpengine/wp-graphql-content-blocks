@@ -3,7 +3,6 @@
 namespace WPGraphQL\ContentBlocks\Unit;
 
 final class CoreImageTest extends PluginTestCase {
-	public $instance;
 
 	/**
 	 * The ID of the post created for the test.
@@ -48,7 +47,7 @@ final class CoreImageTest extends PluginTestCase {
 	 *
 	 * @param string $attributes The attributes to add to query.
 	 */
-	public function query( $attributes = '' ): string {
+	public function query(): string {
 		return '
 			fragment CoreImageBlockFragment on CoreImage {
 				attributes {
@@ -60,7 +59,6 @@ final class CoreImageTest extends PluginTestCase {
 					src
 					style
 					sizeSlug
-					' . $attributes . '
 					linkClass
 					linkTarget
 					linkDestination
