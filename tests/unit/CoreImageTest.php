@@ -38,10 +38,9 @@ final class CoreImageTest extends PluginTestCase {
 	public function tearDown(): void {
 		// your tear down methods here
 		wp_delete_post( $this->post_id, true );
+		\WPGraphQL::clear_schema();
 
 		parent::tearDown();
-
-		\WPGraphQL::clear_schema();
 	}
 
 	public function query() {
