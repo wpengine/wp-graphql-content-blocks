@@ -43,7 +43,12 @@ final class CoreImageTest extends PluginTestCase {
 		parent::tearDown();
 	}
 
-	public function query() {
+	/**
+	 * Get the query for the CoreImage block.
+	 *
+	 * @param string $attributes The attributes to add to query.
+	 */
+	public function query( $attributes = '' ): string {
 		return '
 			fragment CoreImageBlockFragment on CoreImage {
 				attributes {
@@ -55,9 +60,7 @@ final class CoreImageTest extends PluginTestCase {
 					src
 					style
 					sizeSlug
-					# lightbox # not supported yet
-					# aspectRatio # not supported yet
-					# scale # not supported yet
+					' . $attributes . '
 					linkClass
 					linkTarget
 					linkDestination
@@ -97,7 +100,7 @@ final class CoreImageTest extends PluginTestCase {
 
 	/**
 	 * Test that the CoreImage block is retrieved correctly.
-	 * 
+	 *
 	 * Covers the following attributes:
 	 * - apiVersion
 	 * - blockEditorCategoryName
@@ -108,7 +111,6 @@ final class CoreImageTest extends PluginTestCase {
 	 * - parentClientId
 	 * - renderedHtml
 	 * - attributes
-	 * 
 	 */
 	public function test_retrieve_core_image_fields_attributes(): void {
 		$block_content = '
@@ -128,7 +130,6 @@ final class CoreImageTest extends PluginTestCase {
 			]
 		);
 
-		$query     = $query;
 		$variables = [
 			'id' => $this->post_id,
 		];
@@ -190,11 +191,10 @@ final class CoreImageTest extends PluginTestCase {
 
 	/**
 	 * Test that the CoreImage block mediaDetails are retrieved correctly.
-	 * 
+	 *
 	 * Covers the following attributes:
 	 * - height
 	 * - width
-	 * 
 	 */
 	public function test_retrieve_core_image_media_details(): void {
 		$block_content = '
@@ -264,7 +264,7 @@ final class CoreImageTest extends PluginTestCase {
 
 	/**
 	 * Test that the CoreImage block attributes are retrieved correctly.
-	 * 
+	 *
 	 * Covers the following attributes:
 	 * - width
 	 * - height
@@ -286,7 +286,6 @@ final class CoreImageTest extends PluginTestCase {
 	 * - anchor
 	 * - rel
 	 * - href
-	 * 
 	 */
 	public function test_retrieve_core_image_attributes(): void {
 
@@ -309,14 +308,11 @@ final class CoreImageTest extends PluginTestCase {
 			]
 		);
 
-		$query     = $query;
 		$variables = [
 			'id' => $this->post_id,
 		];
 
 		$actual = graphql( compact( 'query', 'variables' ) );
-
-		$node = $actual['data']['post'];
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
@@ -368,5 +364,114 @@ final class CoreImageTest extends PluginTestCase {
 			],
 			$block['attributes']
 		);
+	}
+
+	/**
+	 * Test that the CoreImage block previously untested attributes are retrieved correctly.
+	 *
+	 * Covers the following attributes:
+	 * - aspectRatio
+	 * - scale
+	 * - lightbox
+	 */
+	public function test_retrieve_core_untested_attributes(): void {
+		$block_content = '
+			<!-- wp:image {"lightbox":{"enabled":false},"align":"left","width":500,"height":500,"aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none", "id":' . $this->attachment_id . ',"className":"is-style-rounded", "style":{"color":{"duotone":"var:preset|duotone|purple-green"}},"borderColor":"vivid-red","lock":{"move":true,"remove":true},"className":"test-css-class-name"} -->
+				<figure class="wp-block-image size-full is-resized" id="test-anchor">
+					<a class="test-link-css-class" href="http://decoupled.local/dcf-1-0/" target="_blank" rel="https://www.youtube.com/ noreferrer noopener">
+						<img src="http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg" alt="alt-text" class="wp-image-1432" width="500" height="500" title="test-title"/></figure>
+					</a>
+				<figcaption class="wp-element-caption">Align left</figcaption>
+			<!-- /wp:image -->';
+
+		// Update the post content with the block content.
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		// `aspectRatio` is only supported in WP 6.3+.
+		if ( is_wp_version_compatible( '6.3' ) ) {
+			$query = '
+			fragment CoreImageBlockFragment on CoreImage {
+				attributes {
+					aspectRatio
+					scale
+				}
+			}
+
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						name
+						...CoreImageBlockFragment
+					}
+				}
+			}';
+
+			$actual = graphql( compact( 'query', 'variables' ) );
+
+			$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+			$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+			$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+			$block = $actual['data']['post']['editorBlocks'][0];
+
+			$this->assertEquals(
+				[
+					'aspectRatio' => '4/3', // Previously untested.
+					'scale'       => 'cover', // Previously untested.
+
+				],
+				$block['attributes']
+			);
+		}
+
+		// `lightbox` is only supported in WP 6.4+.
+		if ( is_wp_version_compatible( '6.4' ) ) {
+			$query = '
+			fragment CoreImageBlockFragment on CoreImage {
+				attributes {
+					lightbox
+				}
+			}
+
+			query Post( $id: ID! ) {
+				post(id: $id, idType: DATABASE_ID) {
+					databaseId
+					editorBlocks {
+						name
+						...CoreImageBlockFragment
+					}
+				}
+			}';
+
+			$actual = graphql( compact( 'query', 'variables' ) );
+
+			$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+			$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+			$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+			$block = $actual['data']['post']['editorBlocks'][0];
+
+			$this->assertEquals(
+				[
+					'lightbox' => wp_json_encode( // Previously untested.
+						[
+							'enabled' => false,
+						]
+					),
+
+				],
+				$block['attributes']
+			);
+		}
 	}
 }
