@@ -370,9 +370,13 @@ final class CoreImageTest extends PluginTestCase {
 	 * Covers the following attributes:
 	 * - aspectRatio
 	 * - scale
-	 * - lightbox
 	 */
-	public function test_retrieve_core_untested_attributes(): void {
+	public function test_retrieve_core_aspectratio_scale_attributes(): void {
+		// `aspectRatio` and `scale` are only supported in WP 6.3+.
+		if ( ! is_wp_version_compatible( '6.3' ) ) {
+			$this->markTestSkipped( 'The aspectRatio and scale attributes are only supported in WP 6.3+' );
+		}
+
 		$block_content = '
 			<!-- wp:image {"lightbox":{"enabled":false},"align":"left","width":500,"height":500,"aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none", "id":' . $this->attachment_id . ',"className":"is-style-rounded", "style":{"color":{"duotone":"var:preset|duotone|purple-green"}},"borderColor":"vivid-red","lock":{"move":true,"remove":true},"className":"test-css-class-name"} -->
 				<figure class="wp-block-image size-full is-resized" id="test-anchor">
@@ -394,82 +398,110 @@ final class CoreImageTest extends PluginTestCase {
 			'id' => $this->post_id,
 		];
 
-		// `aspectRatio` is only supported in WP 6.3+.
-		if ( is_wp_version_compatible( '6.3' ) ) {
-			$query = '
-			fragment CoreImageBlockFragment on CoreImage {
-				attributes {
-					aspectRatio
-					scale
-				}
+		$query = '
+		fragment CoreImageBlockFragment on CoreImage {
+			attributes {
+				aspectRatio
+				scale
 			}
-
-			query Post( $id: ID! ) {
-				post(id: $id, idType: DATABASE_ID) {
-					databaseId
-					editorBlocks {
-						name
-						...CoreImageBlockFragment
-					}
-				}
-			}';
-
-			$actual = graphql( compact( 'query', 'variables' ) );
-
-			$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
-			$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
-			$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
-
-			$block = $actual['data']['post']['editorBlocks'][0];
-
-			$this->assertEquals(
-				[
-					'aspectRatio' => '4/3', // Previously untested.
-					'scale'       => 'cover', // Previously untested.
-
-				],
-				$block['attributes']
-			);
 		}
 
+		query Post( $id: ID! ) {
+			post(id: $id, idType: DATABASE_ID) {
+				databaseId
+				editorBlocks {
+					name
+					...CoreImageBlockFragment
+				}
+			}
+		}';
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$block = $actual['data']['post']['editorBlocks'][0];
+
+		$this->assertEquals(
+			[
+				'aspectRatio' => '4/3', // Previously untested.
+				'scale'       => 'cover', // Previously untested.
+
+			],
+			$block['attributes']
+		);
+	}
+
+	/**
+	 * Test that the CoreImage block previously untested attributes are retrieved correctly.
+	 *
+	 * Covers the following attributes:
+	 * - lightbox
+	 */
+	public function test_retrieve_core_lightbox_attribute(): void {
 		// `lightbox` is only supported in WP 6.4+.
-		if ( is_wp_version_compatible( '6.4' ) ) {
-			$query = '
-			fragment CoreImageBlockFragment on CoreImage {
-				attributes {
-					lightbox
+		if ( ! is_wp_version_compatible( '6.4' ) ) {
+			$this->markTestSkipped( 'The lightbox attribute is only supported in WP 6.4+' );
+		}
+
+		$block_content = '
+			<!-- wp:image {"lightbox":{"enabled":false},"align":"left","width":500,"height":500,"aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none", "id":' . $this->attachment_id . ',"className":"is-style-rounded", "style":{"color":{"duotone":"var:preset|duotone|purple-green"}},"borderColor":"vivid-red","lock":{"move":true,"remove":true},"className":"test-css-class-name"} -->
+				<figure class="wp-block-image size-full is-resized" id="test-anchor">
+					<a class="test-link-css-class" href="http://decoupled.local/dcf-1-0/" target="_blank" rel="https://www.youtube.com/ noreferrer noopener">
+						<img src="http://mysite.local/wp-content/uploads/2023/05/online-programming-course-hero-section-bg.svg" alt="alt-text" class="wp-image-1432" width="500" height="500" title="test-title"/></figure>
+					</a>
+				<figcaption class="wp-element-caption">Align left</figcaption>
+			<!-- /wp:image -->';
+
+		// Update the post content with the block content.
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		$query = '
+		fragment CoreImageBlockFragment on CoreImage {
+			attributes {
+				lightbox
+			}
+		}
+
+		query Post( $id: ID! ) {
+			post(id: $id, idType: DATABASE_ID) {
+				databaseId
+				editorBlocks {
+					name
+					...CoreImageBlockFragment
 				}
 			}
+		}';
 
-			query Post( $id: ID! ) {
-				post(id: $id, idType: DATABASE_ID) {
-					databaseId
-					editorBlocks {
-						name
-						...CoreImageBlockFragment
-					}
-				}
-			}';
+		$actual = graphql( compact( 'query', 'variables' ) );
 
-			$actual = graphql( compact( 'query', 'variables' ) );
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
 
-			$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
-			$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
-			$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+		$block = $actual['data']['post']['editorBlocks'][0];
 
-			$block = $actual['data']['post']['editorBlocks'][0];
+		$this->assertEquals(
+			[
+				'lightbox' => wp_json_encode( // Previously untested.
+					[
+						'enabled' => false,
+					]
+				),
 
-			$this->assertEquals(
-				[
-					'lightbox' => wp_json_encode( // Previously untested.
-						[
-							'enabled' => false,
-						]
-					),
-
-				],
-				$block['attributes']
-			);
-		}
+			],
+			$block['attributes']
+		);
 	}
 }
