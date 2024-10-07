@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.6.2
-Stable tag: 4.2.0
+Stable tag: 4.3.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,6 +24,29 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.3.0 =
+
+### Minor Changes
+
+- d123b81: dev: Refactor attribute resolution into `Data\BlockAttributeResolver`
+- d123b81: feat: add support for parsing (deprecated) `meta` attributes.
+
+### Patch Changes
+
+- 96bad40: tests: fix `setUp()`/`tearDown()` methods to prevent PHPUnit lifecycle issues.
+- f898d61: tests : Add tests for `CoreList` and `CoreListItem` blocks.
+- 3b32f06: tests : Backfill tests for Core Image block.
+- 7301ed9: tests: Add tests for CoreHeading block
+- d4d7374: tests : Backfill tests for Core Video block.
+- 3a1157b: fix: Correctly parse nested attribute and tag sources.
+- 8b2e168: tests : Add tests for `CoreSeparator` block.
+- 962081d: tests: Add tests for CoreParagraph block
+- 5915c06: tests: Add tests for CorePreformatted Block
+- 3a1157b: tests: backfill tests for `CoreTable` attributes.
+- a02e75a: tests: Add tests for CoreCode Block
+- c6bdab0: tests : Add tests for `CoreQuote` block.
+- a38e479: tests : backfill tests for ContentBlockResolver
 
 = 4.2.0 =
 
@@ -64,13 +87,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 - 2b947dc: chore: update Composer dev-dependencies and fix resulting issues.
 - 205da8c: ci: replace `docker-compose` commands with `docker compose`
 - 5c21ce3: Bug fix. Reusable block isn't resolved inside innerBlocks.
-
-= 4.0.1 =
-
-### Patch Changes
-
-- 39e8181: Bug fix: CoreTable column alignment returns null
-- 8d8ce66: fix: refactor `Block::resolve_block_attributes_recursive()` and improve type safety
-- a910d62: fix: Don't overload `NodeWithEditorBlocks.flat` on implementing Interfaces.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
