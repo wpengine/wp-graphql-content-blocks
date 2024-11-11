@@ -23,7 +23,7 @@ async function versionPlugin() {
   const changelog = path.join(pluginPath, "CHANGELOG.md");
   const constantsFile = path.join(
     pluginPath,
-    "includes/WPGraphQLContentBlocks.php"
+    "wp-graphql-content-blocks.php"
   );
 
   const version = await getNewVersion(pluginPath);
