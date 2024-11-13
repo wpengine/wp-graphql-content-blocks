@@ -43,7 +43,7 @@ if ( ! function_exists( 'wpgraphql_content_blocks_constants' ) ) {
 			define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH', plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE ) );
 		}
 		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION' ) ) {
-			define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '4.2.0' );
+			define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '4.3.0' );
 		}
 	}
 }
