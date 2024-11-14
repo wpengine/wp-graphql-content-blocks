@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.6.2
-Stable tag: 4.3.0
+Stable tag: 4.3.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,6 +24,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.3.1 =
+
+### Patch Changes
+
+- f99f768: Correct version definition
 
 = 4.3.0 =
 
@@ -68,24 +74,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 - 4f4b851: tests: fix order of expected/actual values passed to asserts.
 - 89b6c60: tests: lint and format PHPUnit tests
 - 65f0c2d: Update @since @todo tags and @todo placeholders in \_deprecated_function calls
-
-= 4.1.0 =
-
-### Minor Changes
-
-- 6241c4e: fix: prevent fatal errors by improving type-safety and returning early when parsing HTML.
-  The following methods have been deprecated for their stricter-typed counterparts:
-  - `DOMHelpers::parseAttribute()` => `::parse_attribute()`
-  - `DOMHelpers::parseFirstNodeAttribute()` => `::parse_first_node_attribute()`
-  - `DOMHelpers::parseHTML()` => `::parse_html()`
-  - `DOMHelpers::getElementsFromHTML()` => `::get_elements_from_html()`
-  - `DOMHelpers::parseText()` => `::parse_text()`
-  - `DOMHelpers::findNodes()`=> `::find_nodes()`
-
-### Patch Changes
-
-- 2b947dc: chore: update Composer dev-dependencies and fix resulting issues.
-- 205da8c: ci: replace `docker-compose` commands with `docker compose`
-- 5c21ce3: Bug fix. Reusable block isn't resolved inside innerBlocks.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
