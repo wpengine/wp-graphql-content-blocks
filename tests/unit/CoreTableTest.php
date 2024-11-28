@@ -85,6 +85,7 @@ final class CoreTableTest extends PluginTestCase {
 						name
 						parentClientId
 						renderedHtml
+						type
 						... on BlockWithSupportsAnchor {
 							anchor
 						}
@@ -145,6 +146,7 @@ final class CoreTableTest extends PluginTestCase {
 
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/table', $block['name'], 'The block name should be core/table' );
+		$this->assertEquals( 'CoreTable', $block['type'], 'The block type should be CoreTable' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 

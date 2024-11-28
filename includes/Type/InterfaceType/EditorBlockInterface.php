@@ -141,6 +141,9 @@ final class EditorBlockInterface {
 					'type'                    => [
 						'type'        => 'String',
 						'description' => __( 'The (GraphQL) type of the block', 'wp-graphql-content-blocks' ),
+						'resolve'     => static function ( $block ) {
+							return WPGraphQLHelpers::get_type_name_for_block( $block['blockName'] ?? null );
+						},
 					],
 				],
 				'resolveType'     => static function ( $block ) {

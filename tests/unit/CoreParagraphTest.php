@@ -80,6 +80,7 @@ final class CoreParagraphTest extends PluginTestCase {
 						name
 						parentClientId
 						renderedHtml
+						type
 						... on BlockWithSupportsAnchor {
 							anchor
 						}
@@ -141,6 +142,7 @@ final class CoreParagraphTest extends PluginTestCase {
 
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+		$this->assertEquals( 'CoreParagraph', $block['type'], 'The block type should be CoreParagraph' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
@@ -210,6 +212,7 @@ final class CoreParagraphTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+		$this->assertEquals( 'CoreParagraph', $block['type'], 'The block type should be CoreParagraph' );
 
 		$attributes = $block['attributes'];
 		$this->assertEquals(
@@ -293,6 +296,7 @@ final class CoreParagraphTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+		$this->assertEquals( 'CoreParagraph', $block['type'], 'The block type should be CoreParagraph' );
 
 		$attributes = $block['attributes'];
 		$this->assertEquals(
@@ -360,6 +364,7 @@ final class CoreParagraphTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/paragraph', $block['name'], 'The block name should be core/paragraph' );
+		$this->assertEquals( 'CoreParagraph', $block['type'], 'The block type should be CoreParagraph' );
 
 		$attributes = $block['attributes'];
 		$this->assertEquals(

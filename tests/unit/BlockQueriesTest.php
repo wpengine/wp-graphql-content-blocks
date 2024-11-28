@@ -56,6 +56,7 @@ final class BlockQueriesTest extends PluginTestCase {
 					databaseId
 					editorBlocks(flat: false) {
 						name
+						type
 					}
 				}
 			}
@@ -70,6 +71,7 @@ final class BlockQueriesTest extends PluginTestCase {
 		// There should be only one block using that query when not using flat: true
 		$this->assertEquals( 1, count( $node['editorBlocks'] ) );
 		$this->assertEquals( 'core/columns', $node['editorBlocks'][0]['name'] );
+		$this->assertEquals( 'CoreColumns', $node['editorBlocks'][0]['type'] );
 	}
 
 	public function test_retrieve_flatten_editor_blocks() {
@@ -79,8 +81,9 @@ final class BlockQueriesTest extends PluginTestCase {
 				nodes {
 					databaseId
 					editorBlocks(flat: true) {
-							name
-							parentClientId
+						name
+						parentClientId
+						type
 					}
 				}
 			}
@@ -97,18 +100,23 @@ final class BlockQueriesTest extends PluginTestCase {
 		$this->assertEquals( 5, count( $node['editorBlocks'] ) );
 
 		$this->assertEquals( 'core/columns', $node['editorBlocks'][0]['name'] );
+		$this->assertEquals( 'CoreColumns', $node['editorBlocks'][0]['type'] );
 		$this->assertNull( $node['editorBlocks'][0]['parentClientId'] );
 
 		$this->assertEquals( 'core/column', $node['editorBlocks'][1]['name'] );
+		$this->assertEquals( 'CoreColumn', $node['editorBlocks'][1]['type'] );
 		$this->assertNotNull( $node['editorBlocks'][1]['parentClientId'] );
 
 		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][2]['name'] );
+		$this->assertEquals( 'CoreParagraph', $node['editorBlocks'][2]['type'] );
 		$this->assertNotNull( $node['editorBlocks'][2]['parentClientId'] );
 
 		$this->assertEquals( 'core/column', $node['editorBlocks'][3]['name'] );
+		$this->assertEquals( 'CoreColumn', $node['editorBlocks'][3]['type'] );
 		$this->assertNotNull( $node['editorBlocks'][3]['parentClientId'] );
 
 		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][4]['name'] );
+		$this->assertEquals( 'CoreParagraph', $node['editorBlocks'][4]['type'] );
 		$this->assertNotNull( $node['editorBlocks'][4]['parentClientId'] );
 	}
 }

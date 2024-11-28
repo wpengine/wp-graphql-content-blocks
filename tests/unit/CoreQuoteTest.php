@@ -73,6 +73,7 @@ final class CoreQuoteTest extends PluginTestCase {
 						isDynamic
 						name
 						parentClientId
+						type
 						renderedHtml
 						...CoreQuoteBlockFragment
 					}
@@ -126,6 +127,7 @@ final class CoreQuoteTest extends PluginTestCase {
 
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/quote', $block['name'], 'The block name should be core/quote' );
+		$this->assertEquals( 'CoreQuote', $block['type'], 'The block type should be CoreQuote' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
@@ -201,6 +203,7 @@ final class CoreQuoteTest extends PluginTestCase {
 		$this->assertEquals( 'core/paragraph', $block['innerBlocks'][0]['name'], 'The inner block name should be core/paragraph' );
 
 		$this->assertEquals( 'core/quote', $block['name'], 'The block name should be core/quote' );
+		$this->assertEquals( 'CoreQuote', $block['type'], 'The block type should be CoreQuote' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
