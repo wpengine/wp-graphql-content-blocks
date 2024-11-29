@@ -64,18 +64,18 @@ final class ContentBlocksResolver {
 			return [];
 		}
 
-		// Parse the blocks from HTML comments to an array of blocks
+		// Parse the blocks from HTML comments to an array of blocks.
 		$parsed_blocks = self::parse_blocks( $content );
 		if ( empty( $parsed_blocks ) ) {
 			return [];
 		}
 
-		// Flatten block list here if requested or if 'flat' value is not selected (default)
+		// Flatten block list here if requested or if 'flat' value is not selected (default).
 		if ( ! isset( $args['flat'] ) || 'true' == $args['flat'] ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			$parsed_blocks = self::flatten_block_list( $parsed_blocks );
 		}
 
-		// Final level of filtering out blocks not in the allowed list
+		// Final level of filtering out blocks not in the allowed list.
 		$parsed_blocks = self::filter_allowed_blocks( $parsed_blocks, $allowed_block_names );
 
 		/**
@@ -124,7 +124,7 @@ final class ContentBlocksResolver {
 		}
 
 		// Remove empty blocks.
-		return array_filter( $parsed );
+		return array_values( array_filter( $parsed ) );
 	}
 
 	/**
@@ -170,10 +170,13 @@ final class ContentBlocksResolver {
 			return false;
 		}
 
-		// @todo add more checks and avoid using render_block().
+		// If there is no innerHTML and no innerContent, we can consider it empty.
+		if ( empty( $block['innerHTML'] ) && empty( $block['innerContent'] ) ) {
+			return true;
+		}
 
-		// Strip empty comments and spaces
-		$stripped = preg_replace( '/<!--(.*)-->/Uis', '', render_block( $block ) );
+		// Strip empty comments and spaces to see if `innerHTML` is truly empty.
+		$stripped = preg_replace( '/<!--(.*)-->/Uis', '', $block['innerHTML'] );
 
 		return empty( trim( $stripped ?? '' ) );
 	}
@@ -208,7 +211,9 @@ final class ContentBlocksResolver {
 	/**
 	 * Flattens a list blocks into a single array
 	 *
-	 * @param array $blocks A list of blocks to flatten.
+	 * @param array<string,mixed> $blocks A list of blocks to flatten.
+	 *
+	 * @return array<string,mixed> The flattened list of blocks.
 	 */
 	private static function flatten_block_list( $blocks ): array {
 		$result = [];
@@ -222,6 +227,8 @@ final class ContentBlocksResolver {
 	 * Flattens a block and its inner blocks into a single while attaching unique clientId's
 	 *
 	 * @param array<string,mixed> $block A parsed block.
+	 *
+	 * @return array<string,mixed> The flattened block.
 	 */
 	private static function flatten_inner_blocks( $block ): array {
 		$result = [];
@@ -237,6 +244,7 @@ final class ContentBlocksResolver {
 			$result = array_merge( $result, self::flatten_inner_blocks( $child ) );
 		}
 
+		/** @var array<string,mixed> $result */
 		return $result;
 	}
 
@@ -245,6 +253,8 @@ final class ContentBlocksResolver {
 	 *
 	 * @param array<string,mixed> $blocks A list of blocks to filter.
 	 * @param string[]            $allowed_block_names The list of allowed block names to filter.
+	 *
+	 * @return array<string,mixed> The filtered list of blocks.
 	 */
 	private static function filter_allowed_blocks( array $blocks, array $allowed_block_names ): array {
 		if ( empty( $allowed_block_names ) ) {
