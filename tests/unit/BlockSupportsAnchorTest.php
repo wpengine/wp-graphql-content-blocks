@@ -112,6 +112,7 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 				nodes {
 					editorBlocks {
 						name
+						type
 						... on BlockWithSupportsAnchor {
 							anchor
 						}
@@ -124,15 +125,19 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 
 		$this->assertEquals( 4, count( $node['editorBlocks'] ) );
 		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][0]['name'] );
+		$this->assertEquals( 'CoreParagraph', $node['editorBlocks'][0]['type'] );
 		$this->assertEquals( 'example', $node['editorBlocks'][0]['anchor'] );
 
 		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][1]['name'] );
+		$this->assertEquals( 'CoreParagraph', $node['editorBlocks'][1]['type'] );
 		$this->assertNull( $node['editorBlocks'][1]['anchor'] );
 
 		$this->assertEquals( 'core/group', $node['editorBlocks'][2]['name'] );
+		$this->assertEquals( 'CoreGroup', $node['editorBlocks'][2]['type'] );
 		$this->assertNull( $node['editorBlocks'][2]['anchor'] );
 
 		$this->assertEquals( 'core/paragraph', $node['editorBlocks'][3]['name'] );
+		$this->assertEquals( 'CoreParagraph', $node['editorBlocks'][3]['type'] );
 		$this->assertEquals( 'example-inner', $node['editorBlocks'][3]['anchor'] );
 	}
 }

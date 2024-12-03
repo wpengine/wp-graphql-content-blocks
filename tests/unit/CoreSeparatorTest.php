@@ -64,6 +64,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 						name
 						parentClientId
 						renderedHtml
+						type
 						...CoreSeparatorBlockFragment
 					}
 				}
@@ -111,6 +112,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 		$this->assertNotEmpty( $block['cssClassNames'], 'There should be cssClassNames' );
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/separator', $block['name'], 'The block name should be core/separator' );
+		$this->assertEquals( 'CoreSeparator', $block['type'], 'The block type should be CoreSeparator' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
@@ -175,6 +177,7 @@ final class CoreSeparatorTest extends PluginTestCase {
 		$this->assertEquals( $this->post_id, $actual['data']['post']['databaseId'], 'The post ID should match' );
 		$this->assertEquals( 1, count( $actual['data']['post']['editorBlocks'] ) );
 		$this->assertEquals( 'core/separator', $actual['data']['post']['editorBlocks'][0]['name'], 'The block name should be core/separator' );
+		$this->assertEquals( 'CoreSeparator', $actual['data']['post']['editorBlocks'][0]['type'], 'The block type should be CoreSeparator' );
 
 		// Verify the attributes.
 		$this->assertEquals(

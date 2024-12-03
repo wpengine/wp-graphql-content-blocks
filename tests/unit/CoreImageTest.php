@@ -86,9 +86,10 @@ final class CoreImageTest extends PluginTestCase {
 						innerBlocks {
 							name
 						}
+						name
 						parentClientId
 						renderedHtml
-						name
+						type
 						...CoreImageBlockFragment
 					}
 				}
@@ -140,6 +141,7 @@ final class CoreImageTest extends PluginTestCase {
 		$this->assertEquals( $this->post_id, $node['databaseId'] );
 		$this->assertEquals( 1, count( $node['editorBlocks'] ) );
 		$this->assertEquals( 'core/image', $node['editorBlocks'][0]['name'] );
+		$this->assertEquals( 'CoreImage', $node['editorBlocks'][0]['type'] );
 
 		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
 		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
@@ -157,6 +159,7 @@ final class CoreImageTest extends PluginTestCase {
 		$this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/image', $block['name'], 'The block name should be core/image' );
+		$this->assertEquals( 'CoreImage', $block['type'], 'The block type should be CoreImage' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 		$this->assertEquals(

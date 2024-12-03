@@ -71,6 +71,7 @@ final class CoreVideoTest extends PluginTestCase {
 						}
 						parentClientId
 						renderedHtml
+						type
 						...CoreVideoBlockFragment
 					}
 				}
@@ -137,6 +138,7 @@ final class CoreVideoTest extends PluginTestCase {
 		$this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/video', $block['name'], 'The block name should be core/video' );
+		$this->assertEquals( 'CoreVideo', $block['type'], 'The block type should be CoreVideo' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 

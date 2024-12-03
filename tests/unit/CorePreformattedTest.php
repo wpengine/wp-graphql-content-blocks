@@ -75,6 +75,7 @@ final class CorePreformattedTest extends PluginTestCase {
 						name
 						parentClientId
 						renderedHtml
+						type
 						... on BlockWithSupportsAnchor {
 							anchor
 						}
@@ -138,6 +139,7 @@ preformatted block
 
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/preformatted', $block['name'], 'The block name should be core/preformatted' );
+		$this->assertEquals( 'CorePreformatted', $block['type'], 'The block type should be CorePreformatted' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
@@ -203,6 +205,7 @@ and custom border style.</pre>
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/preformatted', $block['name'], 'The block name should be core/preformatted' );
+		$this->assertEquals( 'CorePreformatted', $block['type'], 'The block type should be CorePreformatted' );
 
 		$attributes = $block['attributes'];
 		$this->assertEquals(
@@ -278,6 +281,7 @@ with metadata.</pre>
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/preformatted', $block['name'], 'The block name should be core/preformatted' );
+		$this->assertEquals( 'CorePreformatted', $block['type'], 'The block type should be CorePreformatted' );
 
 		$attributes = $block['attributes'];
 		$this->assertEquals(

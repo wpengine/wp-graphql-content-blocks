@@ -80,6 +80,7 @@ final class CoreCodeTest extends PluginTestCase {
 						... on BlockWithSupportsAnchor {
 							anchor
 						}
+						type
 						...CoreCodeBlockFragment
 					}
 				}
@@ -140,6 +141,7 @@ final class CoreCodeTest extends PluginTestCase {
 		$this->assertEmpty( $block['innerBlocks'], 'There should be no inner blocks' );
 		$this->assertEquals( 'core/code', $block['name'], 'The block name should be core/code' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
+		$this->assertEquals( 'CoreCode', $block['type'], 'The block type should be CoreCode' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
 		$attributes = $block['attributes'];
@@ -204,6 +206,7 @@ final class CoreCodeTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/code', $block['name'], 'The block name should be core/code' );
+		$this->assertEquals( 'CoreCode', $block['type'], 'The block type should be CoreCode' );
 
 		$attributes = $block['attributes'];
 		$this->assertEquals(
@@ -281,6 +284,7 @@ final class CoreCodeTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/code', $block['name'], 'The block name should be core/code' );
+		$this->assertEquals( 'CoreCode', $block['type'], 'The block type should be CoreCode' );
 
 		$attributes = $block['attributes'];
 		$this->assertEquals(

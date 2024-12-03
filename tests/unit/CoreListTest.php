@@ -85,6 +85,7 @@ final class CoreListTest extends PluginTestCase {
 							name
 							parentClientId
 							renderedHtml
+							type
 							... on CoreListItem {
 								...CoreListItemBlockFragment
 							}
@@ -93,6 +94,7 @@ final class CoreListTest extends PluginTestCase {
 						name
 						parentClientId
 						renderedHtml
+						type
 						...CoreListBlockFragment
 					}
 				}
@@ -149,6 +151,7 @@ final class CoreListTest extends PluginTestCase {
 		$this->assertNotEmpty( $block['cssClassNames'], 'The cssClassNames should be present' );
 
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
+		$this->assertEquals( 'CoreList', $block['type'], 'The block type should be CoreList' );
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
@@ -184,6 +187,7 @@ final class CoreListTest extends PluginTestCase {
 		$this->assertEmpty( $block['innerBlocks'][0]['cssClassNames'], 'The cssClassNames should be present' );
 		$this->assertNotEmpty( $block['innerBlocks'][0]['clientId'], 'The clientId should be present' );
 		$this->assertEquals( 'core/list-item', $block['innerBlocks'][0]['name'], 'The block name should be core/list-item' );
+		$this->assertEquals( 'CoreListItem', $block['innerBlocks'][0]['type'], 'The block type should be CoreListItem' );
 		$this->assertNotEmpty( $block['innerBlocks'][0]['renderedHtml'], 'The renderedHtml should be present' );
 
 		$this->assertEquals(
@@ -250,6 +254,7 @@ final class CoreListTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
+		$this->assertEquals( 'CoreList', $block['type'], 'The block type should be CoreList' );
 
 		$this->assertEquals(
 			[
@@ -318,6 +323,7 @@ final class CoreListTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
+		$this->assertEquals( 'CoreList', $block['type'], 'The block type should be CoreList' );
 
 		$this->assertEquals(
 			[
@@ -383,6 +389,7 @@ final class CoreListTest extends PluginTestCase {
 		$block = $actual['data']['post']['editorBlocks'][0];
 
 		$this->assertEquals( 'core/list', $block['name'], 'The block name should be core/list' );
+		$this->assertEquals( 'CoreList', $block['type'], 'The block type should be CoreList' );
 
 		$this->assertEquals(
 			[
@@ -653,6 +660,7 @@ final class CoreListTest extends PluginTestCase {
 					editorBlocks( flat: false ) {
 						clientId
 						name
+						type
 						parentClientId
 						innerBlocks {
 							... on CoreListItem {
