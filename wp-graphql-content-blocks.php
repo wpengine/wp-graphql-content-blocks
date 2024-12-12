@@ -8,7 +8,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-graphql-content-blocks
  * Domain Path: /languages
- * Version: 4.3.1
+ * Version: 4.3.2
  * Requires PHP: 7.4
  * Requires at least: 5.7
  *
@@ -43,7 +43,7 @@ if ( ! function_exists( 'wpgraphql_content_blocks_constants' ) ) {
 			define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH', plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE ) );
 		}
 		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION' ) ) {
-			define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '4.3.1' );
+			define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '4.3.2' );
 		}
 	}
 }

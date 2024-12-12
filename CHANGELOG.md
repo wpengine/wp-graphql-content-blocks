@@ -1,5 +1,12 @@
 # WPGraphQL Content Blocks
 
+## 4.3.2
+
+### Patch Changes
+
+- c8832fc: fix: improve handling of empty blocks in `ContentBlocksResolver`.
+- 9a2ebf7: fix: Ensure correct `EditorBlock.type` field resolution.
+
 ## 4.3.1
 
 ### Patch Changes
