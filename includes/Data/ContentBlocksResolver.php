@@ -152,6 +152,8 @@ final class ContentBlocksResolver {
 		$block = self::populate_reusable_blocks( $block );
 
 		$block = self::populate_template_part_inner_blocks( $block );
+
+		$block = self::populate_post_content_inner_blocks( $block );
 	
 
 		// Prepare innerBlocks.
@@ -240,6 +242,35 @@ final class ContentBlocksResolver {
 		}
 
 		return array_merge( ...$parsed_blocks );
+	}
+
+	/**
+	 * Populates the innerBlocks of a core/post-content block with the blocks from the post content.
+	 *
+	 * @param array<string,mixed> $block The block to populate.
+	 *
+	 * @return array<string,mixed> The populated block.
+	 */
+	private static function populate_post_content_inner_blocks( array $block ): array {
+		if ( 'core/post-content' !== $block['blockName'] ) {
+			return $block;
+		}
+
+		$post = get_post();
+
+		if ( ! $post ) {
+			return $block;
+		}
+
+		$parsed_blocks = ! empty( $post->post_content ) ? self::parse_blocks( $post->post_content ) : null;
+
+		if ( empty( $parsed_blocks ) ) {
+			return $block;
+		}
+
+		$block['innerBlocks'] = $parsed_blocks;
+
+		return $block;
 	}
 
 	/**
