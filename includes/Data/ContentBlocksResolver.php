@@ -149,11 +149,13 @@ final class ContentBlocksResolver {
 
 		// @todo apply more hydrations.
 
-		$block = self::populate_reusable_blocks( $block );
-
 		$block = self::populate_template_part_inner_blocks( $block );
 
 		$block = self::populate_post_content_inner_blocks( $block );
+
+		$block = self::populate_reusable_blocks( $block );
+
+		$block = self::populate_pattern_inner_blocks( $block );
 	
 
 		// Prepare innerBlocks.
@@ -286,6 +288,33 @@ final class ContentBlocksResolver {
 			$result = array_merge( $result, self::flatten_inner_blocks( $block ) );
 		}
 		return $result;
+	}
+
+	/**
+	 * Populates the pattern innerBlocks with the blocks from the pattern.
+	 *
+	 * @param array<string,mixed> $block The block to populate.
+	 * @return array<string,mixed> The populated block.
+	 */
+	private static function populate_pattern_inner_blocks( array $block ): array {
+		// Bail if not WP 6.6 or later.
+		if ( ! function_exists( 'resolve_pattern_blocks' ) ) {
+			return $block;
+		}
+
+		if ( 'core/pattern' !== $block['blockName'] || ! isset( $block['attrs']['slug'] ) ) {
+			return $block;
+		}
+
+		$resolved_patterns = resolve_pattern_blocks( [ $block ] );
+
+		if ( empty( $resolved_patterns ) ) {
+			return $block;
+		}
+
+		$block['innerBlocks'] = $resolved_patterns;
+
+		return $block;
 	}
 
 	/**
