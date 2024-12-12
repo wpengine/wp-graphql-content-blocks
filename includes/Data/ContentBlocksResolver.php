@@ -151,6 +151,9 @@ final class ContentBlocksResolver {
 
 		$block = self::populate_reusable_blocks( $block );
 
+		$block = self::populate_template_part_inner_blocks( $block );
+	
+
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
 			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'] );
@@ -180,6 +183,37 @@ final class ContentBlocksResolver {
 
 		return empty( trim( $stripped ?? '' ) );
 	}
+
+	/**
+	 * Populates the innerBlocks of a template part block with the blocks from the template part.
+	 *
+	 * @param array<string,mixed> $block The block to populate.
+	 *
+	 * @return array<string,mixed> The populated block.
+	 */
+	private static function populate_template_part_inner_blocks( array $block ): array {
+		// Bail if not WP 5.8 or later.
+		if ( ! function_exists( 'get_block_templates' ) ) {
+			return $block;
+		}
+
+		if ( 'core/template-part' !== $block['blockName'] || ! isset( $block['attrs']['slug'] ) ) {
+			return $block;
+		}
+
+		$matching_templates = get_block_templates( [ 'slug__in' => [ $block['attrs']['slug'] ] ], 'wp_template_part' );
+
+		$template_blocks = ! empty( $matching_templates[0]->content ) ? self::parse_blocks( $matching_templates[0]->content ) : null;
+
+		if ( empty( $template_blocks ) ) {
+			return $block;
+		}
+
+		$block['innerBlocks'] = $template_blocks;
+
+		return $block;
+	}
+
 
 	/**
 	 * Populates reusable blocks with the blocks from the reusable ref ID.
