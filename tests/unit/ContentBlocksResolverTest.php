@@ -349,4 +349,68 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 			$this->assertEqualBlocks( $expected_inner_block, $actual_inner_blocks[ $index ], $message );
 		}
 	}
+
+	/**
+	 * Tests that pattern inner blocks are resolved correctly.
+	 */
+	public function test_resolve_content_blocks_resolves_pattern_inner_blocks() {
+		// Skip if pattern resolution functionality is not supported.
+		if ( ! function_exists( 'resolve_pattern_blocks' ) ) {
+			$this->markTestSkipped( 'Pattern block resolution not supported in this WordPress version.' );
+		}
+
+		// Create a pattern
+		$pattern_name = 'test/pattern-blocks';
+		$pattern_content = '
+			<!-- wp:paragraph -->
+			<p>Pattern Paragraph</p>
+			<!-- /wp:paragraph -->
+			<!-- wp:heading -->
+			<h2>Pattern Heading</h2>
+			<!-- /wp:heading -->
+		';
+
+		// Register the pattern.
+		register_block_pattern(
+			$pattern_name,
+			[
+				'title'    => 'Test Pattern',
+				'content'  => $pattern_content,
+			]
+		);
+
+		// Update post content to include pattern block.
+		$post_content = '
+			<!-- wp:pattern {"slug":"test/pattern-blocks"} /-->
+		';
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $post_content,
+			]
+		);
+
+		$post_model = new Post( get_post( $this->post_id ) );
+		
+		// Resolve blocks as nested.
+		$resolved_blocks = $this->instance->resolve_content_blocks( $post_model, [ 'flat' => false ] );
+
+		$this->assertCount( 1, $resolved_blocks, 'There should be only one top-level block (pattern).' );
+		$this->assertEquals( 'core/pattern', $resolved_blocks[0]['blockName'] );
+		$this->assertCount( 2, $resolved_blocks[0]['innerBlocks'], 'There should be two inner blocks in the pattern.' );
+		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['innerBlocks'][0]['blockName'] );
+		$this->assertEquals( 'core/heading', $resolved_blocks[0]['innerBlocks'][1]['blockName'] );
+
+		// Resolve blocks as flat.
+		$resolved_flat_blocks = $this->instance->resolve_content_blocks( $post_model, [ 'flat' => true ] );
+
+		$this->assertCount( 3, $resolved_flat_blocks, 'There should be three blocks when flattened.' );
+		$this->assertEquals( 'core/pattern', $resolved_flat_blocks[0]['blockName'] );
+		$this->assertEquals( 'core/paragraph', $resolved_flat_blocks[1]['blockName'] );
+		$this->assertEquals( 'core/heading', $resolved_flat_blocks[2]['blockName'] );
+
+		// Cleanup: Unregistering the pattern.
+		unregister_block_pattern( $pattern_name );
+	}
 }
