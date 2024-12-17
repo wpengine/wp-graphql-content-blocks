@@ -151,6 +151,8 @@ final class ContentBlocksResolver {
 
 		$block = self::populate_reusable_blocks( $block );
 
+		$block = self::populate_pattern_inner_blocks( $block );
+
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
 			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'] );
@@ -206,6 +208,32 @@ final class ContentBlocksResolver {
 		}
 
 		return array_merge( ...$parsed_blocks );
+	}
+
+	/**
+	 * Populates the pattern innerBlocks with the blocks from the pattern.
+	 *
+	 * @param array<string,mixed> $block The block to populate.
+	 * @return array<string,mixed> The populated block.
+	 */
+	private static function populate_pattern_inner_blocks( array $block ): array {
+		// Bail if not WP 6.6 or later.
+		if ( ! function_exists( 'resolve_pattern_blocks' ) ) {
+			return $block;
+		}
+
+		if ( 'core/pattern' !== $block['blockName'] || ! isset( $block['attrs']['slug'] ) ) {
+			return $block;
+		}
+
+		$resolved_patterns = resolve_pattern_blocks( [ $block ] );
+
+		if ( empty( $resolved_patterns ) ) {
+			return $block;
+		}
+
+		$block['innerBlocks'] = $resolved_patterns;
+		return $block;
 	}
 
 	/**
