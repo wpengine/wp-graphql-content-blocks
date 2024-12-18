@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.4.0
+
+### Minor Changes
+
+- 4c548c3: feat: add support for resolving Block Patterns
+
 ## 4.3.2
 
 ### Patch Changes
