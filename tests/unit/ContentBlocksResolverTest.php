@@ -413,4 +413,58 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		// Cleanup: Unregistering the pattern.
 		unregister_block_pattern( $pattern_name );
 	}
+
+	/**
+	 * Tests that template part inner blocks are resolved correctly.
+	 */
+	public function test_resolve_content_blocks_resolves_template_part_inner_blocks() {
+		// Skip if template part functionality is not supported
+		if ( ! function_exists( 'get_block_templates' ) ) {
+			$this->markTestSkipped( 'Template part functionality not supported in this WordPress version.' );
+		}
+
+		// Mock the get_block_templates function to control the output.
+		$mock_template = (object) [
+			'content' => '<!-- wp:paragraph /--><!-- wp:heading /-->',
+		];
+
+		add_filter(
+			'get_block_templates',
+			function () use ( $mock_template ) {
+				return [ $mock_template ];
+			}
+		);
+
+		// Update post content to include template part block
+		$post_content = '
+			<!-- wp:template-part {"slug":"test-template-part"} /-->
+		';
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $post_content,
+			]
+		);
+
+		$post_model = new Post( get_post( $this->post_id ) );
+		
+		// Resolve blocks as nested
+		$resolved_blocks = $this->instance->resolve_content_blocks( $post_model, [ 'flat' => false ] );
+
+		// Assertions
+		$this->assertCount( 1, $resolved_blocks, 'There should be only one top-level block (template-part).' );
+		$this->assertEquals( 'core/template-part', $resolved_blocks[0]['blockName'] );
+		$this->assertCount( 2, $resolved_blocks[0]['innerBlocks'], 'There should be two inner blocks in the template part.' );
+		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['innerBlocks'][0]['blockName'] );
+		$this->assertEquals( 'core/heading', $resolved_blocks[0]['innerBlocks'][1]['blockName'] );
+
+		// Resolve blocks as flat
+		$resolved_flat_blocks = $this->instance->resolve_content_blocks( $post_model, [ 'flat' => true ] );
+
+		$this->assertCount( 3, $resolved_flat_blocks, 'There should be three blocks when flattened.' );
+		$this->assertEquals( 'core/template-part', $resolved_flat_blocks[0]['blockName'] );
+		$this->assertEquals( 'core/paragraph', $resolved_flat_blocks[1]['blockName'] );
+		$this->assertEquals( 'core/heading', $resolved_flat_blocks[2]['blockName'] );
+	}
 }
