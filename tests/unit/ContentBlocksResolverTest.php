@@ -4,6 +4,7 @@ namespace WPGraphQL\ContentBlocks\Unit;
 
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
 use WPGraphQL\Model\Post;
+use WPGraphQL\Model\Term;
 
 final class ContentBlocksResolverTest extends PluginTestCase {
 	public $instance;
@@ -351,6 +352,82 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	}
 
 	/**
+	 * Tests that post content inner blocks are resolved correctly.
+	 */
+	public function test_resolve_content_blocks_resolves_post_content_inner_blocks() {
+		// The post content holds what will be the inner blocks.
+		$post_content = '
+			<!-- wp:columns -->
+			<div class="wp-block-columns">
+				<!-- wp:column -->
+				<div class="wp-block-column">
+					<!-- wp:paragraph -->
+					<p>Column 1 Paragraph</p>
+					<!-- /wp:paragraph -->
+				</div>
+				<!-- /wp:column -->
+				<!-- wp:column -->
+				<div class="wp-block-column">
+					<!-- wp:heading -->
+					<h2>Column 2 Heading</h2>
+					<!-- /wp:heading -->
+				</div>
+				<!-- /wp:column -->
+			</div>
+			<!-- /wp:columns -->
+		';
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $post_content,
+			]
+		);
+
+		// The term holds the PostContent block.
+		$term_id = $this->factory()->term->create(
+			[
+				'taxonomy' => 'category',
+				'name'     => 'Post Content Term',
+				'description' => '<!-- wp:post-content /-->',
+			]
+		);
+		$model_with_blocks = new Term( get_term( $term_id ) );
+
+		add_filter( 'wpgraphql_content_blocks_resolver_content' , function( $content, $node ) {
+			if ( $node instanceof Term ) {
+				// The PostContent Block resolves based on the global.
+				global $post;
+				$post = get_post( $this->post_id );
+
+				return $node->description;
+			}
+
+			return $content;
+		}, 10, 2 );
+
+		// Resolve blocks as nested.
+		$resolved_blocks = $this->instance->resolve_content_blocks( $model_with_blocks, [ 'flat' => false ] );
+
+		// Assertions for nested blocks.
+		$this->assertCount( 1, $resolved_blocks, 'There should be only one top-level block (post-content).' );
+		$this->assertEquals( 'core/post-content', $resolved_blocks[0]['blockName'] );
+		// $this->assertCount( 1, $resolved_blocks[0]['innerBlocks'], 'There should be one top-level block in post content.' );
+		$this->assertEquals( 'core/columns', $resolved_blocks[0]['innerBlocks'][0]['blockName'] );
+
+		// Resolve blocks as flat
+		$resolved_flat_blocks = $this->instance->resolve_content_blocks( $model_with_blocks, [ 'flat' => true ] );
+
+		// Assertions for flat blocks
+		$this->assertCount( 6, $resolved_flat_blocks, 'There should be five blocks when flattened.' );
+		$this->assertEquals( 'core/post-content', $resolved_flat_blocks[0]['blockName'] );
+		$this->assertEquals( 'core/columns', $resolved_flat_blocks[1]['blockName'] );
+		$this->assertEquals( 'core/column', $resolved_flat_blocks[2]['blockName'] );
+		$this->assertEquals( 'core/paragraph', $resolved_flat_blocks[3]['blockName'] );
+		$this->assertEquals( 'core/column', $resolved_flat_blocks[4]['blockName'] );
+		$this->assertEquals( 'core/heading', $resolved_flat_blocks[5]['blockName'] );
+	}
+
+	/**
 	 * Tests that pattern inner blocks are resolved correctly.
 	 */
 	public function test_resolve_content_blocks_resolves_pattern_inner_blocks() {
@@ -412,5 +489,59 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 
 		// Cleanup: Unregistering the pattern.
 		unregister_block_pattern( $pattern_name );
+	}
+
+	/**
+	 * Tests that template part inner blocks are resolved correctly.
+	 */
+	public function test_resolve_content_blocks_resolves_template_part_inner_blocks() {
+		// Skip if template part functionality is not supported
+		if ( ! function_exists( 'get_block_templates' ) ) {
+			$this->markTestSkipped( 'Template part functionality not supported in this WordPress version.' );
+		}
+
+		// Mock the get_block_templates function to control the output.
+		$mock_template = (object) [
+			'content' => '<!-- wp:paragraph /--><!-- wp:heading /-->',
+		];
+
+		add_filter(
+			'get_block_templates',
+			function () use ( $mock_template ) {
+				return [ $mock_template ];
+			}
+		);
+
+		// Update post content to include template part block
+		$post_content = '
+			<!-- wp:template-part {"slug":"test-template-part"} /-->
+		';
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $post_content,
+			]
+		);
+
+		$post_model = new Post( get_post( $this->post_id ) );
+		
+		// Resolve blocks as nested
+		$resolved_blocks = $this->instance->resolve_content_blocks( $post_model, [ 'flat' => false ] );
+
+		// Assertions
+		$this->assertCount( 1, $resolved_blocks, 'There should be only one top-level block (template-part).' );
+		$this->assertEquals( 'core/template-part', $resolved_blocks[0]['blockName'] );
+		$this->assertCount( 2, $resolved_blocks[0]['innerBlocks'], 'There should be two inner blocks in the template part.' );
+		$this->assertEquals( 'core/paragraph', $resolved_blocks[0]['innerBlocks'][0]['blockName'] );
+		$this->assertEquals( 'core/heading', $resolved_blocks[0]['innerBlocks'][1]['blockName'] );
+
+		// Resolve blocks as flat
+		$resolved_flat_blocks = $this->instance->resolve_content_blocks( $post_model, [ 'flat' => true ] );
+
+		$this->assertCount( 3, $resolved_flat_blocks, 'There should be three blocks when flattened.' );
+		$this->assertEquals( 'core/template-part', $resolved_flat_blocks[0]['blockName'] );
+		$this->assertEquals( 'core/paragraph', $resolved_flat_blocks[1]['blockName'] );
+		$this->assertEquals( 'core/heading', $resolved_flat_blocks[2]['blockName'] );
 	}
 }
