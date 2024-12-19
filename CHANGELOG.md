@@ -1,5 +1,12 @@
 # WPGraphQL Content Blocks
 
+## 4.4.0
+
+### Minor Changes
+
+- 19f6e27: feat: add support for resolving Template Part blocks
+- 4c548c3: feat: add support for resolving Block Patterns
+
 ## 4.3.2
 
 ### Patch Changes
