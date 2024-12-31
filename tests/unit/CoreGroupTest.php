@@ -107,7 +107,7 @@ final class CoreGroupTest extends PluginTestCase {
 	 * - attributes
 	 */
 
-	public function test_retrieve_core_image_fields_attributes(): void {
+	public function test_retrieve_core_group_fields_attributes(): void {
 		$block_content = <<<HTML
 <!-- wp:group {"tagName":"header","className":"test-group-class is-style-default","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"center"}} -->
 <header id="test-group-id" class="wp-block-group test-group-class is-style-default"><!-- wp:paragraph -->
