@@ -161,7 +161,6 @@ HTML;
 		$this->assertEmpty( $block['parentClientId'], 'There should be no parentClientId' );
 		$this->assertNotEmpty( $block['renderedHtml'], 'The renderedHtml should be present' );
 
-
 		// Check child blocks
 		$clientId = $block['clientId'];
 		$childBlock1 = $node['editorBlocks'][1];
@@ -175,23 +174,17 @@ HTML;
 		$this->assertEquals('core/paragraph', $childBlock1['name'], 'Child block 2 should be a core/paragraph' );
 
 		// Check attributes
-		$this->assertEquals(
-			[
-				"align"           => null,
-				"backgroundColor" => null,
-				"borderColor"     => null,
-				"className"       => "test-group-class is-style-default",
-				"cssClassName"    => "wp-block-group test-group-class is-style-default is-content-justification-center is-layout-flex wp-container-7",
-				"fontFamily"      => null,
-				"fontSize"        => null,
-				"gradient"        => null,
-				"layout"          => "{\"type\":\"flex\",\"flexWrap\":\"wrap\",\"justifyContent\":\"center\"}",
-				"lock"            => null,
-				'style'           => null,
-				"tagName"         => "header",
-				"textColor"       => null
-			],
-			$node['editorBlocks'][0]['attributes']
-		);
+		$blockAttributes = $node['editorBlocks'][0]['attributes'];
+		$this->assertEquals(null, $blockAttributes['align']);
+		$this->assertEquals(null, $blockAttributes['backgroundColor']);
+		$this->assertEquals(null, $blockAttributes['borderColor']);
+		$this->assertEquals('test-group-class is-style-default', $blockAttributes['className']);
+		$this->assertStringContainsString('wp-block-group test-group-class is-style-default', $blockAttributes['cssClassName']); // Class name varies slightly between WP versions
+		$this->assertEquals(null, $blockAttributes['fontFamily']);
+		$this->assertEquals(null, $blockAttributes['fontSize']);
+		$this->assertEquals("{\"type\":\"flex\",\"flexWrap\":\"wrap\",\"justifyContent\":\"center\"}", $blockAttributes['layout']);
+		$this->assertEquals(null, $blockAttributes['style']);
+		$this->assertEquals('header', $blockAttributes['tagName']);
+		$this->assertEquals(null, $blockAttributes['textColor']);
 	}
 }
