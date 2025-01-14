@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.7.1
-Stable tag: 4.4.0
+Stable tag: 4.4.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 4.4.1 =
+
+### Patch Changes
+
+- dec27c3: feat: Added a `CoreGroup` block class to fix an issue with a missing attribute `cssClassName`
+
 = 4.4.0 =
 
 ### Minor Changes
@@ -39,11 +45,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 - c8832fc: fix: improve handling of empty blocks in `ContentBlocksResolver`.
 - 9a2ebf7: fix: Ensure correct `EditorBlock.type` field resolution.
-
-= 4.3.1 =
-
-### Patch Changes
-
-- f99f768: Correct version definition
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)

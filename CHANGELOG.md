@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.4.1
+
+### Patch Changes
+
+- dec27c3: feat: Added a `CoreGroup` block class to fix an issue with a missing attribute `cssClassName`
+
 ## 4.4.0
 
 ### Minor Changes
