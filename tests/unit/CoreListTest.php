@@ -2,6 +2,10 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
+/**
+ * @group block
+ * @group core-list
+ */
 final class CoreListTest extends PluginTestCase {
 	/**
 	 * The ID of the post created for the test.
@@ -700,5 +704,112 @@ final class CoreListTest extends PluginTestCase {
 			],
 			$block['attributes'],
 		);
+	}
+
+
+	public function test_retrieve_core_list_item_values(): void {
+		$block_content = <<<HTML
+<!-- wp:list {"ordered":true} -->
+<ol class="wp-block-list"><!-- wp:list-item -->
+<li>List item 1</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>List item 2<!-- wp:list {"className":"is-style-checkmark-list"} -->
+<ul class="wp-block-list is-style-checkmark-list"><!-- wp:list-item -->
+<li>Child list item 1<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Third level list item</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Child list item 2</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list --></li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>List item 3</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>List item 4</li>
+<!-- /wp:list-item --></ol>
+<!-- /wp:list -->
+HTML;
+		// Set post content.
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => $block_content,
+			]
+		);
+
+		$query  = '
+		query postQuery($id: ID!) {
+			  post(id: $id, idType: DATABASE_ID, asPreview: false) {
+			    title
+			    editorBlocks(flat: false) {
+			      name
+			      ... on CoreList {
+			        ordered
+			        items {
+			          value
+			          children {
+			            value
+			            children {
+			              value
+			            }
+			          }
+			        }
+			      }
+			    }
+			  }
+			}
+		';
+
+		$variables = [
+			'id' => $this->post_id,
+		];
+
+		$actual = graphql( compact( 'query', 'variables' ) );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, 'There should not be any errors' );
+		$this->assertArrayHasKey( 'data', $actual, 'The data key should be present' );
+		$this->assertArrayHasKey( 'post', $actual['data'], 'The post key should be present' );
+
+		$editorBlocks = $actual['data']['post']['editorBlocks'];
+		$this->assertEquals( 1, count($editorBlocks));
+
+		$this->assertArrayHasKey('items', $editorBlocks[0]);
+		$this->assertEquals( 4, count($editorBlocks[0]['items']));
+		$this->assertEquals( true, $editorBlocks[0]['ordered']);
+
+		$items = $editorBlocks[0]['items'];
+		$itemOne = $items[0];
+		$itemTwo = $items[1];
+		$itemThree = $items[2];
+		$itemFour = $items[3];
+
+		$this->assertEquals( '<li>List item 1</li>', $itemOne['value']);
+		$this->assertEmpty(  $itemOne['children'] );
+
+		$this->assertEquals( '<li>List item 2</li>', $itemTwo['value']);
+		$this->assertEquals( 2, count($itemTwo['children']));
+
+		$this->assertEquals( '<li>List item 3</li>',$itemThree['value']);
+		$this->assertEmpty(  $itemThree['children'] );
+
+		$this->assertEquals( '<li>List item 4</li>', $itemFour['value']);
+		$this->assertEmpty(  $itemFour['children'] );
+
+		$children = $itemTwo['children'];
+		$this->assertEquals( '<li>Child list item 1</li>', $children[0]['value']);
+		$this->assertEquals( '<li>Third level list item</li>', $children[0]['children'][0]['value']);
+
+		$this->assertEquals( '<li>Child list item 2</li>', $children[1]['value']);
+		$this->assertEmpty(  $children[1]['children'] );
 	}
 }
