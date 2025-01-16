@@ -60,7 +60,13 @@ class CoreNavigation extends Block {
 	}
 }
 
-function block_core_navigation_filter_out_empty_blocks( $parsed_blocks ) {
+/**
+ * Filter out empty blocks from the parsed blocks.
+ *
+ * @param array $parsed_blocks An array of parsed block data.
+ * @return array An array of filtered blocks.
+ */
+function block_core_navigation_filter_out_empty_blocks( $parsed_blocks ): array {
 	$filtered = array_filter(
 		$parsed_blocks,
 		static function ( $block ) {
