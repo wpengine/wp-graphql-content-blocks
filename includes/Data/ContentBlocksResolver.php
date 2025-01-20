@@ -378,7 +378,7 @@ final class ContentBlocksResolver {
 
 		return array_filter(
 			$blocks,
-			static function ($block) use ($allowed_block_names) {
+			static function ( $block ) use ( $allowed_block_names ) {
 				return in_array( $block['blockName'], $allowed_block_names, true );
 			}
 		);
