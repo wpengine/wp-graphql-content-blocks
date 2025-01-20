@@ -47,7 +47,7 @@ final class ContentBlocksResolver {
 			// probably have a "Block" Model that handles
 			// determining what fields should/should not be
 			// allowed to be returned?
-			$post = get_post( $node->databaseId );
+			$post    = get_post( $node->databaseId );
 			$content = ! empty( $post->post_content ) ? $post->post_content : null;
 		}
 
