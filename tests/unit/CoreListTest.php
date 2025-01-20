@@ -754,14 +754,15 @@ HTML;
 			    editorBlocks(flat: false) {
 			      name
 			      ... on CoreList {
-			        ordered
-			        items {
-			          value
-			          children {
-			            value
-			            children {
-			              value
-			            }
+			        type
+			        name
+			        renderedHtml
+			        innerBlocks {
+			          ... on CoreListItem {
+			            type
+			            name
+			      
+			            renderedHtml
 			          }
 			        }
 			      }
@@ -783,33 +784,44 @@ HTML;
 		$editorBlocks = $actual['data']['post']['editorBlocks'];
 		$this->assertEquals( 1, count($editorBlocks));
 
-		$this->assertArrayHasKey('items', $editorBlocks[0]);
-		$this->assertEquals( 4, count($editorBlocks[0]['items']));
-		$this->assertEquals( true, $editorBlocks[0]['ordered']);
+		$editorBlock = $editorBlocks[0];
+		$this->assertEquals( 'core/list', $editorBlock['name'], 'The block name should be core/list' );
+		$this->assertEquals( 'CoreList', $editorBlock['type'], 'The block type should be CoreList' );
+		$this->assertArrayHasKey( 'renderedHtml', $editorBlock);
+		$this->assertArrayHasKey( 'innerBlocks', $editorBlock);
 
-		$items = $editorBlocks[0]['items'];
-		$itemOne = $items[0];
-		$itemTwo = $items[1];
-		$itemThree = $items[2];
-		$itemFour = $items[3];
+		$innerBlocks = $editorBlock['innerBlocks'];
+		$this->assertEquals( 4, count($innerBlocks));
+		$firstBlock = $innerBlocks[0];
+		$secondBlock = $innerBlocks[0];
 
-		$this->assertEquals( '<li>List item 1</li>', $itemOne['value']);
-		$this->assertEmpty(  $itemOne['children'] );
+		/**
+		 * No child list items
+		 */
+		$this->assertEquals('CoreListItem', $firstBlock['type'], 'The block type should be CoreListItem');
+		$this->assertEquals('core/list-item', $firstBlock['name'], 'The block name should be core/list-item');
+		$this->assertEquals('<li>List item 1</li>', trim($firstBlock['renderedHtml']), 'The block should have valid HTML block');
 
-		$this->assertEquals( '<li>List item 2</li>', $itemTwo['value']);
-		$this->assertEquals( 2, count($itemTwo['children']));
 
-		$this->assertEquals( '<li>List item 3</li>',$itemThree['value']);
-		$this->assertEmpty(  $itemThree['children'] );
+		/**
+		 * Child list items
+		 */
+		$html = <<<HTML
+<li>List item 2
+	<ul class="wp-block-list is-style-checkmark-list">
+		<li>Child list item 1
+			<ul class="wp-block-list">
+				<li>Third level list item</li>
+			</ul>
+		</li>
+		<li>Child list item 2</li>
+	</ul>
+</li>
+HTML;
 
-		$this->assertEquals( '<li>List item 4</li>', $itemFour['value']);
-		$this->assertEmpty(  $itemFour['children'] );
+		$html = trim(preg_replace('/\s+/', ' ', $html));
+		$renderedHtml = trim(preg_replace('/\s+/', ' ', $innerBlocks[1]['renderedHtml'] ));
+		$this->assertEquals($html, $renderedHtml, 'The block should have valid HTML block');
 
-		$children = $itemTwo['children'];
-		$this->assertEquals( '<li>Child list item 1</li>', $children[0]['value']);
-		$this->assertEquals( '<li>Third level list item</li>', $children[0]['children'][0]['value']);
-
-		$this->assertEquals( '<li>Child list item 2</li>', $children[1]['value']);
-		$this->assertEmpty(  $children[1]['children'] );
 	}
 }

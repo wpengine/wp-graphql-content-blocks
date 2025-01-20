@@ -1,40 +1,32 @@
 ---
-"@wpengine/wp-graphql-content-blocks": minor
+"@wpengine/wp-graphql-content-blocks": patch
 ---
 
-Added CoreListItem block and new fields to query CoreListItem for the CoreList block.
-
-Notable changes:
-
-Added the field items which retrieves the CoreListItem child blocks for a CoreList.
-For the CoreListItem block we added children and value so that we can query values and child blocks if they are core/list-iem blcoks
-
-Example query 
+Added CoreListItem block for WPGraphQL Content Blocks.
 
 ```gql
-query postQuery($id: ID!) {
-  post(id: $id, idType: DATABASE_ID, asPreview: false) {
-    title
-    editorBlocks(flat: false) {
-      name
-      ... on CoreList {
-        ordered
-        items {
-          value
-          children {
-            value
-            children {
-              value
-            }
-          }
-        }
-      }
-    }
-  }
-}
+		query postQuery($id: ID!) {
+			  post(id: $id, idType: DATABASE_ID, asPreview: false) {
+			    title
+			    editorBlocks(flat: false) {
+			      name
+			      ... on CoreList {
+			        type
+			        name
+			        renderedHtml
+			        innerBlocks {
+			          ... on CoreListItem {
+			            type
+			            name
+			      
+			            renderedHtml
+			          }
+			        }
+			      }
+			    }
+			  }
+			}
 ```
-
-This returns an array of items and child items for that block e.g. 
 
 ```json
 {
@@ -44,41 +36,36 @@ This returns an array of items and child items for that block e.g.
       "editorBlocks": [
         {
           "name": "core/list",
-          "ordered": true,
-          "items": [
+          "type": "CoreList",
+          "renderedHtml": "\n<ol class=\"wp-block-list\">\n<li>List item 1</li>\n\n\n\n<li>List item 2\n<ul class=\"wp-block-list is-style-default\">\n<li>Child list item 1\n<ul class=\"wp-block-list\">\n<li>Third level list item</li>\n</ul>\n</li>\n\n\n\n<li>Child list item 2</li>\n</ul>\n</li>\n\n\n\n<li>List item 3</li>\n\n\n\n<li>List item 4</li>\n</ol>\n",
+          "innerBlocks": [
             {
-              "value": "<li>List item 1</li>",
-              "children": []
+              "type": "CoreListItem",
+              "name": "core/list-item",
+              "renderedHtml": "\n<li>List item 1</li>\n"
             },
             {
-              "value": "<li>List item 2</li>",
-              "children": [
-                {
-                  "value": "<li>Child list item 1</li>",
-                  "children": [
-                    {
-                      "value": "<li>Third level list item</li>"
-                    }
-                  ]
-                },
-                {
-                  "value": "<li>Child list item 2</li>",
-                  "children": []
-                }
-              ]
+              "type": "CoreListItem",
+              "name": "core/list-item",
+              "renderedHtml": "\n<li>List item 2\n<ul class=\"wp-block-list is-style-default\">\n<li>Child list item 1\n<ul class=\"wp-block-list\">\n<li>Third level list item</li>\n</ul>\n</li>\n\n\n\n<li>Child list item 2</li>\n</ul>\n</li>\n"
             },
             {
-              "value": "<li>List item 3</li>",
-              "children": []
+              "type": "CoreListItem",
+              "name": "core/list-item",
+              "renderedHtml": "\n<li>List item 3</li>\n"
             },
             {
-              "value": "<li>List item 4</li>",
-              "children": []
+              "type": "CoreListItem",
+              "name": "core/list-item",
+              "renderedHtml": "\n<li>List item 4</li>\n"
             }
           ]
+        },
+        {
+          "name": "core/paragraph"
         }
       ]
     }
-  },
+  }
 }
 ```
