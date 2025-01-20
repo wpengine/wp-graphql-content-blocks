@@ -2,7 +2,7 @@
 "@wpengine/wp-graphql-content-blocks": patch
 ---
 
-Adds support for resolving and returning navigation items within the CoreNavigation block for WPGraphQL Content Blocks.
+Adds support for resolving and returning navigation items within the CoreNavigation innerBlocks for WPGraphQL Content Blocks.
 
 ```graphql
 {
@@ -10,14 +10,11 @@ Adds support for resolving and returning navigation items within the CoreNavigat
     nodes {
       editorBlocks {
         ... on CoreNavigation {
-          renderedHtml
-          navigationItems {
+          type
+          name
+          innerBlocks {
+            type
             name
-            ... on CoreNavigationLink {
-              attributes {
-                url
-              }
-            }
           }
           attributes {
             ref
@@ -36,23 +33,31 @@ Adds support for resolving and returning navigation items within the CoreNavigat
         {
           "editorBlocks": [
             {
-              "renderedHtml": "<nav>...</nav>",
-              "navigationItems": [
+              "type": "CoreNavigation",
+              "name": "core/navigation",
+              "innerBlocks": [
                 {
-                  "name": "core/navigation-link",
-                  "attributes": {
-                    "url": "http://example.com"
-                  }
+                  "type": "CorePageList",
+                  "name": "core/page-list"
+                },
+                {
+                  "type": "CoreNavigationLink",
+                  "name": "core/navigation-link"
                 }
               ],
               "attributes": {
-                "ref": 42
+                "ref": 31
               }
-            }
+            },
+          ]
+        },
+        {
+          "editorBlocks": [
+            {}
           ]
         }
       ]
     }
-  }
+  },
 }
 ```
