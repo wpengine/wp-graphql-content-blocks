@@ -47,7 +47,7 @@ final class ContentBlocksResolver {
 			// probably have a "Block" Model that handles
 			// determining what fields should/should not be
 			// allowed to be returned?
-			$post    = get_post( $node->databaseId );
+			$post = get_post( $node->databaseId );
 			$content = ! empty( $post->post_content ) ? $post->post_content : null;
 		}
 
@@ -152,6 +152,7 @@ final class ContentBlocksResolver {
 		$block = self::populate_post_content_inner_blocks( $block );
 		$block = self::populate_reusable_blocks( $block );
 		$block = self::populate_pattern_inner_blocks( $block );
+		$block = self::populate_navigation_blocks( $block );
 
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
@@ -239,6 +240,33 @@ final class ContentBlocksResolver {
 
 		$block['innerBlocks'] = $parsed_blocks;
 
+		return $block;
+	}
+
+	/**
+	 * Populates the innerBlocks of this block with navigation item blocks from the referenced navigation post.
+	 *
+	 * @param array<string,mixed> $block The block to populate.
+	 *
+	 * @return array<string,mixed> The populated block.
+	 */
+	private static function populate_navigation_blocks( array $block ): array {
+		if ( 'core/navigation' !== $block['blockName'] || ! isset( $block['attrs']['ref'] ) ) {
+			return $block;
+		}
+
+		$navigation_post = get_post( $block['attrs']['ref'] );
+
+		if ( ! $navigation_post || 'publish' !== $navigation_post->post_status ) {
+			return $block;
+		}
+
+		$parsed_blocks = ! empty( $navigation_post->post_content ) ? parse_blocks( $navigation_post->post_content ) : null;
+
+		if ( empty( $parsed_blocks ) ) {
+			return $block;
+		}
+		$block['innerBlocks'] = $parsed_blocks;
 		return $block;
 	}
 
@@ -350,7 +378,7 @@ final class ContentBlocksResolver {
 
 		return array_filter(
 			$blocks,
-			static function ( $block ) use ( $allowed_block_names ) {
+			static function ($block) use ($allowed_block_names) {
 				return in_array( $block['blockName'], $allowed_block_names, true );
 			}
 		);
