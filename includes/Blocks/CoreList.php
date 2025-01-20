@@ -7,9 +7,6 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
-use WPGraphQL\ContentBlocks\Registry\Registry;
-use WP_Block_Type;
-
 /**
  * Class CoreList
  */
