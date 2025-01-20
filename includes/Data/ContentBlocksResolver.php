@@ -152,6 +152,7 @@ final class ContentBlocksResolver {
 		$block = self::populate_post_content_inner_blocks( $block );
 		$block = self::populate_reusable_blocks( $block );
 		$block = self::populate_pattern_inner_blocks( $block );
+		$block = self::populate_core_footnotes_inner_blocks( $block );
 
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
@@ -292,6 +293,56 @@ final class ContentBlocksResolver {
 		}
 
 		$block['innerBlocks'] = $resolved_patterns;
+
+		return $block;
+	}
+
+	/**
+	 * Populates the innerBlocks for core/footnotes
+	 *
+	 * @param array<string,mixed> $block The block to populate.
+	 *
+	 * @return array<string,mixed> The populated block.
+	 */
+	private static function populate_core_footnotes_inner_blocks( array $block ): array {
+
+		if ( 'core/footnotes' !== $block['blockName'] ) {
+			return $block;
+		}
+
+		$post = get_post();
+		if ( ! is_object( $post ) || ! is_a( $post, \WP_Post::class ) ) {
+			return $block;
+		}
+
+		$post_meta = get_post_meta( $post->ID, 'footnotes', true );
+		if ( ! $post_meta ) {
+			return $block;
+		}
+
+		$content = json_decode( $post_meta, true );
+		if ( empty( $content ) ) {
+			return $block;
+		}
+
+		$html = '';
+		/** @var array{id: string, content: string} $footnote */
+		foreach ( $content as $footnote ) {
+			$id      = $footnote['id'] ?? null;
+			$content = $footnote['content'] ?? null;
+			if ( ! $content ) {
+				continue;
+			}
+
+			$html .= "<li id=\"{$id}\">{$content}</li>";
+		}
+
+		$parsed_blocks = parse_blocks( "<ol class=\"footnotes\">{$html}</ol>" );
+
+		if ( empty( $parsed_blocks ) ) {
+			return $block;
+		}
+		$block['innerBlocks'] = $parsed_blocks;
 		return $block;
 	}
 
@@ -307,6 +358,7 @@ final class ContentBlocksResolver {
 		foreach ( $blocks as $block ) {
 			$result = array_merge( $result, self::flatten_inner_blocks( $block ) );
 		}
+
 		return $result;
 	}
 
