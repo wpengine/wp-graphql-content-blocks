@@ -255,7 +255,8 @@ final class ContentBlocksResolver {
 			return $block;
 		}
 
-		$navigation_post = get_post( $block['attrs']['ref'] );
+		$ref             = absint( $block['attrs']['ref'] );
+		$navigation_post = get_post( $ref );
 
 		if ( ! $navigation_post || 'publish' !== $navigation_post->post_status ) {
 			return $block;
@@ -378,7 +379,7 @@ final class ContentBlocksResolver {
 
 		return array_filter(
 			$blocks,
-			static function ( $block ) use ( $allowed_block_names ) {
+			static function ( $block ) use ($allowed_block_names) {
 				return in_array( $block['blockName'], $allowed_block_names, true );
 			}
 		);
