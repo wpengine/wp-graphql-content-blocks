@@ -251,7 +251,7 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The populated block.
 	 */
 	private static function populate_navigation_blocks( array $block ): array {
-		if ( ( $block['blockName'] ?? '' ) !== 'core/navigation' || ! isset( $block['attrs']['ref'] ) ) {
+		if ( 'core/navigation' !== $block['blockName'] || ! isset( $block['attrs']['ref'] ) ) {
 			return $block;
 		}
 
@@ -379,7 +379,7 @@ final class ContentBlocksResolver {
 
 		return array_filter(
 			$blocks,
-			static function ( $block ) use ($allowed_block_names) {
+			static function ( $block ) use ( $allowed_block_names ) {
 				return in_array( $block['blockName'], $allowed_block_names, true );
 			}
 		);
