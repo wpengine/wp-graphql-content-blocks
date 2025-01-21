@@ -251,7 +251,7 @@ final class ContentBlocksResolver {
 	 * @return array<string,mixed> The populated block.
 	 */
 	private static function populate_navigation_blocks( array $block ): array {
-		if ( 'core/navigation' !== $block['blockName'] || ! isset( $block['attrs']['ref'] ) ) {
+		if ( ($block['blockName'] ?? '') !== 'core/navigation' || ! isset( $block['attrs']['ref'] ) ) {
 			return $block;
 		}
 
