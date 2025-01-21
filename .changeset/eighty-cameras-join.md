@@ -1,5 +1,5 @@
 ---
-"@wpengine/wp-graphql-content-blocks": patch
+"@wpengine/wp-graphql-content-blocks": minor
 ---
 
 Added content resolver for CoreFootnotes when the post_meta isn't loaded
