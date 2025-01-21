@@ -1,5 +1,5 @@
 ---
-"@wpengine/wp-graphql-content-blocks": patch
+"@wpengine/wp-graphql-content-blocks": minor
 ---
 
 Adds support for resolving and returning navigation items within the CoreNavigation innerBlocks for WPGraphQL Content Blocks.
