@@ -175,10 +175,8 @@ class Block {
 			$type = 'String';
 		}
 
-		if ( null !== $type ) {
-			if ( isset( $attribute['default'] ) ) {
-				$type = [ 'non_null' => $type ];
-			}
+		if ( null !== $type && isset( $attribute['default'] ) ) {
+			$type = [ 'non_null' => $type ];
 		}
 
 		return $type;
