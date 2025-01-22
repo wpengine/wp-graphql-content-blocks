@@ -162,7 +162,10 @@ class Block {
 			case 'array':
 				if ( isset( $attribute['query'] ) ) {
 					$type = [ 'list_of' => $this->get_query_type( $name, $attribute['query'], $prefix ) ];
-				} elseif ( isset( $attribute['items'] ) ) {
+					break;
+				}
+
+				if ( isset( $attribute['items'] ) ) {
 					$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
 
 					if ( null !== $of_type ) {
@@ -170,9 +173,10 @@ class Block {
 					} else {
 						$type = Scalar::get_block_attributes_array_type_name();
 					}
-				} else {
-					$type = Scalar::get_block_attributes_array_type_name();
+					break;
 				}
+
+				$type = Scalar::get_block_attributes_array_type_name();
 				break;
 			case 'object':
 				$type = Scalar::get_block_attributes_object_type_name();
