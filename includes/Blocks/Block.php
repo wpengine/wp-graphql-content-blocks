@@ -176,9 +176,7 @@ class Block {
 		}
 
 		if ( null !== $type ) {
-			$default_value = $attribute['default'] ?? null;
-
-			if ( isset( $default_value ) ) {
+			if ( isset( $attribute['default'] ) ) {
 				$type = [ 'non_null' => $type ];
 			}
 		}
