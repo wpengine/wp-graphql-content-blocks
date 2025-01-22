@@ -16,7 +16,7 @@ final class Scalar {
 	 */
 	public function init(): void {
 		register_graphql_scalar(
-			'BlockAttributesObject',
+			self::get_block_attributes_object_type_name(),
 			[
 				'description' => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
 				'serialize'   => static function ( $value ) {
@@ -25,7 +25,7 @@ final class Scalar {
 			]
 		);
 		register_graphql_scalar(
-			'BlockAttributesArray',
+			self::get_block_attributes_array_type_name(),
 			[
 				'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
 				'serialize'   => static function ( $value ) {
