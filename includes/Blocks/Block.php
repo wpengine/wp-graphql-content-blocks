@@ -137,42 +137,46 @@ class Block {
 	private function get_attribute_type( $name, $attribute, $prefix ) {
 		$type = null;
 
-		if ( isset( $attribute['type'] ) ) {
-			switch ( $attribute['type'] ) {
-				case 'rich-text':
-				case 'string':
-					$type = 'String';
-					break;
-				case 'boolean':
-					$type = 'Boolean';
-					break;
-				case 'number':
-					$type = 'Float';
-					break;
-				case 'integer':
-					$type = 'Int';
-					break;
-				case 'array':
-					if ( isset( $attribute['query'] ) ) {
-						$type = [ 'list_of' => $this->get_query_type( $name, $attribute['query'], $prefix ) ];
-					} elseif ( isset( $attribute['items'] ) ) {
-						$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
+		if ( ! isset( $attribute['type'] ) ) {
+			if ( ! isset( $attribute['source'] ) ) {
+				return null;
+			}
 
-						if ( null !== $of_type ) {
-							$type = [ 'list_of' => $of_type ];
-						} else {
-							$type = Scalar::get_block_attributes_array_type_name();
-						}
+			$type = 'String';
+		}
+
+		switch ( $attribute['type'] ) {
+			case 'rich-text':
+			case 'string':
+				$type = 'String';
+				break;
+			case 'boolean':
+				$type = 'Boolean';
+				break;
+			case 'number':
+				$type = 'Float';
+				break;
+			case 'integer':
+				$type = 'Int';
+				break;
+			case 'array':
+				if ( isset( $attribute['query'] ) ) {
+					$type = [ 'list_of' => $this->get_query_type( $name, $attribute['query'], $prefix ) ];
+				} elseif ( isset( $attribute['items'] ) ) {
+					$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
+
+					if ( null !== $of_type ) {
+						$type = [ 'list_of' => $of_type ];
 					} else {
 						$type = Scalar::get_block_attributes_array_type_name();
 					}
-					break;
-				case 'object':
-					$type = Scalar::get_block_attributes_object_type_name();
-					break;
-			}
-		} elseif ( isset( $attribute['source'] ) ) {
-			$type = 'String';
+				} else {
+					$type = Scalar::get_block_attributes_array_type_name();
+				}
+				break;
+			case 'object':
+				$type = Scalar::get_block_attributes_object_type_name();
+				break;
 		}
 
 		if ( null !== $type && isset( $attribute['default'] ) ) {
