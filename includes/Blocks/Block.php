@@ -87,9 +87,12 @@ class Block {
 			$this->additional_block_attributes ?? [],
 		);
 
+		if ( empty( $block_attributes ) ) {
+			return;
+		}
+
 		$block_attribute_fields = $this->get_block_attribute_fields( $block_attributes, $this->type_name . 'Attributes' );
 
-		// Bail early if no attributes are defined.
 		if ( empty( $block_attribute_fields ) ) {
 			return;
 		}
@@ -187,15 +190,10 @@ class Block {
 	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
-	 * @param ?array $block_attributes The block attributes.
+	 * @param array  $block_attributes The block attributes.
 	 * @param string $prefix The current prefix string to use for the get_query_type
 	 */
-	private function get_block_attribute_fields( ?array $block_attributes, string $prefix = '' ): array {
-		// Bail early if no attributes are defined.
-		if ( null === $block_attributes ) {
-			return [];
-		}
-
+	private function get_block_attribute_fields( array $block_attributes, string $prefix = '' ): array {
 		$fields = [];
 		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
 			$graphql_type = $this->get_attribute_type( $attribute_name, $attribute_config, $prefix );
@@ -222,7 +220,7 @@ class Block {
 					return $result[ $attribute_name ];
 				},
 			];
-		}//end foreach
+		}
 
 		return $fields;
 	}
