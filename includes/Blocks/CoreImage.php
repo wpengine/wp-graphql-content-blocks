@@ -17,9 +17,9 @@ class CoreImage extends Block {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @var array|null
+	 * @var array
 	 */
-	protected ?array $additional_block_attributes = [
+	protected array $additional_block_attributes = [
 		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'figure',

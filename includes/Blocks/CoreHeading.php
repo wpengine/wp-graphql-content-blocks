@@ -14,9 +14,9 @@ class CoreHeading extends Block {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @var array|null
+	 * @var array
 	 */
-	protected ?array $additional_block_attributes = [
+	protected array $additional_block_attributes = [
 		'cssClassName' => [
 			'type'      => 'string',
 			'selector'  => 'h1, h2, h3, h4, h5, h6',

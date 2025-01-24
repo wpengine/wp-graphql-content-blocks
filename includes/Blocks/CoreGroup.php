@@ -16,9 +16,9 @@ class CoreGroup extends Block {
 	 *
 	 * Note that no selector is set as it can be a variety of selectors
 	 *
-	 * @var array|null
+	 * @var array
 	 */
-	protected ?array $additional_block_attributes = [
+	protected array $additional_block_attributes = [
 		'cssClassName' => [
 			'type'      => 'string',
 			'source'    => 'attribute',

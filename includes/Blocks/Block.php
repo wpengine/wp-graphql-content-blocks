@@ -42,16 +42,16 @@ class Block {
 	/**
 	 * The attributes of the block.
 	 *
-	 * @var array|null
+	 * @var array
 	 */
-	protected ?array $block_attributes;
+	protected array $block_attributes = [];
 
 	/**
 	 * Any Additional attributes of the block not defined in block.json.
 	 *
-	 * @var array|null
+	 * @var array
 	 */
-	protected ?array $additional_block_attributes;
+	protected array $additional_block_attributes = [];
 
 	/**
 	 * Block constructor.
@@ -62,7 +62,7 @@ class Block {
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		$this->block            = $block;
 		$this->block_registry   = $block_registry;
-		$this->block_attributes = array_merge( $this->block->attributes ?? [], $this->additional_block_attributes ?? [] );
+		$this->block_attributes = array_merge( $this->block->attributes ?? [], $this->additional_block_attributes );
 		$this->type_name        = WPGraphQLHelpers::format_type_name( $block->name );
 		$this->register_block_type();
 	}
