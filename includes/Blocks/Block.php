@@ -119,7 +119,7 @@ class Block {
 	}
 
 	/**
-	 * Returns the type of the block attribute
+	 * Returns the type of the block attribute.
 	 *
 	 * @param string              $name The block name
 	 * @param array<string,mixed> $attribute The block attribute config
@@ -132,10 +132,10 @@ class Block {
 
 		if ( ! isset( $attribute['type'] ) ) {
 			if ( ! isset( $attribute['source'] ) ) {
-				return null;
+				return null; // No type or source defined, return null.
 			}
 
-			$type = 'String';
+			$type = 'String'; // Default to String if only 'source' is defined.
 		}
 
 		switch ( $attribute['type'] ) {
