@@ -153,11 +153,13 @@ class Block {
 				$type = 'Int';
 				break;
 			case 'array':
+				// Process attributes query.
 				if ( isset( $attribute['query'] ) ) {
 					$type = [ 'list_of' => $this->create_and_register_inner_object_type( $name, $attribute['query'], $prefix ) ];
 					break;
 				}
 
+				// Process scalar array or list of items.
 				$of_type = null;
 				if ( isset( $attribute['items'] ) ) {
 					$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
@@ -166,7 +168,13 @@ class Block {
 				$type = null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::ATTRIBUTES_ARRAY_TYPE_NAME;
 				break;
 			case 'object':
-				$type = Scalar::ATTRIBUTES_OBJECT_TYPE_NAME;
+				// Proceed with the typed object if typing provided, otherwise continue with scalar object.
+				$typed = [];
+				if ( ! empty( $attribute['default']['__typed'] ) ) {
+					$typed = $this->build_typed_object_config( $attribute['default'] );
+				}
+
+				$type = $typed ? $this->create_and_register_inner_object_type( $name, $typed, $prefix ) : Scalar::ATTRIBUTES_OBJECT_TYPE_NAME;
 				break;
 		}
 
@@ -239,6 +247,28 @@ class Block {
 		);
 
 		return $type;
+	}
+
+	/**
+	 * Verifies if the default record has a typed object configuration for the object type and generates config for it.
+	 *
+	 * @param array $default_attribute Default record of the attribute.
+	 */
+	private function build_typed_object_config( $default_attribute ): array {
+		if ( ! is_array( $default_attribute['__typed'] ) ) {
+			return [];
+		}
+
+		return array_combine(
+			array_keys( $default_attribute['__typed'] ),
+			array_map(
+				static fn ( $key ) => [
+					'type'    => $default_attribute['__typed'][ $key ],
+					'default' => $default_attribute[ $key ] ?? null,
+				],
+				array_keys( $default_attribute['__typed'] )
+			)
+		) ?: [];
 	}
 
 	/**
