@@ -163,10 +163,10 @@ class Block {
 					$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
 				}
 
-				$type = null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::get_block_attributes_array_type_name();
+				$type = null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::ATTRIBUTES_ARRAY_TYPE_NAME;
 				break;
 			case 'object':
-				$type = Scalar::get_block_attributes_object_type_name();
+				$type = Scalar::ATTRIBUTES_OBJECT_TYPE_NAME;
 				break;
 		}
 
