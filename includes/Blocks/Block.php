@@ -91,14 +91,14 @@ class Block {
 			return;
 		}
 
-		$block_attribute_fields = $this->get_block_attribute_fields( $block_attributes, $this->type_name . 'Attributes' );
+		$block_attribute_type_name = $this->type_name . 'Attributes';
+		$block_attribute_fields    = $this->get_block_attribute_fields( $block_attributes, $block_attribute_type_name );
 
 		if ( empty( $block_attribute_fields ) ) {
 			return;
 		}
 
 		// For each attribute, register a new object type and attach it to the block type as a field
-		$block_attribute_type_name = $this->type_name . 'Attributes';
 		register_graphql_object_type(
 			$block_attribute_type_name,
 			[
