@@ -154,7 +154,7 @@ class Block {
 				break;
 			case 'array':
 				if ( isset( $attribute['query'] ) ) {
-					$type = [ 'list_of' => $this->get_query_type( $name, $attribute['query'], $prefix ) ];
+					$type = [ 'list_of' => $this->create_and_register_inner_object_type( $name, $attribute['query'], $prefix ) ];
 					break;
 				}
 
@@ -215,23 +215,22 @@ class Block {
 	}
 
 	/**
-	 * Returns the type of the block query attribute
+	 * Dynamically creates and registers a GraphQL object type for queries or typed object attributes.
 	 *
-	 * @param string $name The block name
-	 * @param array  $query The block query config
-	 * @param string $prefix The current prefix string to use for registering the new query attribute type
+	 * @param string $name The block name.
+	 * @param array  $config The block config.
+	 * @param string $prefix The current prefix string to use for registering the new attribute type.
 	 */
-	private function get_query_type( string $name, array $query, string $prefix ): string {
-		$type = $prefix . ucfirst( $name );
-
-		$fields = $this->create_attributes_fields( $query, $type );
+	private function create_and_register_inner_object_type( string $name, array $config, string $prefix ): string {
+		$type   = $prefix . ucfirst( $name );
+		$fields = $this->create_attributes_fields( $config, $type );
 
 		register_graphql_object_type(
 			$type,
 			[
 				'fields'      => $fields,
 				'description' => sprintf(
-					// translators: %1$s is the attribute name, %2$s is the block attributes field.
+				// translators: %1$s is the attribute name, %2$s is the block attributes field.
 					__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
 					$type,
 					$prefix
@@ -243,10 +242,10 @@ class Block {
 	}
 
 	/**
-	 * Creates the new attribute fields for query types
+	 * Creates the new attribute fields for inner block types.
 	 *
-	 * @param array  $attributes The query attributes config
-	 * @param string $prefix The current prefix string to use for registering the new query attribute type
+	 * @param array  $attributes The attributes config.
+	 * @param string $prefix The current prefix string to use for registering the new inner block attribute type.
 	 */
 	private function create_attributes_fields( $attributes, $prefix ): array {
 		$fields = [];
