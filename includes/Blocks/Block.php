@@ -19,7 +19,7 @@ use WP_Block_Type;
  */
 class Block {
 	/**
-	 * The Block Type
+	 * The Block Type.
 	 *
 	 * @var \WP_Block_Type
 	 */
@@ -40,14 +40,14 @@ class Block {
 	protected Registry $block_registry;
 
 	/**
-	 * The attributes of the block
+	 * The attributes of the block.
 	 *
 	 * @var array|null
 	 */
 	protected ?array $block_attributes;
 
 	/**
-	 * Any Additional attributes of the block not defined in block.json
+	 * Any Additional attributes of the block not defined in block.json.
 	 *
 	 * @var array|null
 	 */
@@ -62,7 +62,7 @@ class Block {
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		$this->block            = $block;
 		$this->block_registry   = $block_registry;
-		$this->block_attributes = $this->block->attributes;
+		$this->block_attributes = array_merge( $this->block->attributes ?? [], $this->additional_block_attributes ?? [] );
 		$this->type_name        = WPGraphQLHelpers::format_type_name( $block->name );
 		$this->register_block_type();
 	}
@@ -81,18 +81,8 @@ class Block {
 	 * Registers the block attributes GraphQL type and adds it as a field on the Block.
 	 */
 	private function register_block_attributes_as_fields(): void {
-		// Grab any additional block attributes attached into the class itself.
-		$block_attributes = array_merge(
-			$this->block_attributes ?? [],
-			$this->additional_block_attributes ?? [],
-		);
-
-		if ( empty( $block_attributes ) ) {
-			return;
-		}
-
 		$block_attribute_type_name = $this->type_name . 'Attributes';
-		$block_attribute_fields    = $this->get_block_attribute_fields( $block_attributes, $block_attribute_type_name );
+		$block_attribute_fields    = $this->get_block_attribute_fields( $block_attribute_type_name );
 
 		if ( empty( $block_attribute_fields ) ) {
 			return;
@@ -190,12 +180,11 @@ class Block {
 	/**
 	 * Gets the WPGraphQL field registration config for the block attributes.
 	 *
-	 * @param array  $block_attributes The block attributes.
 	 * @param string $prefix The current prefix string to use for the get_query_type
 	 */
-	private function get_block_attribute_fields( array $block_attributes, string $prefix = '' ): array {
+	private function get_block_attribute_fields( string $prefix = '' ): array {
 		$fields = [];
-		foreach ( $block_attributes as $attribute_name => $attribute_config ) {
+		foreach ( $this->block_attributes as $attribute_name => $attribute_config ) {
 			$graphql_type = $this->get_attribute_type( $attribute_name, $attribute_config, $prefix );
 
 			if ( empty( $graphql_type ) ) {
@@ -264,24 +253,26 @@ class Block {
 		foreach ( $attributes as $name => $attribute ) {
 			$type = $this->get_attribute_type( $name, $attribute, $prefix );
 
-			if ( isset( $type ) ) {
-				$default_value = $attribute['default'] ?? null;
-
-				$fields[ Utils::format_field_name( $name ) ] = [
-					'type'        => $type,
-					'description' => sprintf(
-						// translators: %1$s is the attribute name, %2$s is the block attributes field.
-						__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
-						$name,
-						$prefix
-					),
-					'resolve'     => function ( $attributes ) use ( $name, $default_value, $type ) {
-						$value = $attributes[ $name ] ?? $default_value;
-
-						return $this->normalize_attribute_value( $value, $type );
-					},
-				];
+			if ( ! isset( $type ) ) {
+				continue;
 			}
+
+			$default_value = $attribute['default'] ?? null;
+
+			$fields[ Utils::format_field_name( $name ) ] = [
+				'type'        => $type,
+				'description' => sprintf(
+				// translators: %1$s is the attribute name, %2$s is the block attributes field.
+					__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
+					$name,
+					$prefix
+				),
+				'resolve'     => function ( $attributes ) use ( $name, $default_value, $type ) {
+					$value = $attributes[ $name ] ?? $default_value;
+
+					return $this->normalize_attribute_value( $value, $type );
+				},
+			];
 		}
 
 		return $fields;
