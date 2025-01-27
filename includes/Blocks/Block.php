@@ -165,7 +165,7 @@ class Block {
 					$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
 				}
 
-				$type = null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::ATTRIBUTES_ARRAY_TYPE_NAME;
+				$type = null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::get_block_attributes_array_type_name();
 				break;
 			case 'object':
 				// Proceed with the typed object if typing provided, otherwise continue with scalar object.
@@ -174,7 +174,7 @@ class Block {
 					$typed = $this->build_typed_object_config( $attribute['default'] );
 				}
 
-				$type = $typed ? $this->create_and_register_inner_object_type( $name, $typed, $prefix ) : Scalar::ATTRIBUTES_OBJECT_TYPE_NAME;
+				$type = $typed ? $this->create_and_register_inner_object_type( $name, $typed, $prefix ) : Scalar::get_block_attributes_object_type_name();
 				break;
 		}
 
