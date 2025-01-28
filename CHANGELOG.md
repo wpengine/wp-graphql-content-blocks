@@ -1,5 +1,73 @@
 # WPGraphQL Content Blocks
 
+## 4.5.0
+
+### Minor Changes
+
+- b133a1b: Added WP GraphQL as a required plugin.
+- b813352: Adds support for resolving and returning navigation items within the CoreNavigation innerBlocks for WPGraphQL Content Blocks.
+
+  ```graphql
+  {
+    posts {
+      nodes {
+        editorBlocks {
+          ... on CoreNavigation {
+            type
+            name
+            innerBlocks {
+              type
+              name
+            }
+            attributes {
+              ref
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
+  ```json
+  {
+    "data": {
+      "posts": {
+        "nodes": [
+          {
+            "editorBlocks": [
+              {
+                "type": "CoreNavigation",
+                "name": "core/navigation",
+                "innerBlocks": [
+                  {
+                    "type": "CorePageList",
+                    "name": "core/page-list"
+                  },
+                  {
+                    "type": "CoreNavigationLink",
+                    "name": "core/navigation-link"
+                  }
+                ],
+                "attributes": {
+                  "ref": 31
+                }
+              }
+            ]
+          },
+          {
+            "editorBlocks": [{}]
+          }
+        ]
+      }
+    }
+  }
+  ```
+
+### Patch Changes
+
+- dec27c3: feat: Added a `CoreGroup` block class to fix an issue with a missing attribute `cssClassName`
+
 ## 4.4.0
 
 ### Minor Changes
