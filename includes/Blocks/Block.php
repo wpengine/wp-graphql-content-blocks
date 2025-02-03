@@ -126,7 +126,7 @@ class Block {
 	}
 
 	/**
-	 * Returns the type of the block attribute
+	 * Returns the type of the block attribute.
 	 *
 	 * @param string              $name The block name
 	 * @param array<string,mixed> $attribute The block attribute config
@@ -135,52 +135,48 @@ class Block {
 	 * @return mixed
 	 */
 	private function get_attribute_type( $name, $attribute, $prefix ) {
-		$type = null;
+		$type           = null;
+		$attribute_type = $attribute['type'] ?? null;
 
-		if ( isset( $attribute['type'] ) ) {
-			switch ( $attribute['type'] ) {
-				case 'rich-text':
-				case 'string':
-					$type = 'String';
+		switch ( $attribute_type ) {
+			case 'rich-text':
+			case 'string':
+				$type = 'String';
+				break;
+			case 'boolean':
+				$type = 'Boolean';
+				break;
+			case 'number':
+				$type = 'Float';
+				break;
+			case 'integer':
+				$type = 'Int';
+				break;
+			case 'array':
+				// Process attributes query.
+				if ( isset( $attribute['query'] ) ) {
+					$type = [ 'list_of' => $this->register_inner_object_type( $name, $attribute['query'], $prefix ) ];
 					break;
-				case 'boolean':
-					$type = 'Boolean';
-					break;
-				case 'number':
-					$type = 'Float';
-					break;
-				case 'integer':
-					$type = 'Int';
-					break;
-				case 'array':
-					if ( isset( $attribute['query'] ) ) {
-						$type = [ 'list_of' => $this->register_inner_object_type( $name, $attribute['query'], $prefix ) ];
-					} elseif ( isset( $attribute['items'] ) ) {
-						$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
+				}
 
-						if ( null !== $of_type ) {
-							$type = [ 'list_of' => $of_type ];
-						} else {
-							$type = Scalar::get_block_attributes_array_type_name();
-						}
-					} else {
-						$type = Scalar::get_block_attributes_array_type_name();
-					}
-					break;
-				case 'object':
-					$type = Scalar::get_block_attributes_object_type_name();
-					break;
-			}
-		} elseif ( isset( $attribute['source'] ) ) {
-			$type = 'String';
+				// Process scalar array or list of items.
+				$of_type = null;
+				if ( isset( $attribute['items'] ) ) {
+					$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
+				}
+				$type = null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::get_block_attributes_array_type_name();
+				break;
+			case 'object':
+				$type = Scalar::get_block_attributes_object_type_name();
+				break;
+			case null:
+				// Default to String if only 'source' is defined, otherwise return null.
+				$type = isset( $attribute['source'] ) ? 'String' : null;
+				break;
 		}
 
-		if ( null !== $type ) {
-			$default_value = $attribute['default'] ?? null;
-
-			if ( isset( $default_value ) ) {
-				$type = [ 'non_null' => $type ];
-			}
+		if ( null !== $type && isset( $attribute['default'] ) ) {
+			$type = [ 'non_null' => $type ];
 		}
 
 		return $type;
