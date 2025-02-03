@@ -154,7 +154,7 @@ class Block {
 					break;
 				case 'array':
 					if ( isset( $attribute['query'] ) ) {
-						$type = [ 'list_of' => $this->get_query_type( $name, $attribute['query'], $prefix ) ];
+						$type = [ 'list_of' => $this->register_inner_object_type( $name, $attribute['query'], $prefix ) ];
 					} elseif ( isset( $attribute['items'] ) ) {
 						$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
 
@@ -230,16 +230,15 @@ class Block {
 	}
 
 	/**
-	 * Returns the type of the block query attribute
+	 * Dynamically creates and registers a GraphQL object type for queries or typed object attributes.
 	 *
-	 * @param string $name The block name
-	 * @param array  $query The block query config
-	 * @param string $prefix The current prefix string to use for registering the new query attribute type
+	 * @param string $name The block name.
+	 * @param array  $config The block config.
+	 * @param string $prefix The current prefix string to use for registering the new attribute type.
 	 */
-	private function get_query_type( string $name, array $query, string $prefix ): string {
-		$type = $prefix . ucfirst( $name );
-
-		$fields = $this->create_attributes_fields( $query, $type );
+	private function register_inner_object_type( string $name, array $config, string $prefix ): string {
+		$type   = $prefix . ucfirst( $name );
+		$fields = $this->create_attributes_fields( $config, $type );
 
 		register_graphql_object_type(
 			$type,
