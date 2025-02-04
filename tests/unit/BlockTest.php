@@ -143,7 +143,90 @@ class BlockTest extends PluginTestCase {
 		}
 	}
 
+	/**
+	 * Access private method process_object_attributes using reflection.
+	 */
+	private function invokeProcessObjectAttributes($name, $attribute, $prefix) {
+		$methodFilter = new \ReflectionMethod($this->block, 'filter_typed_object_attributes');
+		$methodFilter->setAccessible(true);
+		$methodFilter->invoke($this->block); // Run the method to populate the property
+
+		$property = new \ReflectionProperty($this->block, 'typed_object_attributes');
+		$property->setAccessible(true);
+
+		$method = new \ReflectionMethod($this->block, 'process_object_attributes');
+		$method->setAccessible(true);
+
+		return $method->invoke($this->block, $name, $attribute, $prefix);
+	}
+
+	/** Test default behavior when no filter or child class is used */
+	public function testProcessObjectAttributes_Default() {
+		$attribute = ['type' => 'object'];
+		$expected = Scalar::get_block_attributes_object_type_name();
+
+		$this->assertEquals(
+			$expected,
+			$this->invokeProcessObjectAttributes('block_name', $attribute, 'prefix')
+		);
+	}
+
+	/** Test dynamically defined object type properties via WordPress filter */
+	public function testProcessObjectAttributes_WithFilter() {
+		add_filter('wpgraphql_content_blocks_object_typing_test-block', function($attributes) {
+			$attributes['film'] = [
+				'director' => 'string',
+				'title'    => 'string',
+			];
+			return $attributes;
+		});
+
+		$attribute = [
+			'type' => 'object',
+			'default' => ['director' => '', 'title' => ''],
+		];
+
+		$result = $this->invokeProcessObjectAttributes('film', $attribute, 'registeredObjectPrefix');
+		$this->assertIsString($result);
+		$this->assertStringContainsString('registeredObjectPrefix', $result);
+	}
+
+	/** Test extending `Block` in a child class and specifying a custom multidimensional array */
+	public function testProcessObjectAttributes_ExtendedClass() {
+		// Create a real WP_Block_Type instance
+		$blockMock = new WP_Block_Type('test-block');
+		$blockMock->attributes = [];
+
+		// Get real instances of dependencies
+		$typeRegistry = WPGraphQL::get_type_registry();
+		$blockTypeRegistry = WP_Block_Type_Registry::get_instance();
+		$registry = new Registry($typeRegistry, $blockTypeRegistry);
+
+		// Use real Registry instance instead of mocking
+		$childBlock = new class($blockMock, $registry) extends Block {
+			protected array $typed_object_attributes = [
+				'customObject' => [
+					'propertyA' => 'string',
+					'propertyB' => 'boolean',
+				]
+			];
+		};
+
+		$attribute = [
+			'type' => 'object',
+			'default' => ['propertyA' => '', 'propertyB' => false],
+		];
+
+		$method = new \ReflectionMethod($childBlock, 'process_object_attributes');
+		$method->setAccessible(true);
+		$result = $method->invoke($childBlock, 'customObject', $attribute, 'registeredObjectPrefix');
+
+		$this->assertIsString($result);
+		$this->assertStringContainsString('registeredObjectPrefix', $result);
+	}
+
 	public function tearDown(): void {
+		remove_all_filters('wpgraphql_content_blocks_object_typing_test-block');
 		Mockery::close();
 		parent::tearDown();
 	}
