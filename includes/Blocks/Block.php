@@ -54,7 +54,8 @@ class Block {
 	protected ?array $additional_block_attributes;
 
 	/**
-	 * A filtered array of block object attributes that are typed.
+	 * A filterable array of block object attributes that are typed.
+	 * The keys could be the object attribute names of the block and the value is an associative array where the key is the property name and the value is the type.
 	 *
 	 * @var array<string, array<string, "array"|"boolean"|"number"|"integer"|"object"|"rich-text"|"string">>
 	 */
