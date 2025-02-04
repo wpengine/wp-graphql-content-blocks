@@ -54,6 +54,13 @@ class Block {
 	protected ?array $additional_block_attributes;
 
 	/**
+	 * A filtered array of block object attributes that are typed.
+	 *
+	 * @var array<string, array<string, "array"|"boolean"|"number"|"integer"|"object"|"rich-text"|"string">>
+	 */
+	protected array $typed_object_attributes = [];
+
+	/**
 	 * Block constructor.
 	 *
 	 * @param \WP_Block_Type                             $block The Block Type.
@@ -64,7 +71,22 @@ class Block {
 		$this->block_registry   = $block_registry;
 		$this->block_attributes = $this->block->attributes;
 		$this->type_name        = WPGraphQLHelpers::format_type_name( $block->name );
+
+		$this->filter_typed_object_attributes();
 		$this->register_block_type();
+	}
+
+	/**
+	 * Filters the typed object attributes for the block.
+	 *
+	 * @return void
+	 */
+	private function filter_typed_object_attributes() {
+		$block_name = str_replace( [ '/' ], '_', $this->block->name );
+
+		if ( has_filter( 'wpgraphql_content_blocks_object_typing_' . $block_name ) ) {
+			$this->typed_object_attributes = (array) apply_filters( 'wpgraphql_content_blocks_object_typing_' . $block_name, [] );
+		}
 	}
 
 	/**
@@ -156,7 +178,7 @@ class Block {
 				$type = $this->process_array_attributes( $name, $attribute, $prefix );
 				break;
 			case 'object':
-				$type = Scalar::get_block_attributes_object_type_name();
+				$type = $this->process_object_attributes( $name, $attribute, $prefix );
 				break;
 			case null:
 				// Default to String if only 'source' is defined, otherwise return null.
@@ -191,6 +213,29 @@ class Block {
 		}
 
 		return null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::get_block_attributes_array_type_name();
+	}
+
+	/**
+	 * Processes the object attributes as typed object if defined within filter, otherwise as scalar.
+	 *
+	 * @param string              $name The block name
+	 * @param array<string,mixed> $attribute The block attribute config
+	 * @param string              $prefix Current prefix string to use for the get_query_type
+	 *
+	 * @return string
+	 */
+	private function process_object_attributes( $name, $attribute, $prefix ) {
+		// If there is no typing for this object attribute, return the default scalar type.
+		if ( empty( $this->typed_object_attributes[ $name ] ) ) {
+			return Scalar::get_block_attributes_object_type_name();
+		}
+
+		$typed = $this->build_typed_object_config(
+			$attribute['default'] ?? [],
+			$this->typed_object_attributes[ $name ]
+		);
+
+		return $typed ? $this->register_inner_object_type( $name, $typed, $prefix ) : Scalar::get_block_attributes_object_type_name();
 	}
 
 	/**
@@ -261,6 +306,26 @@ class Block {
 		);
 
 		return $type;
+	}
+
+	/**
+	 * Generates typed object-type attribute config by merging the default values with the typed object configuration.
+	 * When typing is specified for an attribute, only the typed properties are returned.
+	 *
+	 * @param array $default_values Default record of the attribute.
+	 * @param array $typed Typed object configuration.
+	 */
+	private function build_typed_object_config( $default_values, $typed ): array {
+		return array_combine(
+			array_keys( $typed ),
+			array_map(
+				static fn ( $key ) => [
+					'type'    => $typed[ $key ],
+					'default' => $default_values[ $key ] ?? null,
+				],
+				array_keys( $typed )
+			)
+		) ?: [];
 	}
 
 	/**
