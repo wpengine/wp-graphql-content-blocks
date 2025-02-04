@@ -153,18 +153,7 @@ class Block {
 				$type = 'Int';
 				break;
 			case 'array':
-				// Process attributes query.
-				if ( isset( $attribute['query'] ) ) {
-					$type = [ 'list_of' => $this->register_inner_object_type( $name, $attribute['query'], $prefix ) ];
-					break;
-				}
-
-				// Process scalar array or list of items.
-				$of_type = null;
-				if ( isset( $attribute['items'] ) ) {
-					$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
-				}
-				$type = null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::get_block_attributes_array_type_name();
+				$type = $this->process_array_attributes( $name, $attribute, $prefix );
 				break;
 			case 'object':
 				$type = Scalar::get_block_attributes_object_type_name();
@@ -180,6 +169,28 @@ class Block {
 		}
 
 		return $type;
+	}
+
+	/**
+	 * Processes the array attributes as query, list of items or scalar array.
+	 *
+	 * @param string              $name The block name
+	 * @param array<string,mixed> $attribute The block attribute config
+	 * @param string              $prefix Current prefix string to use for the get_query_type
+	 *
+	 * @return array|string
+	 */
+	private function process_array_attributes( $name, $attribute, $prefix ) {
+		if ( isset( $attribute['query'] ) ) {
+			return [ 'list_of' => $this->register_inner_object_type( $name, $attribute['query'], $prefix ) ];
+		}
+
+		$of_type = null;
+		if ( isset( $attribute['items'] ) ) {
+			$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
+		}
+
+		return null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::get_block_attributes_array_type_name();
 	}
 
 	/**
