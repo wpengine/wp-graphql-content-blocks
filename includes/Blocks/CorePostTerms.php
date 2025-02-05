@@ -54,7 +54,7 @@ class CorePostTerms extends Block {
 					$this->type_name
 				),
 				'resolve'     => static function ( $block ) use ( $name ) {
-					return isset($block['attrs'][$name]) ? (string) $block['attrs'][$name] : null;
+					return isset( $block['attrs'][ $name ] ) ? (string) $block['attrs'][ $name ] : null;
 				},
 			]
 		);
