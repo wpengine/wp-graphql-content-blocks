@@ -31,7 +31,7 @@ class CorePostTerms extends Block {
 			]
 		);
 
-		$this->register_list_of_terms_field();
+		$this->register_list_of_terms_connection();
 	}
 
 	/**
@@ -58,7 +58,7 @@ class CorePostTerms extends Block {
 	 * @return void
 	 * @throws \Exception
 	 */
-	protected function register_list_of_terms_field() {
+	protected function register_list_of_terms_connection() {
 		register_graphql_connection(
 			[
 				'fromType'      => $this->type_name,
