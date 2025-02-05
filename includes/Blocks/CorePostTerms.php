@@ -7,8 +7,9 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
+use WPGraphQL\AppContext;
 use WPGraphQL\ContentBlocks\Registry\Registry;
-use WPGraphQL\Model\Term;
+use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
 use WP_Block_Type;
 
 /**
@@ -67,29 +68,26 @@ class CorePostTerms extends Block {
 	 * @throws \Exception
 	 */
 	protected function register_list_of_terms_field() {
-		register_graphql_field(
-			$this->type_name,
-			'terms',
+		register_graphql_connection(
 			[
-				'type'        => [ 'list_of' => 'TermNode' ],
-				'description' => __( 'The terms associated with the post.', 'wp-graphql-content-blocks' ),
-				'resolve'     => static function ( $block ) {
+				'fromType'      => $this->type_name,
+				'toType'        => 'TermNode',
+				'fromFieldName' => 'terms',
+				'resolve'       => static function ( $block, array $args, AppContext $context, $info ) {
 					$term = $block['attrs']['term'] ?? null;
 					if ( empty( $term ) ) {
 						return null;
 					}
 
-					$id = get_the_ID();
-					if ( ! $id ) {
+					$post_id = get_the_ID();
+					if ( ! $post_id ) {
 						return null;
 					}
 
-					$terms = get_the_terms( $id, $term );
-					if ( empty( $terms ) || is_wp_error( $terms ) ) {
-						return null;
-					}
+					$resolver = new TermObjectConnectionResolver( $block, $args, $context, $info, $term );
+					$resolver->set_query_arg( 'object_ids', $post_id );
 
-					return array_map( static fn ( $term ) => new Term( $term ), $terms );
+					return $resolver->get_connection();
 				},
 			]
 		);
