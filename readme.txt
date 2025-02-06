@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.7.1
-Stable tag: 4.5.0
+Stable tag: 4.6.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.6.0 =
+
+### Minor Changes
+
+- 7838c93: Replaced old plugin service to use the WPE updater service for checking for updates. The new API endpoint will be https://wpe-plugin-updates.wpengine.com/wp-graphql-content-blocks/info.json
 
 = 4.5.0 =
 
@@ -101,12 +107,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 - 756471a: feat: add support for resolving PostContent blocks
 - 19f6e27: feat: add support for resolving Template Part blocks
 - 4c548c3: feat: add support for resolving Block Patterns
-
-= 4.3.2 =
-
-### Patch Changes
-
-- c8832fc: fix: improve handling of empty blocks in `ContentBlocksResolver`.
-- 9a2ebf7: fix: Ensure correct `EditorBlock.type` field resolution.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)

@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.6.0
+
+### Minor Changes
+
+- 7838c93: Replaced old plugin service to use the WPE updater service for checking for updates. The new API endpoint will be https://wpe-plugin-updates.wpengine.com/wp-graphql-content-blocks/info.json
+
 ## 4.5.0
 
 ### Minor Changes
