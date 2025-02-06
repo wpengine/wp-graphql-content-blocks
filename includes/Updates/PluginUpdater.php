@@ -31,7 +31,7 @@ class PluginUpdater {
 	 * These properties are passed in when instantiating to identify the plugin and it's update location.
 	 * @var array
 	 */
-	private $properties;
+	private $properties = [];
 
 	/**
 	 * Get the class constructed.
@@ -53,7 +53,7 @@ class PluginUpdater {
 
 		$this->properties = $this->get_full_plugin_properties( $properties, $this->api_url );
 
-		if ( ! $this->properties ) {
+		if ( empty($this->properties) ) {
 			return;
 		}
 
@@ -65,9 +65,9 @@ class PluginUpdater {
 	 *
 	 * @param array  $properties These properties are passed in when instantiating to identify the plugin and it's update location.
 	 * @param string $api_url    The URL where the api is located.
-	 * @return array|null
+	 * @return array
 	 */
-	public function get_full_plugin_properties( $properties, $api_url ) {
+	public function get_full_plugin_properties( $properties, $api_url ) : array {
 		$plugins = \get_plugins();
 
 		// Scan through all plugins installed and find the one which matches this one in question.
@@ -86,7 +86,7 @@ class PluginUpdater {
 		}
 
 		// No matching plugin was found installed.
-		return null;
+		return [];
 	}
 
 	/**
@@ -105,7 +105,7 @@ class PluginUpdater {
 	 * @param ?object $transient_value The value of the `site_transient_update_plugins` transient.
 	 *
 	 * @handles site_transient_update_plugins
-	 * @return object
+	 * @return object|null
 	 */
 	public function filter_plugin_update_transient( $transient_value ) {
 		// No update object exists. Return early.

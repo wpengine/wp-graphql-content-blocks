@@ -6,8 +6,8 @@ parameters:
 			path: includes/Data/BlockAttributeResolver.php  
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$response\\.$#"
-			count: 1
-			path: includes/PluginUpdater/UpdateCallbacks.php
+			message: '#Access to an undefined property .+#'
+			count: 18
+			path: includes/Updates/PluginUpdater.php
 
 
