@@ -98,7 +98,7 @@ final class WPGraphQLContentBlocks {
 		}
 
 		// Include the updater functions.
-		if (file_exists(WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/includes/Updates/CheckForUpgrades.php')) {
+		if ( file_exists( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/includes/Updates/CheckForUpgrades.php' ) ) {
 			require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/includes/Updates/CheckForUpgrades.php';
 		}
 

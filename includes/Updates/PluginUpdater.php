@@ -1,4 +1,9 @@
 <?php
+/**
+ * Plugin updater class
+ *
+ * @package WPGraphQL\ContentBlocks\Updates
+ */
 
 declare(strict_types=1);
 
@@ -17,18 +22,21 @@ use stdClass;
 class PluginUpdater {
 	/**
 	 * The URL where the api is located.
+	 *
 	 * @var string
 	 */
 	private $api_url;
 
 	/**
 	 * The amount of time to wait before checking for new updates.
+	 *
 	 * @var int
 	 */
 	private $cache_time;
 
 	/**
 	 * These properties are passed in when instantiating to identify the plugin and it's update location.
+	 *
 	 * @var array
 	 */
 	private $properties = [];
@@ -43,7 +51,9 @@ class PluginUpdater {
 			empty( $properties['plugin_slug'] ) ||
 			empty( $properties['plugin_basename'] )
 		) {
+			// @phpcs:disable WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'WPE Secure Plugin Updater received a malformed request.' );
+			// @phpcs:enable WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			return;
 		}
 
@@ -53,7 +63,7 @@ class PluginUpdater {
 
 		$this->properties = $this->get_full_plugin_properties( $properties, $this->api_url );
 
-		if ( empty($this->properties) ) {
+		if ( empty( $this->properties ) ) {
 			return;
 		}
 
@@ -65,9 +75,8 @@ class PluginUpdater {
 	 *
 	 * @param array  $properties These properties are passed in when instantiating to identify the plugin and it's update location.
 	 * @param string $api_url    The URL where the api is located.
-	 * @return array
 	 */
-	public function get_full_plugin_properties( $properties, $api_url ) : array {
+	public function get_full_plugin_properties( $properties, $api_url ): array {
 		$plugins = \get_plugins();
 
 		// Scan through all plugins installed and find the one which matches this one in question.
@@ -95,8 +104,8 @@ class PluginUpdater {
 	 * @return void
 	 */
 	public function register() {
-		add_filter( 'plugins_api', array( $this, 'filter_plugin_update_info' ), 20, 3 );
-		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'filter_plugin_update_transient' ) );
+		add_filter( 'plugins_api', [ $this, 'filter_plugin_update_info' ], 20, 3 );
+		add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'filter_plugin_update_transient' ] );
 	}
 
 	/**
@@ -152,7 +161,6 @@ class PluginUpdater {
 			return $res;
 		}
 
-
 		$result = $this->fetch_plugin_info();
 
 		// Do nothing if we don't get the correct response from the server.
@@ -174,15 +182,17 @@ class PluginUpdater {
 		$response = get_option( $this->properties['plugin_update_transient_name'] );
 
 		if ( empty( $expiry ) || time() > $expiry || empty( $response ) ) {
+			// @phpcs:disable WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 			$response = wp_remote_get(
 				$this->properties['plugin_manifest_url'],
-				array(
+				[
 					'timeout' => 10,
-					'headers' => array(
+					'headers' => [
 						'Accept' => 'application/json',
-					),
-				)
+					],
+				]
 			);
+			// @phpcs:enable WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 
 			if (
 				is_wp_error( $response ) ||
@@ -213,7 +223,7 @@ class PluginUpdater {
 	 *
 	 * @param object $response The response object.
 	 *
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	private function parse_plugin_info( $response ) {
 
@@ -237,10 +247,10 @@ class PluginUpdater {
 			? $response->tested
 			: $wp_version;
 
-		$res->sections = array(
+		$res->sections = [
 			'description' => $response->sections->description,
 			'changelog'   => $response->sections->changelog,
-		);
+		];
 
 		return $res;
 	}
