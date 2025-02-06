@@ -42,8 +42,17 @@ if ( ! function_exists( 'wpgraphql_content_blocks_constants' ) ) {
 		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH' ) ) {
 			define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH', plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE ) );
 		}
+
 		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION' ) ) {
 			define( 'WPGRAPHQL_CONTENT_BLOCKS_VERSION', '4.5.0' );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_URL' ) ) {
+			define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+		}
+
+		if ( ! defined( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH' ) ) {
+			define( 'WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH', plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_URL ) );
 		}
 	}
 }
