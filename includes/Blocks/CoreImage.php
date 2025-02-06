@@ -42,6 +42,7 @@ class CoreImage extends Block {
 	 */
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		parent::__construct( $block, $block_registry );
+		
 		register_graphql_field(
 			$this->type_name,
 			'mediaDetails',
