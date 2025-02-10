@@ -45,7 +45,7 @@ final class CorePostTermsTest extends PluginTestCase {
 						... on CorePostTerms {
 							prefix
 							suffix
-							term
+							taxonomySlug
 							terms {
 								__typename
 								nodes {
@@ -88,7 +88,7 @@ final class CorePostTermsTest extends PluginTestCase {
 		$this->assertEquals('CorePostTerms', $block['__typename']);
 		$this->assertEquals('Before', $block['prefix']);
 		$this->assertEquals('After', $block['suffix']);
-		$this->assertEquals('category', $block['term']);
+		$this->assertEquals('category', $block['taxonomySlug']);
 
 		$this->assertArrayHasKey('terms', $block);
 		$this->assertArrayHasKey('nodes', $block['terms']);
