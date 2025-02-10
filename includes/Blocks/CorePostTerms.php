@@ -9,6 +9,7 @@ namespace WPGraphQL\ContentBlocks\Blocks;
 
 use WPGraphQL\AppContext;
 use WPGraphQL\ContentBlocks\Registry\Registry;
+use WPGraphQL\Data\Connection\TaxonomyConnectionResolver;
 use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
 use WP_Block_Type;
 
@@ -22,34 +23,34 @@ class CorePostTerms extends Block {
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		parent::__construct( $block, $block_registry );
 
-		register_graphql_fields(
-			$this->type_name,
-			[
-				'prefix' => $this->get_string_field_config( 'prefix' ),
-				'suffix' => $this->get_string_field_config( 'suffix' ),
-				'term'   => $this->get_string_field_config( 'term' ),
-			]
-		);
-
-		$this->register_list_of_terms_connection();
+		$this->register_fields();
+		$this->register_connections();
 	}
 
 	/**
-	 * Gets a string field for the block.
-	 *
-	 * @param string $name The name of the field.
+	 * Registers custom fields for the block.
 	 */
-	private function get_string_field_config( string $name ): array {
-		return [
-			'type'        => 'String',
-			'description' => sprintf(
-				// translators: %1$s is the field name, %2$s is the block type name.
-				__( '%1$s of the "%2$s" Block Type', 'wp-graphql-content-blocks' ),
-				ucfirst( $name ),
-				$this->type_name
-			),
-			'resolve'     => static fn ( $block ) => isset( $block['attrs'][ $name ] ) ? (string) $block['attrs'][ $name ] : null,
-		];
+	private function register_fields(): void {
+		register_graphql_fields(
+			$this->type_name,
+			[
+				'prefix'       => [
+					'type'        => 'String',
+					'description' => __( 'Prefix to display before the post terms', 'wp-graphql-content-blocks' ),
+					'resolve'     => static fn ( $block ) => isset( $block['attrs']['prefix'] ) ? (string) $block['attrs']['prefix'] : null,
+				],
+				'suffix'       => [
+					'type'        => 'String',
+					'description' => __( 'Suffix to display after the post terms', 'wp-graphql-content-blocks' ),
+					'resolve'     => static fn ( $block ) => isset( $block['attrs']['suffix'] ) ? (string) $block['attrs']['suffix'] : null,
+				],
+				'taxonomySlug' => [
+					'type'        => 'String',
+					'description' => __( 'The taxonomy slug to display terms from', 'wp-graphql-content-blocks' ),
+					'resolve'     => static fn ( $block ) => isset( $block['attrs']['term'] ) ? (string) $block['attrs']['term'] : null,
+				],
+			]
+		);
 	}
 
 	/**
@@ -58,15 +59,16 @@ class CorePostTerms extends Block {
 	 * @return void
 	 * @throws \Exception
 	 */
-	protected function register_list_of_terms_connection() {
+	protected function register_connections() {
+		// Register connection to terms.
 		register_graphql_connection(
 			[
 				'fromType'      => $this->type_name,
 				'toType'        => 'TermNode',
 				'fromFieldName' => 'terms',
 				'resolve'       => static function ( $block, array $args, AppContext $context, $info ) {
-					$term = $block['attrs']['term'] ?? null;
-					if ( empty( $term ) ) {
+					$taxonomy = $block['attrs']['term'] ?? null;
+					if ( empty( $taxonomy ) ) {
 						return null;
 					}
 
@@ -75,10 +77,31 @@ class CorePostTerms extends Block {
 						return null;
 					}
 
-					$resolver = new TermObjectConnectionResolver( $block, $args, $context, $info, $term );
-					$resolver->set_query_arg( 'object_ids', $post_id );
+					$args['where']['objectIds'] = $post_id;
+					$resolver                   = new TermObjectConnectionResolver( $block, $args, $context, $info, $taxonomy );
 
 					return $resolver->get_connection();
+				},
+			]
+		);
+
+		// Register connection to the taxonomy.
+		register_graphql_connection(
+			[
+				'fromType'      => $this->type_name,
+				'toType'        => 'Taxonomy',
+				'fromFieldName' => 'taxonomy',
+				'oneToOne'      => true,
+				'resolve'       => static function ( $block, array $args, AppContext $context, $info ) {
+					$taxonomy = $block['attrs']['term'] ?? null;
+					if ( empty( $taxonomy ) ) {
+						return null;
+					}
+
+					$resolver = new TaxonomyConnectionResolver( $block, $args, $context, $info );
+					$resolver->set_query_arg( 'name', $taxonomy );
+
+					return $resolver->one_to_one()->get_connection();
 				},
 			]
 		);
