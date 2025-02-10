@@ -34,20 +34,15 @@ class CorePostTerms extends Block {
 		register_graphql_fields(
 			$this->type_name,
 			[
-				'prefix'       => [
+				'prefix' => [
 					'type'        => 'String',
 					'description' => __( 'Prefix to display before the post terms', 'wp-graphql-content-blocks' ),
 					'resolve'     => static fn ( $block ) => isset( $block['attrs']['prefix'] ) ? (string) $block['attrs']['prefix'] : null,
 				],
-				'suffix'       => [
+				'suffix' => [
 					'type'        => 'String',
 					'description' => __( 'Suffix to display after the post terms', 'wp-graphql-content-blocks' ),
 					'resolve'     => static fn ( $block ) => isset( $block['attrs']['suffix'] ) ? (string) $block['attrs']['suffix'] : null,
-				],
-				'taxonomySlug' => [
-					'type'        => 'String',
-					'description' => __( 'The taxonomy slug to display terms from', 'wp-graphql-content-blocks' ),
-					'resolve'     => static fn ( $block ) => isset( $block['attrs']['term'] ) ? (string) $block['attrs']['term'] : null,
 				],
 			]
 		);
