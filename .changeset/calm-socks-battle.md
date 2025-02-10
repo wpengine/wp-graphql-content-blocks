@@ -2,8 +2,8 @@
 "@wpengine/wp-graphql-content-blocks": minor
 ---
 
-Adds support for resolving and returning related term items as a `terms` connection for the CorePostTerms block.
-Adds support for resolving and returning the `prefix`, `suffix` and `term` items within the correspondent fields of the CorePostTerms block.
+Adds support for resolving and returning related term items as a `terms` connection for the CorePostTerms block along with `taxonomy` connection.
+Adds support for resolving and returning the `prefix` and `suffix` items within the correspondent fields of the CorePostTerms block.
 
 ```graphql
 query TestPostTerms($uri: String! = "test-terms") {
@@ -16,11 +16,21 @@ query TestPostTerms($uri: String! = "test-terms") {
                 ... on CorePostTerms {
                     prefix
                     suffix
-                    term
+                    taxonomy {
+                        __typename
+                        node {
+                            __typename
+                            id
+                            name
+                        }
+                    }
                     terms {
                         __typename
-                        name
-                        id
+                        nodes {
+                            __typename
+                            id
+                            name
+                        }
                     }
                 }
             }
