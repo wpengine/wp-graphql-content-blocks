@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.7.1
-Stable tag: 4.6.0
+Stable tag: 4.7.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,47 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.7.0 =
+
+### Minor Changes
+
+- 82c6080: Adds support for resolving and returning related term items as a `terms` connection for the CorePostTerms block along with `taxonomy` connection.
+  Adds support for resolving and returning the `prefix` and `suffix` items within the correspondent fields of the CorePostTerms block.
+
+  ```graphql
+  query TestPostTerms($uri: String! = "test-terms") {
+    nodeByUri(uri: $uri) {
+      id
+      uri
+      ... on NodeWithPostEditorBlocks {
+        editorBlocks {
+          __typename
+          ... on CorePostTerms {
+            prefix
+            suffix
+            taxonomy {
+              __typename
+              node {
+                __typename
+                id
+                name
+              }
+            }
+            terms {
+              __typename
+              nodes {
+                __typename
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
 
 = 4.6.0 =
 
@@ -99,13 +140,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 ### Patch Changes
 
 - dec27c3: feat: Added a `CoreGroup` block class to fix an issue with a missing attribute `cssClassName`
-
-= 4.4.0 =
-
-### Minor Changes
-
-- 756471a: feat: add support for resolving PostContent blocks
-- 19f6e27: feat: add support for resolving Template Part blocks
-- 4c548c3: feat: add support for resolving Block Patterns
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
