@@ -4,7 +4,7 @@
 
 Replaced core/block with core/synced-pattern for reusable blocks, aligning with WP 6.3's synced patterns. 
 
-**🚨Breaking change🚨** for WordPress versions < 6.3, as core/synced-pattern does not exist in earlier versions.
+**🚨Breaking change🚨** This update does not break functionality for WP < 6.3, but it alters the GraphQL response structure.
 
 Query:
 ```
