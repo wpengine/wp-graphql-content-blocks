@@ -54,6 +54,14 @@ class Block {
 	protected ?array $additional_block_attributes;
 
 	/**
+	 * A filterable array of block object attributes that are typed.
+	 * The keys could be the object attribute names of the block and the value is an associative array where the key is the property name and the value is the type.
+	 *
+	 * @var array<string, array<string, "array"|"boolean"|"number"|"integer"|"object"|"rich-text"|"string">>
+	 */
+	protected array $typed_object_attributes = [];
+
+	/**
 	 * Block constructor.
 	 *
 	 * @param \WP_Block_Type                             $block The Block Type.
@@ -64,7 +72,22 @@ class Block {
 		$this->block_registry   = $block_registry;
 		$this->block_attributes = $this->block->attributes;
 		$this->type_name        = WPGraphQLHelpers::format_type_name( $block->name );
+
+		$this->filter_typed_object_attributes();
 		$this->register_block_type();
+	}
+
+	/**
+	 * Filters the typed object attributes for the block.
+	 *
+	 * @return void
+	 */
+	private function filter_typed_object_attributes() {
+		$block_name = str_replace( [ '/' ], '_', $this->block->name );
+
+		if ( has_filter( 'wpgraphql_content_blocks_object_typing_' . $block_name ) ) {
+			$this->typed_object_attributes = (array) apply_filters( 'wpgraphql_content_blocks_object_typing_' . $block_name, [] );
+		}
 	}
 
 	/**
@@ -126,7 +149,7 @@ class Block {
 	}
 
 	/**
-	 * Returns the type of the block attribute
+	 * Returns the type of the block attribute.
 	 *
 	 * @param string              $name The block name
 	 * @param array<string,mixed> $attribute The block attribute config
@@ -135,55 +158,85 @@ class Block {
 	 * @return mixed
 	 */
 	private function get_attribute_type( $name, $attribute, $prefix ) {
-		$type = null;
+		$type           = null;
+		$attribute_type = $attribute['type'] ?? null;
 
-		if ( isset( $attribute['type'] ) ) {
-			switch ( $attribute['type'] ) {
-				case 'rich-text':
-				case 'string':
-					$type = 'String';
-					break;
-				case 'boolean':
-					$type = 'Boolean';
-					break;
-				case 'number':
-					$type = 'Float';
-					break;
-				case 'integer':
-					$type = 'Int';
-					break;
-				case 'array':
-					if ( isset( $attribute['query'] ) ) {
-						$type = [ 'list_of' => $this->get_query_type( $name, $attribute['query'], $prefix ) ];
-					} elseif ( isset( $attribute['items'] ) ) {
-						$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
-
-						if ( null !== $of_type ) {
-							$type = [ 'list_of' => $of_type ];
-						} else {
-							$type = Scalar::get_block_attributes_array_type_name();
-						}
-					} else {
-						$type = Scalar::get_block_attributes_array_type_name();
-					}
-					break;
-				case 'object':
-					$type = Scalar::get_block_attributes_object_type_name();
-					break;
-			}
-		} elseif ( isset( $attribute['source'] ) ) {
-			$type = 'String';
+		switch ( $attribute_type ) {
+			case 'rich-text':
+			case 'string':
+				$type = 'String';
+				break;
+			case 'boolean':
+				$type = 'Boolean';
+				break;
+			case 'number':
+				$type = 'Float';
+				break;
+			case 'integer':
+				$type = 'Int';
+				break;
+			case 'array':
+				$type = $this->process_array_attributes( $name, $attribute, $prefix );
+				break;
+			case 'object':
+				$type = $this->process_object_attributes( $name, $attribute, $prefix );
+				break;
+			case null:
+				// Default to String if only 'source' is defined, otherwise return null.
+				$type = isset( $attribute['source'] ) ? 'String' : null;
+				break;
 		}
 
-		if ( null !== $type ) {
-			$default_value = $attribute['default'] ?? null;
-
-			if ( isset( $default_value ) ) {
-				$type = [ 'non_null' => $type ];
-			}
+		if ( null !== $type && isset( $attribute['default'] ) ) {
+			$type = [ 'non_null' => $type ];
 		}
 
 		return $type;
+	}
+
+	/**
+	 * Processes the array attributes as query, list of items or scalar array.
+	 *
+	 * @param string              $name The block name
+	 * @param array<string,mixed> $attribute The block attribute config
+	 * @param string              $prefix Current prefix string to use for the get_query_type
+	 *
+	 * @return array|string
+	 */
+	private function process_array_attributes( $name, $attribute, $prefix ) {
+		if ( isset( $attribute['query'] ) ) {
+			return [ 'list_of' => $this->register_inner_object_type( $name, $attribute['query'], $prefix ) ];
+		}
+
+		$of_type = null;
+		if ( isset( $attribute['items'] ) ) {
+			$of_type = $this->get_attribute_type( $name, $attribute['items'], $prefix );
+		}
+
+		return null !== $of_type ? [ 'list_of' => $of_type ] : Scalar::get_block_attributes_array_type_name();
+	}
+
+	/**
+	 * Processes the object attributes as typed object if defined within filter, otherwise as scalar.
+	 *
+	 * @param string              $name The block name
+	 * @param array<string,mixed> $attribute The block attribute config
+	 * @param string              $prefix Current prefix string to use for the get_query_type
+	 *
+	 * @return string
+	 */
+	private function process_object_attributes( $name, $attribute, $prefix ) {
+		// If there is no typing for this object attribute, return the default scalar type.
+		if ( empty( $this->typed_object_attributes[ $name ] ) ) {
+			return Scalar::get_block_attributes_object_type_name();
+		}
+
+		$typed = $this->build_typed_object_config(
+			$attribute['default'] ?? [],
+			$this->typed_object_attributes[ $name ]
+		);
+
+		return $typed ? $this->register_inner_object_type( $name, $typed, $prefix ) : Scalar::get_block_attributes_object_type_name();
 	}
 
 	/**
@@ -230,16 +283,15 @@ class Block {
 	}
 
 	/**
-	 * Returns the type of the block query attribute
+	 * Dynamically creates and registers a GraphQL object type for queries or typed object attributes.
 	 *
-	 * @param string $name The block name
-	 * @param array  $query The block query config
-	 * @param string $prefix The current prefix string to use for registering the new query attribute type
+	 * @param string $name The block name.
+	 * @param array  $config The block config.
+	 * @param string $prefix The current prefix string to use for registering the new attribute type.
 	 */
-	private function get_query_type( string $name, array $query, string $prefix ): string {
-		$type = $prefix . ucfirst( $name );
-
-		$fields = $this->create_attributes_fields( $query, $type );
+	private function register_inner_object_type( string $name, array $config, string $prefix ): string {
+		$type   = $prefix . ucfirst( $name );
+		$fields = $this->create_attributes_fields( $config, $type );
 
 		register_graphql_object_type(
 			$type,
@@ -255,6 +307,26 @@ class Block {
 		);
 
 		return $type;
+	}
+
+	/**
+	 * Generates typed object-type attribute config by merging the default values with the typed object configuration.
+	 * When typing is specified for an attribute, only the typed properties are returned.
+	 *
+	 * @param array $default_values Default record of the attribute.
+	 * @param array $typed Typed object configuration.
+	 */
+	private function build_typed_object_config( $default_values, $typed ): array {
+		return array_combine(
+			array_keys( $typed ),
+			array_map(
+				static fn ( $key ) => [
+					'type'    => $typed[ $key ],
+					'default' => $default_values[ $key ] ?? null,
+				],
+				array_keys( $typed )
+			)
+		) ?: [];
 	}
 
 	/**
