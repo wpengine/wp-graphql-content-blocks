@@ -87,7 +87,6 @@ final class ContentBlocksResolver {
 		 * @param array                  $allowed_block_names The list of allowed block names to filter.
 		 */
 		$parsed_blocks = apply_filters( 'wpgraphql_content_blocks_resolve_blocks', $parsed_blocks, $node, $args, $allowed_block_names );
-
 		return is_array( $parsed_blocks ) ? $parsed_blocks : [];
 	}
 
@@ -100,7 +99,6 @@ final class ContentBlocksResolver {
 	 */
 	private static function parse_blocks( $content ): array {
 		$blocks = parse_blocks( $content );
-
 		return self::handle_do_blocks( $blocks );
 	}
 
@@ -153,7 +151,6 @@ final class ContentBlocksResolver {
 		$block = self::populate_reusable_blocks( $block );
 		$block = self::populate_pattern_inner_blocks( $block );
 		$block = self::populate_navigation_blocks( $block );
-
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
 			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'] );
@@ -170,6 +167,10 @@ final class ContentBlocksResolver {
 	private static function is_block_empty( array $block ): bool {
 		// If we have a blockName, no need to check further.
 		if ( ! empty( $block['blockName'] ) ) {
+			return false;
+		}
+
+		if ( isset( $block['blockName'] ) && 'core/synced-pattern' === $block['blockName'] ) {
 			return false;
 		}
 
@@ -294,8 +295,11 @@ final class ContentBlocksResolver {
 		if ( empty( $parsed_blocks ) ) {
 			return $block;
 		}
-
-		return array_merge( ...$parsed_blocks );
+		// Wrap it in a core/synced-pattern block instead of flattening
+		$block['blockName']     = 'core/synced-pattern';
+		$block['attrs']['slug'] = $reusable_block->post_name;
+		$block['innerBlocks']   = $parsed_blocks;
+		return $block;
 	}
 
 	/**
@@ -380,6 +384,12 @@ final class ContentBlocksResolver {
 		return array_filter(
 			$blocks,
 			static function ( $block ) use ( $allowed_block_names ) {
+				// Allow 'core/synced-pattern' to pass through without filtering.
+				// We need to ensure this block is included regardless of the allowed block names
+				// because it's handled separately (e.g., it should be rendered but not manually inserted by the user).
+				if ( 'core/synced-pattern' === $block['blockName'] ) {
+					return true;
+				}
 				return in_array( $block['blockName'], $allowed_block_names, true );
 			}
 		);
