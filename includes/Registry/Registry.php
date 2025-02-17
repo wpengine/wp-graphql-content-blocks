@@ -276,7 +276,7 @@ final class Registry {
 					'name'            => $block_name,
 					'title'           => __( 'Synced Pattern', 'wp-graphql-content-blocks' ),
 					'icon'            => null,
-					'category'        => 'reusable',
+					'category'        => 'theme',
 					'attributes'      => [
 						'ref'  => [
 							'type' => 'number',
