@@ -111,39 +111,22 @@ jobs:
 
 workflows:
   deploy:
+    when:
+      equal: [ "manual_deploy", << pipeline.parameters.manual_deploy >> ]
     jobs:
       - plugin-unzip:
             slug: wpgraphql-content-blocks
             filename: wp-graphql-content-blocks.php
-            # Run this job when a tag is published.
-            filters:
-              branches:
-                ignore: /.*/
-              tags:
-                only: /^v.*/
       - plugin-build-json:
           slug: wpgraphql-content-blocks
           requires:
             - plugin-unzip
-          # Run this job when a tag is published.
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
       - plugin-deploy:
           name: "plugin-deploy-staging"
           slug: wpgraphql-content-blocks
           requires:
             - plugin-unzip
             - plugin-build-json
-          filters:
-            branches:
-              only:
-                - main
-                - canary
-            tags:
-              only: /^v.*/
           context: wpe-ldap-creds
           auth_url: https://auth-staging.wpengine.io/v1/tokens
           upload_url: https://wp-product-info-staging.wpesvc.net/v1/plugins
@@ -152,12 +135,6 @@ workflows:
           slug: wpgraphql-content-blocks
           requires:
             - "plugin-deploy-staging"
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              # Run this job when a tag is published.
-              only: /^v.*/
           context: wpe-ldap-creds
           auth_url: https://auth.wpengine.io/v1/tokens
           upload_url: https://wp-product-info.wpesvc.net/v1/plugins
