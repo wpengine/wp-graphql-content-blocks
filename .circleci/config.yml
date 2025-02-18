@@ -9,6 +9,11 @@ orbs:
   wp-product-orb: wpengine/wp-product-orb@2.0.0
   node: circleci/node@5.2.0
 
+parameters:
+  manual-deploy:
+    type: string
+    default: "no"
+
 jobs:
   plugin-unzip:
     executor: wp-product-orb/default
@@ -112,7 +117,7 @@ jobs:
 workflows:
   deploy:
     when:
-      equal: [ "manual_deploy", << pipeline.parameters.manual_deploy >> ]
+      equal: [ "yes", << pipeline.parameters.manual-deploy >> ]
     jobs:
       - plugin-unzip:
             slug: wpgraphql-content-blocks
