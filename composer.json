@@ -7,7 +7,7 @@
   "require": {
     "php": ">=7.4",
     "imangazaliev/didom": "^2.0",
-    "blakewilson/wp-enforce-semver": "^2.0"
+    "blakewilson/wp-enforce-semver": "^3.0"
   },
   "require-dev": {
     "brain/monkey": "^2.6",

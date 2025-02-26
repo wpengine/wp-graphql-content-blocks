@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e195db6610328483e6cc589d5f5cde33",
+    "content-hash": "9869bdd90f5a813011427a5af0592daa",
     "packages": [
         {
             "name": "blakewilson/wp-enforce-semver",
-            "version": "2.0.2",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/blakewilson/wp-enforce-semver.git",
-                "reference": "f65b621d7534db802839b74104309269215ef8a3"
+                "reference": "2c524d2cd9dbfadc31b4eabfacae1e742928ff57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blakewilson/wp-enforce-semver/zipball/f65b621d7534db802839b74104309269215ef8a3",
-                "reference": "f65b621d7534db802839b74104309269215ef8a3",
+                "url": "https://api.github.com/repos/blakewilson/wp-enforce-semver/zipball/2c524d2cd9dbfadc31b4eabfacae1e742928ff57",
+                "reference": "2c524d2cd9dbfadc31b4eabfacae1e742928ff57",
                 "shasum": ""
             },
             "require": {
@@ -47,9 +47,9 @@
             "description": "A class to enforce SemVer in your WordPress plugins.",
             "support": {
                 "issues": "https://github.com/blakewilson/wp-enforce-semver/issues",
-                "source": "https://github.com/blakewilson/wp-enforce-semver/tree/2.0.2"
+                "source": "https://github.com/blakewilson/wp-enforce-semver/tree/3.0.1"
             },
-            "time": "2024-02-05T20:14:37+00:00"
+            "time": "2024-07-05T18:56:06+00:00"
         },
         {
             "name": "imangazaliev/didom",
@@ -4335,7 +4335,7 @@
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4"
     },
