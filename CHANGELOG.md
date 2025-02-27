@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.8.1
+
+### Patch Changes
+
+- 84a65bb: bug: Fixes fatal error when you de-activate WPGraphQL
+
 ## 4.8.0
 
 ### Minor Changes
