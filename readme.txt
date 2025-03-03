@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.7.1
-Stable tag: 4.8.0
+Stable tag: 4.8.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.8.1 =
+
+### Patch Changes
+
+- 84a65bb: bug: Fixes fatal error when you de-activate WPGraphQL
 
 = 4.8.0 =
 
@@ -221,11 +227,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
     }
   }
   ```
-
-= 4.6.0 =
-
-### Minor Changes
-
-- 7838c93: Replaced old plugin service to use the WPE updater service for checking for updates. The new API endpoint will be https://wpe-plugin-updates.wpengine.com/wp-graphql-content-blocks/info.json
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
