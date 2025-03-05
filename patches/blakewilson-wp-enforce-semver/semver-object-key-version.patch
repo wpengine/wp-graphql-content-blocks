@@ -1,6 +1,6 @@
-diff --git a/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php b/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php
---- a/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php	
-+++ b/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php	(date 1741188709127)
+diff --git a/src/EnforceSemVer.php b/src/EnforceSemVer.php
+--- a/src/EnforceSemVer.php	
++++ b/src/EnforceSemVer.php	(date 1741188709127)
 @@ -63,7 +63,7 @@
  		 */
  		if (
