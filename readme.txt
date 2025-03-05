@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.7.1
-Stable tag: 4.8.1
+Stable tag: 4.8.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.8.2 =
+
+### Patch Changes
+
+- afd2458: bug: Fixes fatal error on the Site Health page for the info tab. Caused by a naming of the wrong object key in the Semver package.
 
 = 4.8.1 =
 
@@ -180,47 +186,6 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
             __typename
             name
             ...Movie
-          }
-        }
-      }
-    }
-  }
-  ```
-
-= 4.7.0 =
-
-### Minor Changes
-
-- 82c6080: Adds support for resolving and returning related term items as a `terms` connection for the CorePostTerms block along with `taxonomy` connection.
-  Adds support for resolving and returning the `prefix` and `suffix` items within the correspondent fields of the CorePostTerms block.
-
-  ```graphql
-  query TestPostTerms($uri: String! = "test-terms") {
-    nodeByUri(uri: $uri) {
-      id
-      uri
-      ... on NodeWithPostEditorBlocks {
-        editorBlocks {
-          __typename
-          ... on CorePostTerms {
-            prefix
-            suffix
-            taxonomy {
-              __typename
-              node {
-                __typename
-                id
-                name
-              }
-            }
-            terms {
-              __typename
-              nodes {
-                __typename
-                id
-                name
-              }
-            }
           }
         }
       }
