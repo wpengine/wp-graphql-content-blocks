@@ -1,0 +1,12 @@
+diff --git a/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php b/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php
+--- a/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php	
++++ b/vendor/blakewilson/wp-enforce-semver/src/EnforceSemVer.php	(date 1741188709127)
+@@ -63,7 +63,7 @@
+ 		 */
+ 		if (
+ 				$this->plugin_filename === $item->plugin &&
+-				$this->does_new_version_have_major_change( $item->new_version, $item->Version ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
++				$this->does_new_version_have_major_change( $item->new_version, $item->version ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+ 			return false;
+ 		} else {
+ 			return $update;
