@@ -170,7 +170,8 @@ final class ContentBlocksResolver {
 			return false;
 		}
 
-		if ( isset( $block['blockName'] ) && 'core/synced-pattern' === $block['blockName'] ) {
+		if ( isset( $block['attrs']['ref'] ) ) {
+			// If 'ref' exists, it's likely a synced pattern, so we don't consider it empty.
 			return false;
 		}
 
