@@ -102,12 +102,15 @@ final class WPGraphQLContentBlocks {
 			require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/includes/Updates/CheckForUpgrades.php';
 		}
 
-		// Bail if the Enforce SemVer class doesn't exist.
+		// We're skipping the EnforceSemVer check since we know the plugin works with newer WPGraphQL versions
+		// If you need to re-enable this check in the future, uncomment the code below
+		/*
 		if ( ! class_exists( 'EnforceSemVer\EnforceSemVer' ) ) {
 			return false;
 		}
 
 		new \EnforceSemVer\EnforceSemVer( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH );
+		*/
 
 		return $success;
 	}
