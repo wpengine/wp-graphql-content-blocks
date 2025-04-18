@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.8.3
+
+### Patch Changes
+
+- bf77481: Updated plugin test suite and readme for WordPress 6.8
+
 ## 4.8.2
 
 ### Patch Changes
