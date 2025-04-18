@@ -29,10 +29,10 @@
   ],
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "@wordpress/jest-console": "^6.4.0",
-    "@wordpress/jest-puppeteer-axe": "^5.4.0",
-    "@wordpress/scripts": "^28.1.0",
-    "expect-puppeteer": "^6.1.1",
+    "@wordpress/jest-console": "^8.22.0",
+    "@wordpress/jest-puppeteer-axe": "^7.22.0",
+    "@wordpress/scripts": "^30.15.0",
+    "expect-puppeteer": "^11.0.0",
     "puppeteer-testing-library": "^0.6.0",
     "rimraf": "^4.4.0"
   },
