@@ -12,9 +12,9 @@
  * Requires PHP: 7.4
  * Requires at least: 5.7
  * Requires Plugins: wp-graphql
- * WPGraphQL requires at least: 1.14.5
- * WPGraphQL tested up to: 2.0.0
- *
+ * Requires WPGraphQL:       1.14.5
+ * WPGraphQL tested up to:   2.1.1
+ * 
  * @package WPGraphQL\ContentBlocks
  */
 
