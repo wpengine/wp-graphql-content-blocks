@@ -14,7 +14,7 @@
  * Requires Plugins: wp-graphql
  * Requires WPGraphQL:       1.14.5
  * WPGraphQL tested up to:   2.1.1
- * 
+ *
  * @package WPGraphQL\ContentBlocks
  */
 
