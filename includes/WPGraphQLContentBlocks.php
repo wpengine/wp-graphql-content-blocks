@@ -120,11 +120,6 @@ final class WPGraphQLContentBlocks {
 	 */
 	public function register_wpgraphql_update_filters(): void {
 		add_filter( 'graphql_get_dependents', [ $this, 'add_as_wpgraphql_dependent' ], 10, 2 );
-
-		add_filter( 'wpgraphql_enable_untested_autoupdates', function ($allow, $release_type) {
-			// Allow untested patch updates
-			return $release_type === 'patch';
-		}, 10, 5 );
 	}
 
 	/**

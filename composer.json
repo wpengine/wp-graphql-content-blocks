@@ -19,8 +19,7 @@
     "szepeviktor/phpstan-wordpress": "^1.3",
     "axepress/wp-graphql-stubs": "^1.14",
     "axepress/wp-graphql-cs": "^2.0.0-beta",
-    "roave/security-advisories": "dev-latest",
-    "wp-graphql/wp-graphql": "^2.2"
+    "roave/security-advisories": "dev-latest"
   },
   "scripts": {
     "install-test-env": "bash bin/install-test-env.sh",
