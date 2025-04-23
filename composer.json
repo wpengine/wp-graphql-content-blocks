@@ -60,12 +60,5 @@
     "psr-4": {
         "WPGraphQL\\ContentBlocks\\Unit\\": "tests/unit/"
     }
-  },
-  "extra": {
-    "patches": {
-      "blakewilson/wp-enforce-semver": {
-        "Fixes version key case": "patches/blakewilson-wp-enforce-semver/semver-object-key-version.patch"
-      }
-    }
   }
 }
