@@ -5,6 +5,7 @@
 ### Patch Changes
 
 - bf77481: Updated plugin test suite and readme for WordPress 6.8
+- bb3631c: Adds WPGraphQL version compatibility headers and checks
 
 ## 4.8.2
 
