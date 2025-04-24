@@ -23,7 +23,6 @@ final class WPGraphQLContentBlocks {
 	 * The instance of the WPGraphQLContentBlocks object
 	 *
 	 * @return object|\WPGraphQLContentBlocks
-	 * @since  0.0.1
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof self ) ) {
@@ -47,7 +46,6 @@ final class WPGraphQLContentBlocks {
 	 * The whole idea of the singleton design pattern is that there is a single object
 	 * therefore, we don't want the object to be cloned.
 	 *
-	 * @since  0.0.1
 	 * @return void
 	 */
 	public function __clone() {
@@ -102,13 +100,6 @@ final class WPGraphQLContentBlocks {
 			require_once WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_DIR . '/includes/Updates/CheckForUpgrades.php';
 		}
 
-		// Bail if the Enforce SemVer class doesn't exist.
-		if ( ! class_exists( 'EnforceSemVer\EnforceSemVer' ) ) {
-			return false;
-		}
-
-		new \EnforceSemVer\EnforceSemVer( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_PATH );
-
 		return $success;
 	}
 
@@ -119,6 +110,33 @@ final class WPGraphQLContentBlocks {
 	 */
 	public function actions(): void {
 		add_action( 'graphql_register_types', [ $this, 'init_block_editor_registry' ] );
+		$this->register_wpgraphql_update_filters();
+	}
+
+	/**
+	 * Register filters related to WPGraphQL version compatibility.
+	 *
+	 * @since 0.0.1
+	 */
+	public function register_wpgraphql_update_filters(): void {
+		add_filter( 'graphql_get_dependents', [ $this, 'add_as_wpgraphql_dependent' ], 10, 2 );
+	}
+
+	/**
+	 * Register this plugin as a WPGraphQL dependent.
+	 *
+	 * @param array $dependents Current dependents.
+	 * @param array $all_plugins All plugins.
+	 * @return array Modified dependents.
+	 */
+	public function add_as_wpgraphql_dependent( array $dependents, array $all_plugins ): array {
+		$plugin_file = plugin_basename( WPGRAPHQL_CONTENT_BLOCKS_PLUGIN_FILE );
+
+		if ( isset( $all_plugins[ $plugin_file ] ) ) {
+			$dependents[ $plugin_file ] = $all_plugins[ $plugin_file ];
+		}
+
+		return $dependents;
 	}
 
 	/**

@@ -7,7 +7,6 @@
   "require": {
     "php": ">=7.4",
     "imangazaliev/didom": "^2.0",
-    "blakewilson/wp-enforce-semver": "^3.0",
     "cweagans/composer-patches": "^1"
   },
   "require-dev": {
@@ -59,13 +58,6 @@
   "autoload-dev": {
     "psr-4": {
         "WPGraphQL\\ContentBlocks\\Unit\\": "tests/unit/"
-    }
-  },
-  "extra": {
-    "patches": {
-      "blakewilson/wp-enforce-semver": {
-        "Fixes version key case": "patches/blakewilson-wp-enforce-semver/semver-object-key-version.patch"
-      }
     }
   }
 }

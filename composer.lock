@@ -4,53 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fcd099561ddf8f64d253a2ded87ed329",
+    "content-hash": "d1164a5bb34dceb30b89cd19ad1b6547",
     "packages": [
-        {
-            "name": "blakewilson/wp-enforce-semver",
-            "version": "3.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/blakewilson/wp-enforce-semver.git",
-                "reference": "2c524d2cd9dbfadc31b4eabfacae1e742928ff57"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/blakewilson/wp-enforce-semver/zipball/2c524d2cd9dbfadc31b4eabfacae1e742928ff57",
-                "reference": "2c524d2cd9dbfadc31b4eabfacae1e742928ff57",
-                "shasum": ""
-            },
-            "require": {
-                "phlak/semver": "^4.1"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-                "phpcompatibility/phpcompatibility-wp": "^2.1",
-                "wp-coding-standards/wpcs": "^2.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "EnforceSemVer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Blake Wilson",
-                    "email": "blake@blake.id"
-                }
-            ],
-            "description": "A class to enforce SemVer in your WordPress plugins.",
-            "support": {
-                "issues": "https://github.com/blakewilson/wp-enforce-semver/issues",
-                "source": "https://github.com/blakewilson/wp-enforce-semver/tree/3.0.1"
-            },
-            "time": "2024-07-05T18:56:06+00:00"
-        },
         {
             "name": "cweagans/composer-patches",
             "version": "1.7.3",
@@ -150,65 +105,6 @@
                 "source": "https://github.com/Imangazaliev/DiDOM/tree/2.0.1"
             },
             "time": "2023-03-05T03:23:48+00:00"
-        },
-        {
-            "name": "phlak/semver",
-            "version": "4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PHLAK/SemVer.git",
-                "reference": "decdb385f26f2f8da2748289534fa3e61347917e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PHLAK/SemVer/zipball/decdb385f26f2f8da2748289534fa3e61347917e",
-                "reference": "decdb385f26f2f8da2748289534fa3e61347917e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "phlak/coding-standards": "^2.0",
-                "psy/psysh": "^0.11.1",
-                "vimeo/psalm": "^4.3",
-                "yoast/phpunit-polyfills": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/Support/helpers.php"
-                ],
-                "psr-4": {
-                    "PHLAK\\SemVer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Chris Kankiewicz",
-                    "email": "Chris@ChrisKankiewicz.com"
-                }
-            ],
-            "description": "Semantic versioning helper library",
-            "support": {
-                "issues": "https://github.com/PHLAK/SemVer/issues",
-                "source": "https://github.com/PHLAK/SemVer/tree/4.1.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sponsors/PHLAK",
-                    "type": "github"
-                },
-                {
-                    "url": "https://paypal.me/ChrisKankiewicz",
-                    "type": "paypal"
-                }
-            ],
-            "time": "2022-12-23T20:28:04+00:00"
         }
     ],
     "packages-dev": [
@@ -259,6 +155,60 @@
                 "source": "https://github.com/antecedent/patchwork/tree/2.1.28"
             },
             "time": "2024-02-06T09:26:11+00:00"
+        },
+        {
+            "name": "appsero/client",
+            "version": "v2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Appsero/client.git",
+                "reference": "12ff65b9770286d21edf314e7acfcd26fdde3315"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Appsero/client/zipball/12ff65b9770286d21edf314e7acfcd26fdde3315",
+                "reference": "12ff65b9770286d21edf314e7acfcd26fdde3315",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+                "phpcompatibility/phpcompatibility-wp": "dev-master",
+                "phpunit/phpunit": "^8.5.31",
+                "squizlabs/php_codesniffer": "^3.7",
+                "tareq1988/wp-php-cs-fixer": "dev-master",
+                "wp-coding-standards/wpcs": "dev-develop"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Appsero\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tareq Hasan",
+                    "email": "tareq@appsero.com"
+                }
+            ],
+            "description": "Appsero Client",
+            "keywords": [
+                "analytics",
+                "plugin",
+                "theme",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/Appsero/client/issues",
+                "source": "https://github.com/Appsero/client/tree/v2.0.4"
+            },
+            "time": "2024-11-25T05:58:23+00:00"
         },
         {
             "name": "automattic/vipwpcs",
@@ -692,6 +642,51 @@
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.0.1"
             },
             "time": "2020-07-09T08:09:16+00:00"
+        },
+        {
+            "name": "ivome/graphql-relay-php",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ivome/graphql-relay-php.git",
+                "reference": "06bd176103618d896197d85d04a3a17c91e39698"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ivome/graphql-relay-php/zipball/06bd176103618d896197d85d04a3a17c91e39698",
+                "reference": "06bd176103618d896197d85d04a3a17c91e39698",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "webonyx/graphql-php": "^14.0 || ^15.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+                "satooshi/php-coveralls": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A PHP port of GraphQL Relay reference implementation",
+            "homepage": "https://github.com/ivome/graphql-relay-php",
+            "keywords": [
+                "Relay",
+                "api",
+                "graphql"
+            ],
+            "support": {
+                "issues": "https://github.com/ivome/graphql-relay-php/issues",
+                "source": "https://github.com/ivome/graphql-relay-php/tree/v0.7.0"
+            },
+            "time": "2023-10-20T15:43:03+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -4244,6 +4239,80 @@
             "time": "2024-03-03T12:36:25+00:00"
         },
         {
+            "name": "webonyx/graphql-php",
+            "version": "v15.19.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webonyx/graphql-php.git",
+                "reference": "fa01712b1a170ddc1d92047011b2f4c2bdfa8234"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/fa01712b1a170ddc1d92047011b2f4c2bdfa8234",
+                "reference": "fa01712b1a170ddc1d92047011b2f4c2bdfa8234",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^7.4 || ^8"
+            },
+            "require-dev": {
+                "amphp/amp": "^2.6",
+                "amphp/http-server": "^2.1",
+                "dms/phpunit-arraysubset-asserts": "dev-master",
+                "ergebnis/composer-normalize": "^2.28",
+                "friendsofphp/php-cs-fixer": "3.65.0",
+                "mll-lab/php-cs-fixer-config": "^5.9.2",
+                "nyholm/psr7": "^1.5",
+                "phpbench/phpbench": "^1.2",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "1.12.12",
+                "phpstan/phpstan-phpunit": "1.4.1",
+                "phpstan/phpstan-strict-rules": "1.6.1",
+                "phpunit/phpunit": "^9.5 || ^10.5.21 || ^11",
+                "psr/http-message": "^1 || ^2",
+                "react/http": "^1.6",
+                "react/promise": "^2.0 || ^3.0",
+                "rector/rector": "^1.0",
+                "symfony/polyfill-php81": "^1.23",
+                "symfony/var-exporter": "^5 || ^6 || ^7",
+                "thecodingmachine/safe": "^1.3 || ^2"
+            },
+            "suggest": {
+                "amphp/http-server": "To leverage async resolving with webserver on AMPHP platform",
+                "psr/http-message": "To use standard GraphQL server",
+                "react/promise": "To leverage async resolving on React PHP platform"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GraphQL\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A PHP port of GraphQL reference implementation",
+            "homepage": "https://github.com/webonyx/graphql-php",
+            "keywords": [
+                "api",
+                "graphql"
+            ],
+            "support": {
+                "issues": "https://github.com/webonyx/graphql-php/issues",
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.19.1"
+            },
+            "funding": [
+                {
+                    "url": "https://opencollective.com/webonyx-graphql-php",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2024-12-19T10:52:18+00:00"
+        },
+        {
             "name": "wp-coding-standards/wpcs",
             "version": "3.1.0",
             "source": {
@@ -4308,6 +4377,89 @@
                 }
             ],
             "time": "2024-03-25T16:39:00+00:00"
+        },
+        {
+            "name": "wp-graphql/wp-graphql",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wp-graphql/wp-graphql.git",
+                "reference": "3ebdea9681e6901d7ad6c88b7683cee12daa6028"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wp-graphql/wp-graphql/zipball/3ebdea9681e6901d7ad6c88b7683cee12daa6028",
+                "reference": "3ebdea9681e6901d7ad6c88b7683cee12daa6028",
+                "shasum": ""
+            },
+            "require": {
+                "appsero/client": "2.0.4",
+                "ivome/graphql-relay-php": "0.7.0",
+                "php": "^7.4 || ^8.0",
+                "webonyx/graphql-php": "15.19.1"
+            },
+            "require-dev": {
+                "automattic/vipwpcs": "^3.0",
+                "codeception/module-asserts": "^1.0",
+                "codeception/module-cli": "^1.0",
+                "codeception/module-db": "^1.0",
+                "codeception/module-filesystem": "^1.0",
+                "codeception/module-phpbrowser": "^1.0",
+                "codeception/module-rest": "^1.2",
+                "codeception/module-webdriver": "^1.0",
+                "codeception/util-universalframework": "^1.0",
+                "composer/semver": "^3.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "lucatume/wp-browser": "<3.5",
+                "phpcompatibility/php-compatibility": "dev-develop as 9.9.9",
+                "phpcompatibility/phpcompatibility-wp": "^2.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "~2.1.2",
+                "phpstan/phpstan-deprecation-rules": "^2.0.1",
+                "phpunit/phpunit": "^9.5",
+                "slevomat/coding-standard": "^8.9",
+                "szepeviktor/phpstan-wordpress": "~2.0.1",
+                "wp-cli/wp-cli-bundle": "^2.8",
+                "wp-graphql/wp-graphql-testcase": "^3.0"
+            },
+            "type": "wordpress-plugin",
+            "autoload": {
+                "files": [],
+                "psr-4": {
+                    "WPGraphQL\\": "src/"
+                },
+                "classmap": [
+                    "src/WPGraphQL.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Jason Bahl",
+                    "email": "jasonbahl@mac.com"
+                },
+                {
+                    "name": "Edwin Cromley"
+                },
+                {
+                    "name": "Ryan Kanner"
+                },
+                {
+                    "name": "Hughie Devore"
+                },
+                {
+                    "name": "Chris Zarate"
+                }
+            ],
+            "description": "GraphQL API for WordPress",
+            "support": {
+                "issues": "https://github.com/wp-graphql/wp-graphql/issues",
+                "source": "https://github.com/wp-graphql/wp-graphql/tree/v2.2.0"
+            },
+            "time": "2025-03-19T03:14:36+00:00"
         },
         {
             "name": "yoast/phpunit-polyfills",
@@ -4383,7 +4535,7 @@
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "platform-overrides": {
         "php": "7.4"
     },
