@@ -48,12 +48,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Prepare release zip without parent directory
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          mkdir -p tmp_release_dir
+          unzip -q "@wpengine/wp-graphql-content-blocks.zip" -d tmp_release_dir
+          cd tmp_release_dir/@wpengine
+          zip -r ../../wp-graphql-content-blocks.zip .
+          cd ../..
+          rm -rf tmp_release_dir
+
       - name: Upload plugin zip file
         if: steps.changesets.outputs.published == 'true'
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "@wpengine/wp-graphql-content-blocks.zip"
+          file: "wp-graphql-content-blocks.zip"
           asset_name: wp-graphql-content-blocks.zip
           tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           overwrite: true
