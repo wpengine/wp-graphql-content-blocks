@@ -27,7 +27,7 @@ class Anchor {
 						'type'        => 'string',
 						'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
-							$rendered_block = wp_unslash( render_block( $block ) );
+							$rendered_block = wp_unslash( WPGraphQLHelpers::get_rendered_block( $block ) );
 							if ( empty( $rendered_block ) ) {
 								return null;
 							}

@@ -135,7 +135,7 @@ final class EditorBlockInterface {
 						'type'        => 'String',
 						'description' => __( 'The rendered HTML for the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
-							return render_block( $block );
+							return WPGraphQLHelpers::get_rendered_block( $block );
 						},
 					],
 					'type'                    => [
