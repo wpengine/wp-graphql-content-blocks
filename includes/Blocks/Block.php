@@ -123,7 +123,6 @@ class Block {
 			$block_attribute_type_name,
 			[
 				'description' => sprintf(
-					// translators: %s is the block type name.
 					__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 					$this->type_name
 				),
