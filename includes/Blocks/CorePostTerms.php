@@ -36,12 +36,12 @@ class CorePostTerms extends Block {
 			[
 				'prefix' => [
 					'type'        => 'String',
-					'description' => __( 'Prefix to display before the post terms', 'wp-graphql-content-blocks' ),
+					'description' => static fn () => __( 'Prefix to display before the post terms', 'wp-graphql-content-blocks' ),
 					'resolve'     => static fn ( $block ) => isset( $block['attrs']['prefix'] ) ? (string) $block['attrs']['prefix'] : null,
 				],
 				'suffix' => [
 					'type'        => 'String',
-					'description' => __( 'Suffix to display after the post terms', 'wp-graphql-content-blocks' ),
+					'description' => static fn () => __( 'Suffix to display after the post terms', 'wp-graphql-content-blocks' ),
 					'resolve'     => static fn ( $block ) => isset( $block['attrs']['suffix'] ) ? (string) $block['attrs']['suffix'] : null,
 				],
 			]
