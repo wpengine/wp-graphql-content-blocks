@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.8.4
+
+### Patch Changes
+
+- 43cef3d: Tested WordPress 6.8.1 and fixed a release issue with the plugin artifact
+
 ## 4.8.3
 
 ### Patch Changes
