@@ -122,8 +122,7 @@ class Block {
 		register_graphql_object_type(
 			$block_attribute_type_name,
 			[
-				'description' => static fn() => sprintf(
-					// translators: %s is the block type name.
+				'description' => sprintf(
 					__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 					$this->type_name
 				),
@@ -136,7 +135,7 @@ class Block {
 			'attributes',
 			[
 				'type'        => $block_attribute_type_name,
-				'description' => static fn() => sprintf(
+				'description' => sprintf(
 					// translators: %s is the block type name.
 					__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 					$this->type_name
@@ -262,7 +261,7 @@ class Block {
 			// Create the field config.
 			$fields[ Utils::format_field_name( $attribute_name ) ] = [
 				'type'        => $graphql_type,
-				'description' => static fn() => sprintf(
+				'description' => sprintf(
 					// translators: %1$s is the attribute name, %2$s is the block name.
 					__( 'The "%1$s" field on the "%2$s" block or block attributes', 'wp-graphql-content-blocks' ),
 					$attribute_name,
@@ -297,7 +296,7 @@ class Block {
 			$type,
 			[
 				'fields'      => $fields,
-				'description' => static fn() => sprintf(
+				'description' => sprintf(
 					// translators: %1$s is the attribute name, %2$s is the block attributes field.
 					__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
 					$type,
@@ -345,7 +344,7 @@ class Block {
 
 				$fields[ Utils::format_field_name( $name ) ] = [
 					'type'        => $type,
-					'description' => static fn() => sprintf(
+					'description' => sprintf(
 						// translators: %1$s is the attribute name, %2$s is the block attributes field.
 						__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
 						$name,
@@ -409,7 +408,7 @@ class Block {
 				'fields'          => [
 					'name' => [
 						'type'        => 'String',
-						'description' => static fn() => __( 'The name of the block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return isset( $block['blockName'] ) ? (string) $block['blockName'] : null;
 						},

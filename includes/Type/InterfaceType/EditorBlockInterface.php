@@ -52,11 +52,11 @@ final class EditorBlockInterface {
 						],
 						'args'        => [
 							'flat' => [
-								'description' => static fn() => __( 'Returns the list of blocks as a flat list if true', 'wp-graphql-content-blocks' ),
+								'description' => __( 'Returns the list of blocks as a flat list if true', 'wp-graphql-content-blocks' ),
 								'type'        => 'Boolean',
 							],
 						],
-						'description' => static fn() => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
+						'description' => __( 'List of editor blocks', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $node, $args ) {
 							return ContentBlocksResolver::resolve_content_blocks( $node, $args );
 						},
@@ -74,39 +74,39 @@ final class EditorBlockInterface {
 				'fields'          => [
 					'clientId'                => [
 						'type'        => 'String',
-						'description' => static fn() => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 						},
 					],
 					'parentClientId'          => [
 						'type'        => 'String',
-						'description' => static fn() => __( 'The parent id of the Block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The parent id of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return isset( $block['parentClientId'] ) ? $block['parentClientId'] : null;
 						},
 					],
 					'name'                    => [
 						'type'        => 'String',
-						'description' => static fn() => __( 'The name of the Block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The name of the Block', 'wp-graphql-content-blocks' ),
 					],
 					'blockEditorCategoryName' => [
 						'type'        => 'String',
-						'description' => static fn() => __( 'The name of the category the Block belongs to', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The name of the category the Block belongs to', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return isset( self::get_block( $block )->category ) ? self::get_block( $block )->category : null;
 						},
 					],
 					'isDynamic'               => [
 						'type'        => [ 'non_null' => 'Boolean' ],
-						'description' => static fn() => __( 'Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks' ),
+						'description' => __( 'Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return isset( self::get_block( $block )->render_callback );
 						},
 					],
 					'apiVersion'              => [
 						'type'        => 'Integer',
-						'description' => static fn() => __( 'The API version of the Gutenberg Block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The API version of the Gutenberg Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return isset( self::get_block( $block )->api_version ) && absint( self::get_block( $block )->api_version ) ? absint( self::get_block( $block )->api_version ) : 2;
 						},
@@ -115,14 +115,14 @@ final class EditorBlockInterface {
 						'type'        => [
 							'list_of' => 'EditorBlock',
 						],
-						'description' => static fn() => __( 'The inner blocks of the Block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The inner blocks of the Block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ? $block['innerBlocks'] : [];
 						},
 					],
 					'cssClassNames'           => [
 						'type'        => [ 'list_of' => 'String' ],
-						'description' => static fn() => __( 'CSS Classnames to apply to the block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'CSS Classnames to apply to the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							if ( isset( $block['attrs']['className'] ) ) {
 								return explode( ' ', $block['attrs']['className'] );
@@ -133,14 +133,14 @@ final class EditorBlockInterface {
 					],
 					'renderedHtml'            => [
 						'type'        => 'String',
-						'description' => static fn() => __( 'The rendered HTML for the block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The rendered HTML for the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return WPGraphQLHelpers::get_rendered_block( $block );
 						},
 					],
 					'type'                    => [
 						'type'        => 'String',
-						'description' => static fn() => __( 'The (GraphQL) type of the block', 'wp-graphql-content-blocks' ),
+						'description' => __( 'The (GraphQL) type of the block', 'wp-graphql-content-blocks' ),
 						'resolve'     => static function ( $block ) {
 							return WPGraphQLHelpers::get_type_name_for_block( $block['blockName'] ?? null );
 						},
