@@ -120,6 +120,7 @@ final class WPGraphQLContentBlocks {
 	 */
 	public function register_wpgraphql_update_filters(): void {
 		add_filter( 'graphql_get_dependents', [ $this, 'add_as_wpgraphql_dependent' ], 10, 2 );
+		\WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig::init();
 	}
 
 	/**

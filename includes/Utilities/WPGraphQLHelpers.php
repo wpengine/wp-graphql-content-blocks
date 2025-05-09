@@ -61,7 +61,7 @@ final class WPGraphQLHelpers {
 	/**
 	 * Gets the rendered block.
 	 *
-	 * @param array{blockName: array, attrs: array, innerBlocks: string, innerHTML: string, innerContent: string, clientId: string} $block The block being resolved.
+	 * @param mixed|array{blockName: array, attrs: array, innerBlocks: string, innerHTML: string, innerContent: string, clientId: ?string} $block The block being resolved.
 	 *
 	 * @return null|string
 	 */
@@ -70,6 +70,7 @@ final class WPGraphQLHelpers {
 		// As the parent method does not have block as an array and might be a breaking change
 		// we are just ensuring this is an array
 		if (! is_array( $block )) {
+			// @phpstan-ignore-next-line
 			return render_block( $block );
 		}
 
