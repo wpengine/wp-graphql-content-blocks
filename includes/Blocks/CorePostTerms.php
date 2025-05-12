@@ -34,7 +34,7 @@ class CorePostTerms extends Block {
 		register_graphql_fields(
 			$this->type_name,
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'prefix' => [
 						'type'        => 'String',
@@ -61,7 +61,7 @@ class CorePostTerms extends Block {
 		// Register connection to terms.
 		register_graphql_connection(
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'fromType'      => $this->type_name,
 					'toType'        => 'TermNode',
@@ -89,7 +89,7 @@ class CorePostTerms extends Block {
 		// Register connection to the taxonomy.
 		register_graphql_connection(
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'fromType'      => $this->type_name,
 					'toType'        => 'Taxonomy',

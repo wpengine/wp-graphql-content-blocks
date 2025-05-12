@@ -1,17 +1,24 @@
 <?php
+/**
+ * WPGraphQL Register Config
+ *
+ * Lazy load config for WPGraphQL 2.3.0
+ *
+ * @package WPGraphQL\ContentBlocks\GraphQL
+ */
 
 namespace WPGraphQL\ContentBlocks\GraphQL;
 
+/**
+ * Class WPGraphQLRegisterConfig
+ */
 class WPGraphQLRegisterConfig {
-
 	/**
 	 * Registers filters for lazy-loaded configs in WPGraphQL.
 	 * See PR - https://github.com/wp-graphql/wp-graphql/issues/3354
-	 *
-	 * @return void
 	 */
 	public static function init(): void {
-		add_filter('wp_graphql_content_blocks_register_config', [__CLASS__, 'resolve_graphql_config'], 10, 1);
+		add_filter( 'wpgraphql_content_blocks_register_config', [ self::class, 'resolve_graphql_config' ], 10, 1 );
 	}
 
 	/**
@@ -91,5 +98,4 @@ class WPGraphQLRegisterConfig {
 
 		return $config;
 	}
-
 }

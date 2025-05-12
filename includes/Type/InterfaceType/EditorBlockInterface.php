@@ -43,7 +43,7 @@ final class EditorBlockInterface {
 		register_graphql_interface_type(
 			'NodeWithEditorBlocks',
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
 					'eagerlyLoadType' => true,
@@ -72,7 +72,7 @@ final class EditorBlockInterface {
 		register_graphql_interface_type(
 			'EditorBlock',
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'eagerlyLoadType' => true,
 					'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),

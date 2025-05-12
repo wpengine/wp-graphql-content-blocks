@@ -21,9 +21,9 @@ class Anchor {
 		register_graphql_interface_type(
 			'BlockWithSupportsAnchor',
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
-					'description' =>  __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
+					'description' => __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
 					'fields'      => [
 						'anchor' => [
 							'type'        => 'string',

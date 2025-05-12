@@ -122,9 +122,10 @@ class Block {
 		register_graphql_object_type(
 			$block_attribute_type_name,
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'description' => sprintf(
+					// translators: %s is the block type name.
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 						$this->type_name
 					),
@@ -137,7 +138,7 @@ class Block {
 			$this->type_name,
 			'attributes',
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'type'        => $block_attribute_type_name,
 					'description' => sprintf(
@@ -301,7 +302,7 @@ class Block {
 		register_graphql_object_type(
 			$type,
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'fields'      => $fields,
 					'description' => sprintf(
@@ -411,7 +412,7 @@ class Block {
 		register_graphql_object_type(
 			$this->type_name,
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
 					'interfaces'      => $this->get_block_interfaces(),

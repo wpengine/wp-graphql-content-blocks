@@ -13,7 +13,6 @@ use WPGraphQL\Utils\Utils;
  * Class WPGraphQLHelpers
  */
 final class WPGraphQLHelpers {
-
 	/**
 	 * Array of rendered blocks.
 	 *
@@ -62,20 +61,18 @@ final class WPGraphQLHelpers {
 	 * Gets the rendered block.
 	 *
 	 * @param mixed|array{blockName: array, attrs: array, innerBlocks: string, innerHTML: string, innerContent: string, clientId: ?string} $block The block being resolved.
-	 *
-	 * @return null|string
 	 */
-	public static function get_rendered_block( $block ) : ?string {
+	public static function get_rendered_block( $block ): ?string {
 
 		// As the parent method does not have block as an array and might be a breaking change
 		// we are just ensuring this is an array
-		if (! is_array( $block )) {
+		if ( ! is_array( $block ) ) {
 			// @phpstan-ignore-next-line
 			return render_block( $block );
 		}
 
 		$key = $block['clientId'] ?? null;
-		if (! is_string( $key )) {
+		if ( ! is_string( $key ) ) {
 			// Client ID is expected but bail if it doesn't exist
 			return render_block( $block );
 		}
@@ -84,7 +81,7 @@ final class WPGraphQLHelpers {
 			return self::$rendered_blocks[ $key ];
 		}
 
-		$content = render_block( $block );
+		$content                       = render_block( $block );
 		self::$rendered_blocks[ $key ] = $content;
 
 		return $content;

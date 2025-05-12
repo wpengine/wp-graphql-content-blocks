@@ -48,7 +48,7 @@ class CoreImage extends Block {
 			$this->type_name,
 			'mediaDetails',
 			apply_filters(
-				'wp_graphql_content_blocks_register_config',
+				'wpgraphql_content_blocks_register_config',
 				[
 					'type'        => 'MediaDetails',
 					'description' => sprintf(

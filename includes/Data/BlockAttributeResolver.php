@@ -34,7 +34,6 @@ final class BlockAttributeResolver {
 
 		$value = null;
 
-
 		// @todo parse remaining sources: https://github.com/WordPress/gutenberg/blob/trunk/packages/blocks/src/api/parser/get-block-attributes.js#L198
 		switch ( $source ) {
 			case 'attribute':
@@ -65,11 +64,11 @@ final class BlockAttributeResolver {
 
 		$type = $attribute['type'] ?? null;
 		if ( ! $type ) {
-			return ( $value === null ) ?
-				self::get_default_attribute_value( $attribute, $attribute_value )
+			return ( null === $value )
+				? self::get_default_attribute_value( $attribute, $attribute_value )
 				: $value;
 		}
-		
+
 		switch ( $type ) {
 			case 'integer':
 				$value = intval( $value );
@@ -80,8 +79,8 @@ final class BlockAttributeResolver {
 				break;
 		}
 
-		return ( $value === null ) ?
-			self::get_default_attribute_value( $attribute, $attribute_value )
+		return ( null === $value )
+			? self::get_default_attribute_value( $attribute, $attribute_value )
 			: $value;
 	}
 
