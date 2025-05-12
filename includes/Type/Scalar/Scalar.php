@@ -17,21 +17,27 @@ final class Scalar {
 	public function init(): void {
 		register_graphql_scalar(
 			'BlockAttributesObject',
-			[
-				'description' => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
-				'serialize'   => static function ( $value ) {
-					return wp_json_encode( $value );
-				},
-			]
+			apply_filters(
+				'wp_graphql_content_blocks_register_config',
+				[
+					'description' => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
+					'serialize'   => static function ( $value ) {
+						return wp_json_encode( $value );
+					},
+				]
+			)
 		);
 		register_graphql_scalar(
 			'BlockAttributesArray',
-			[
-				'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
-				'serialize'   => static function ( $value ) {
-					return wp_json_encode( $value );
-				},
-			]
+			apply_filters(
+				'wp_graphql_content_blocks_register_config',
+				[
+					'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
+					'serialize'   => static function ( $value ) {
+						return wp_json_encode( $value );
+					},
+				]
+			)
 		);
 	}
 

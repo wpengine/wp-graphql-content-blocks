@@ -47,27 +47,30 @@ class CoreImage extends Block {
 		register_graphql_field(
 			$this->type_name,
 			'mediaDetails',
-			[
-				'type'        => 'MediaDetails',
-				'description' => sprintf(
-					// translators: %s is the block type name.
-					__( 'Media Details of the %s Block Type', 'wp-graphql-content-blocks' ),
-					$this->type_name
-				),
-				'resolve'     => static function ( $block ) {
-					$attrs = $block['attrs'];
-					$id    = $attrs['id'] ?? null;
-					if ( $id ) {
-						$media_details = wp_get_attachment_metadata( $id );
-						if ( ! empty( $media_details ) ) {
-							$media_details['ID'] = $id;
+			apply_filters(
+				'wp_graphql_content_blocks_register_config',
+				[
+					'type'        => 'MediaDetails',
+					'description' => sprintf(
+						// translators: %s is the block type name.
+						__( 'Media Details of the %s Block Type', 'wp-graphql-content-blocks' ),
+						$this->type_name
+					),
+					'resolve'     => static function ( $block ) {
+						$attrs = $block['attrs'];
+						$id    = $attrs['id'] ?? null;
+						if ( $id ) {
+							$media_details = wp_get_attachment_metadata( $id );
+							if ( ! empty( $media_details ) ) {
+								$media_details['ID'] = $id;
 
-							return $media_details;
+								return $media_details;
+							}
 						}
-					}
-					return null;
-				},
-			]
+						return null;
+					},
+				]
+			)
 		);
 	}
 }

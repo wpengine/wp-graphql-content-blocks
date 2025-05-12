@@ -20,22 +20,25 @@ class Anchor {
 	public static function register(): void {
 		register_graphql_interface_type(
 			'BlockWithSupportsAnchor',
-			[
-				'description' =>  __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
-				'fields'      => [
-					'anchor' => [
-						'type'        => 'string',
-						'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
-						'resolve'     => static function ( $block ) {
-							$rendered_block = wp_unslash( WPGraphQLHelpers::get_rendered_block( $block ) );
-							if ( empty( $rendered_block ) ) {
-								return null;
-							}
-							return DOMHelpers::parse_first_node_attribute( $rendered_block, 'id' );
-						},
+			apply_filters(
+				'wp_graphql_content_blocks_register_config',
+				[
+					'description' =>  __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
+					'fields'      => [
+						'anchor' => [
+							'type'        => 'string',
+							'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
+							'resolve'     => static function ( $block ) {
+								$rendered_block = wp_unslash( WPGraphQLHelpers::get_rendered_block( $block ) );
+								if ( empty( $rendered_block ) ) {
+									return null;
+								}
+								return DOMHelpers::parse_first_node_attribute( $rendered_block, 'id' );
+							},
+						],
 					],
-				],
-			]
+				]
+			)
 		);
 	}
 

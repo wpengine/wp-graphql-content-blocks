@@ -11,7 +11,7 @@ class WPGraphQLRegisterConfig {
 	 * @return void
 	 */
 	public static function init(): void {
-		add_filter('graphql_wp_object_type_config', [__CLASS__, 'resolve_graphql_config'], 10, 1);
+		add_filter('wp_graphql_content_blocks_register_config', [__CLASS__, 'resolve_graphql_config'], 10, 1);
 	}
 
 	/**
