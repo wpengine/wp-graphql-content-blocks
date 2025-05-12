@@ -8,6 +8,7 @@
 namespace WPGraphQL\ContentBlocks\Type\InterfaceType;
 
 use WPGraphQL\ContentBlocks\Data\ContentBlocksResolver;
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 use WP_Block_Type_Registry;
 
@@ -42,8 +43,7 @@ final class EditorBlockInterface {
 	public static function register_type(): void {
 		register_graphql_interface_type(
 			'NodeWithEditorBlocks',
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
 					'eagerlyLoadType' => true,
@@ -71,8 +71,7 @@ final class EditorBlockInterface {
 		// Register the EditorBlock Interface
 		register_graphql_interface_type(
 			'EditorBlock',
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'eagerlyLoadType' => true,
 					'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),

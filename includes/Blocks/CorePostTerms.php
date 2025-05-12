@@ -8,6 +8,7 @@
 namespace WPGraphQL\ContentBlocks\Blocks;
 
 use WPGraphQL\AppContext;
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
 use WPGraphQL\ContentBlocks\Registry\Registry;
 use WPGraphQL\Data\Connection\TaxonomyConnectionResolver;
 use WPGraphQL\Data\Connection\TermObjectConnectionResolver;
@@ -33,8 +34,8 @@ class CorePostTerms extends Block {
 	private function register_fields(): void {
 		register_graphql_fields(
 			$this->type_name,
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			// @phpstan-ignore-next-line
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'prefix' => [
 						'type'        => 'String',
@@ -60,8 +61,7 @@ class CorePostTerms extends Block {
 	protected function register_connections() {
 		// Register connection to terms.
 		register_graphql_connection(
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'fromType'      => $this->type_name,
 					'toType'        => 'TermNode',
@@ -88,8 +88,7 @@ class CorePostTerms extends Block {
 
 		// Register connection to the taxonomy.
 		register_graphql_connection(
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'fromType'      => $this->type_name,
 					'toType'        => 'Taxonomy',

@@ -7,6 +7,7 @@
 
 namespace WPGraphQL\ContentBlocks\Field\BlockSupports;
 
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 
@@ -20,8 +21,7 @@ class Anchor {
 	public static function register(): void {
 		register_graphql_interface_type(
 			'BlockWithSupportsAnchor',
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
 					'fields'      => [

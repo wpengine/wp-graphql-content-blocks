@@ -8,6 +8,7 @@
 namespace WPGraphQL\ContentBlocks\Blocks;
 
 use WPGraphQL\ContentBlocks\Data\BlockAttributeResolver;
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
 use WPGraphQL\ContentBlocks\Registry\Registry;
 use WPGraphQL\ContentBlocks\Type\Scalar\Scalar;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
@@ -121,8 +122,7 @@ class Block {
 		$block_attribute_type_name = $this->type_name . 'Attributes';
 		register_graphql_object_type(
 			$block_attribute_type_name,
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => sprintf(
 					// translators: %s is the block type name.
@@ -137,8 +137,7 @@ class Block {
 		register_graphql_field(
 			$this->type_name,
 			'attributes',
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => $block_attribute_type_name,
 					'description' => sprintf(
@@ -301,8 +300,7 @@ class Block {
 
 		register_graphql_object_type(
 			$type,
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'fields'      => $fields,
 					'description' => sprintf(
@@ -411,8 +409,7 @@ class Block {
 	private function register_type(): void {
 		register_graphql_object_type(
 			$this->type_name,
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
 					'interfaces'      => $this->get_block_interfaces(),

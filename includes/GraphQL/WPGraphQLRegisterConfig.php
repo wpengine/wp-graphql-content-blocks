@@ -14,14 +14,6 @@ namespace WPGraphQL\ContentBlocks\GraphQL;
  */
 class WPGraphQLRegisterConfig {
 	/**
-	 * Registers filters for lazy-loaded configs in WPGraphQL.
-	 * See PR - https://github.com/wp-graphql/wp-graphql/issues/3354
-	 */
-	public static function init(): void {
-		add_filter( 'wpgraphql_content_blocks_register_config', [ self::class, 'resolve_graphql_config' ], 10, 1 );
-	}
-
-	/**
 	 * @author https://github.com/justlevine
 	 *
 	 * Adds backwards compatibility for lazy-loaded configs added in WPGraphQL versions 2.3.0 and later.

@@ -7,6 +7,8 @@
 
 namespace WPGraphQL\ContentBlocks\Type\Scalar;
 
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
+
 /**
  * Class Scalar
  */
@@ -17,8 +19,7 @@ final class Scalar {
 	public function init(): void {
 		register_graphql_scalar(
 			'BlockAttributesObject',
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
 					'serialize'   => static function ( $value ) {
@@ -29,8 +30,7 @@ final class Scalar {
 		);
 		register_graphql_scalar(
 			'BlockAttributesArray',
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
 					'serialize'   => static function ( $value ) {

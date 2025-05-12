@@ -7,6 +7,7 @@
 
 namespace WPGraphQL\ContentBlocks\Blocks;
 
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
 use WPGraphQL\ContentBlocks\Registry\Registry;
 use WP_Block_Type;
 
@@ -47,8 +48,7 @@ class CoreImage extends Block {
 		register_graphql_field(
 			$this->type_name,
 			'mediaDetails',
-			apply_filters(
-				'wpgraphql_content_blocks_register_config',
+			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => 'MediaDetails',
 					'description' => sprintf(
