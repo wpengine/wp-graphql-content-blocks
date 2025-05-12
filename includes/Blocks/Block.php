@@ -122,6 +122,7 @@ class Block {
 		$block_attribute_type_name = $this->type_name . 'Attributes';
 		register_graphql_object_type(
 			$block_attribute_type_name,
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => sprintf(
@@ -137,6 +138,7 @@ class Block {
 		register_graphql_field(
 			$this->type_name,
 			'attributes',
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => $block_attribute_type_name,
@@ -300,6 +302,7 @@ class Block {
 
 		register_graphql_object_type(
 			$type,
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'fields'      => $fields,
@@ -409,6 +412,7 @@ class Block {
 	private function register_type(): void {
 		register_graphql_object_type(
 			$this->type_name,
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),

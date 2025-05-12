@@ -21,6 +21,7 @@ class Anchor {
 	public static function register(): void {
 		register_graphql_interface_type(
 			'BlockWithSupportsAnchor',
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),

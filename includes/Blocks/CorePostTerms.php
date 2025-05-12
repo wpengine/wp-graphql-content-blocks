@@ -34,6 +34,7 @@ class CorePostTerms extends Block {
 	private function register_fields(): void {
 		register_graphql_fields(
 			$this->type_name,
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			// @phpstan-ignore-next-line
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
@@ -61,6 +62,7 @@ class CorePostTerms extends Block {
 	protected function register_connections() {
 		// Register connection to terms.
 		register_graphql_connection(
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'fromType'      => $this->type_name,
@@ -88,6 +90,7 @@ class CorePostTerms extends Block {
 
 		// Register connection to the taxonomy.
 		register_graphql_connection(
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'fromType'      => $this->type_name,

@@ -19,6 +19,7 @@ final class Scalar {
 	public function init(): void {
 		register_graphql_scalar(
 			'BlockAttributesObject',
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
@@ -30,6 +31,7 @@ final class Scalar {
 		);
 		register_graphql_scalar(
 			'BlockAttributesArray',
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),

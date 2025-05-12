@@ -48,6 +48,7 @@ class CoreImage extends Block {
 		register_graphql_field(
 			$this->type_name,
 			'mediaDetails',
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => 'MediaDetails',

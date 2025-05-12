@@ -43,6 +43,7 @@ final class EditorBlockInterface {
 	public static function register_type(): void {
 		register_graphql_interface_type(
 			'NodeWithEditorBlocks',
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
@@ -71,6 +72,7 @@ final class EditorBlockInterface {
 		// Register the EditorBlock Interface
 		register_graphql_interface_type(
 			'EditorBlock',
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'eagerlyLoadType' => true,
