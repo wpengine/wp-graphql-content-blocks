@@ -72,52 +72,70 @@ final class EditorBlockInterface {
 		// Register the EditorBlock Interface
 		register_graphql_interface_type(
 			'EditorBlock',
-			// @TODO - Remove when WPGraphQL min version is 2.3.0
-			WPGraphQLRegisterConfig::resolve_graphql_config(
-				[
-					'eagerlyLoadType' => true,
-					'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
-					'fields'          => [
-						'clientId'                => [
+			[
+				'eagerlyLoadType' => true,
+				'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
+				'fields'          => [
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'clientId'                => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'String',
 							'description' => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
 							},
-						],
-						'parentClientId'          => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'parentClientId'          => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'String',
 							'description' => __( 'The parent id of the Block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return isset( $block['parentClientId'] ) ? $block['parentClientId'] : null;
 							},
-						],
-						'name'                    => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'name'                    => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'String',
 							'description' => __( 'The name of the Block', 'wp-graphql-content-blocks' ),
-						],
-						'blockEditorCategoryName' => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'blockEditorCategoryName' => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'String',
 							'description' => __( 'The name of the category the Block belongs to', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return isset( self::get_block( $block )->category ) ? self::get_block( $block )->category : null;
 							},
-						],
-						'isDynamic'               => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'isDynamic'               => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => [ 'non_null' => 'Boolean' ],
 							'description' => __( 'Whether the block is Dynamic (server rendered)', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return isset( self::get_block( $block )->render_callback );
 							},
-						],
-						'apiVersion'              => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'apiVersion'              => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'Integer',
 							'description' => __( 'The API version of the Gutenberg Block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return isset( self::get_block( $block )->api_version ) && absint( self::get_block( $block )->api_version ) ? absint( self::get_block( $block )->api_version ) : 2;
 							},
-						],
-						'innerBlocks'             => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'innerBlocks'             => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => [
 								'list_of' => 'EditorBlock',
 							],
@@ -125,8 +143,11 @@ final class EditorBlockInterface {
 							'resolve'     => static function ( $block ) {
 								return isset( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ? $block['innerBlocks'] : [];
 							},
-						],
-						'cssClassNames'           => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'cssClassNames'           => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => [ 'list_of' => 'String' ],
 							'description' => __( 'CSS Classnames to apply to the block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
@@ -136,27 +157,33 @@ final class EditorBlockInterface {
 
 								return null;
 							},
-						],
-						'renderedHtml'            => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'renderedHtml'            => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'String',
 							'description' => __( 'The rendered HTML for the block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return WPGraphQLHelpers::get_rendered_block( $block );
 							},
-						],
-						'type'                    => [
+						]
+					),
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'type'                    => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'String',
 							'description' => __( 'The (GraphQL) type of the block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return WPGraphQLHelpers::get_type_name_for_block( $block['blockName'] ?? null );
 							},
-						],
-					],
-					'resolveType'     => static function ( $block ) {
-						return WPGraphQLHelpers::get_type_name_for_block( $block['blockName'] ?? null );
-					},
-				]
-			)
+						]
+					),
+				],
+				'resolveType'     => static function ( $block ) {
+					return WPGraphQLHelpers::get_type_name_for_block( $block['blockName'] ?? null );
+				},
+			]
 		);
 	}
 }

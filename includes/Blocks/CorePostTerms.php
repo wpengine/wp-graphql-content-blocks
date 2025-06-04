@@ -34,22 +34,24 @@ class CorePostTerms extends Block {
 	private function register_fields(): void {
 		register_graphql_fields(
 			$this->type_name,
-			// @TODO - Remove when WPGraphQL min version is 2.3.0
-			// @phpstan-ignore-next-line
-			WPGraphQLRegisterConfig::resolve_graphql_config(
-				[
-					'prefix' => [
+			[
+				// @TODO - Remove when WPGraphQL min version is 2.3.0
+				'prefix' => WPGraphQLRegisterConfig::resolve_graphql_config(
+					[
 						'type'        => 'String',
 						'description' => __( 'Prefix to display before the post terms', 'wp-graphql-content-blocks' ),
 						'resolve'     => static fn ( $block ) => isset( $block['attrs']['prefix'] ) ? (string) $block['attrs']['prefix'] : null,
 					],
-					'suffix' => [
+				),
+				// @TODO - Remove when WPGraphQL min version is 2.3.0
+				'suffix' => WPGraphQLRegisterConfig::resolve_graphql_config(
+					[
 						'type'        => 'String',
 						'description' => __( 'Suffix to display after the post terms', 'wp-graphql-content-blocks' ),
 						'resolve'     => static fn ( $block ) => isset( $block['attrs']['suffix'] ) ? (string) $block['attrs']['suffix'] : null,
 					],
-				]
-			)
+				),
+			]
 		);
 	}
 
