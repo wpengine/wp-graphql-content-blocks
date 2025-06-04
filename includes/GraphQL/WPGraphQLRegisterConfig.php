@@ -40,6 +40,7 @@ class WPGraphQLRegisterConfig {
 			'connections',
 			'connectionArgs',
 			'connectionFields',
+			'edgeFields',
 			'fields',
 			'inputFields',
 			'outputFields',
