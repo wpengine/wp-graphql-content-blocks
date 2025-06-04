@@ -52,7 +52,7 @@ class CoreImage extends Block {
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => 'MediaDetails',
-					'description' => sprintf(
+					'description' => fn () => sprintf(
 						// translators: %s is the block type name.
 						__( 'Media Details of the %s Block Type', 'wp-graphql-content-blocks' ),
 						$this->type_name

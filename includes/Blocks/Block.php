@@ -125,7 +125,7 @@ class Block {
 			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
-					'description' => sprintf(
+					'description' => fn () => sprintf(
 					// translators: %s is the block type name.
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 						$this->type_name
@@ -142,7 +142,7 @@ class Block {
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => $block_attribute_type_name,
-					'description' => sprintf(
+					'description' => fn () => sprintf(
 						// translators: %s is the block type name.
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
 						$this->type_name
@@ -306,7 +306,7 @@ class Block {
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'fields'      => $fields,
-					'description' => sprintf(
+					'description' => static fn () => sprintf(
 						// translators: %1$s is the attribute name, %2$s is the block attributes field.
 						__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
 						$type,
@@ -412,23 +412,23 @@ class Block {
 	private function register_type(): void {
 		register_graphql_object_type(
 			$this->type_name,
-			// @TODO - Remove when WPGraphQL min version is 2.3.0
-			WPGraphQLRegisterConfig::resolve_graphql_config(
-				[
-					'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-					'interfaces'      => $this->get_block_interfaces(),
-					'eagerlyLoadType' => true,
-					'fields'          => [
-						'name' => [
+			[
+				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
+				'interfaces'      => $this->get_block_interfaces(),
+				'eagerlyLoadType' => true,
+				'fields'          => [
+					// @TODO - Remove when WPGraphQL min version is 2.3.0
+					'name' => WPGraphQLRegisterConfig::resolve_graphql_config(
+						[
 							'type'        => 'String',
-							'description' => __( 'The name of the block', 'wp-graphql-content-blocks' ),
+							'description' => static fn () => __( 'The name of the block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return isset( $block['blockName'] ) ? (string) $block['blockName'] : null;
 							},
-						],
-					],
-				]
-			)
+						]
+					),
+				],
+			]
 		);
 	}
 

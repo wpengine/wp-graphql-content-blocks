@@ -39,7 +39,7 @@ class CorePostTerms extends Block {
 				'prefix' => WPGraphQLRegisterConfig::resolve_graphql_config(
 					[
 						'type'        => 'String',
-						'description' => __( 'Prefix to display before the post terms', 'wp-graphql-content-blocks' ),
+						'description' => static fn () => __( 'Prefix to display before the post terms', 'wp-graphql-content-blocks' ),
 						'resolve'     => static fn ( $block ) => isset( $block['attrs']['prefix'] ) ? (string) $block['attrs']['prefix'] : null,
 					],
 				),
@@ -47,7 +47,7 @@ class CorePostTerms extends Block {
 				'suffix' => WPGraphQLRegisterConfig::resolve_graphql_config(
 					[
 						'type'        => 'String',
-						'description' => __( 'Suffix to display after the post terms', 'wp-graphql-content-blocks' ),
+						'description' => static fn () => __( 'Suffix to display after the post terms', 'wp-graphql-content-blocks' ),
 						'resolve'     => static fn ( $block ) => isset( $block['attrs']['suffix'] ) ? (string) $block['attrs']['suffix'] : null,
 					],
 				),

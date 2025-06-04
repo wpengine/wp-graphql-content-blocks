@@ -22,7 +22,7 @@ final class Scalar {
 			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
-					'description' => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
+					'description' => fn() => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
 					'serialize'   => static function ( $value ) {
 						return wp_json_encode( $value );
 					},
@@ -34,7 +34,7 @@ final class Scalar {
 			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
-					'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
+					'description' => fn() => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
 					'serialize'   => static function ( $value ) {
 						return wp_json_encode( $value );
 					},

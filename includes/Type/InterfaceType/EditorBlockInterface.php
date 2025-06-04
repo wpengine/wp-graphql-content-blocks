@@ -46,7 +46,7 @@ final class EditorBlockInterface {
 			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
-					'description'     => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
+					'description'     => static fn () => __( 'Node that has content blocks associated with it', 'wp-graphql-content-blocks' ),
 					'eagerlyLoadType' => true,
 					'fields'          => [
 						'editorBlocks' => [
@@ -74,7 +74,7 @@ final class EditorBlockInterface {
 			'EditorBlock',
 			[
 				'eagerlyLoadType' => true,
-				'description'     => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
+				'description'     => static fn () => __( 'Blocks that can be edited to create content and layouts', 'wp-graphql-content-blocks' ),
 				'fields'          => [
 					// @TODO - Remove when WPGraphQL min version is 2.3.0
 					'clientId'                => WPGraphQLRegisterConfig::resolve_graphql_config(
