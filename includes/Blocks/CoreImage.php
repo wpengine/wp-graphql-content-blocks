@@ -45,17 +45,20 @@ class CoreImage extends Block {
 	public function __construct( WP_Block_Type $block, Registry $block_registry ) {
 		parent::__construct( $block, $block_registry );
 
+		// Stash type name for static methods.
+		$type_name = $this->type_name;
+
 		register_graphql_field(
-			$this->type_name,
+			$type_name,
 			'mediaDetails',
 			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => 'MediaDetails',
-					'description' => fn () => sprintf(
+					'description' => static fn () => sprintf(
 						// translators: %s is the block type name.
 						__( 'Media Details of the %s Block Type', 'wp-graphql-content-blocks' ),
-						$this->type_name
+						$type_name
 					),
 					'resolve'     => static function ( $block ) {
 						$attrs = $block['attrs'];
