@@ -120,15 +120,18 @@ class Block {
 
 		// For each attribute, register a new object type and attach it to the block type as a field
 		$block_attribute_type_name = $this->type_name . 'Attributes';
+
+		// Stash the type name so we can use it statically.
+		$type_name = $this->type_name;
 		register_graphql_object_type(
 			$block_attribute_type_name,
 			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
-					'description' => fn () => sprintf(
+					'description' => static fn () => sprintf(
 					// translators: %s is the block type name.
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
-						$this->type_name
+						$type_name
 					),
 					'interfaces'  => $this->get_block_attributes_interfaces(),
 					'fields'      => $block_attribute_fields,
@@ -136,16 +139,16 @@ class Block {
 			)
 		);
 		register_graphql_field(
-			$this->type_name,
+			$type_name,
 			'attributes',
 			// @TODO - Remove when WPGraphQL min version is 2.3.0
 			WPGraphQLRegisterConfig::resolve_graphql_config(
 				[
 					'type'        => $block_attribute_type_name,
-					'description' => fn () => sprintf(
+					'description' => static fn () => sprintf(
 						// translators: %s is the block type name.
 						__( 'Attributes of the %s Block Type', 'wp-graphql-content-blocks' ),
-						$this->type_name
+						$type_name
 					),
 					'resolve'     => static function ( $block ) {
 						return $block;
@@ -269,7 +272,7 @@ class Block {
 			// Create the field config.
 			$fields[ Utils::format_field_name( $attribute_name ) ] = [
 				'type'        => $graphql_type,
-				'description' => sprintf(
+				'description' => static fn () => sprintf(
 					// translators: %1$s is the attribute name, %2$s is the block name.
 					__( 'The "%1$s" field on the "%2$s" block or block attributes', 'wp-graphql-content-blocks' ),
 					$attribute_name,
@@ -355,7 +358,7 @@ class Block {
 
 				$fields[ Utils::format_field_name( $name ) ] = [
 					'type'        => $type,
-					'description' => sprintf(
+					'description' => static fn () => sprintf(
 						// translators: %1$s is the attribute name, %2$s is the block attributes field.
 						__( 'The "%1$s" field on the "%2$s" block attribute field', 'wp-graphql-content-blocks' ),
 						$name,
@@ -412,23 +415,23 @@ class Block {
 	private function register_type(): void {
 		register_graphql_object_type(
 			$this->type_name,
-			[
-				'description'     => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
-				'interfaces'      => $this->get_block_interfaces(),
-				'eagerlyLoadType' => true,
-				'fields'          => [
-					// @TODO - Remove when WPGraphQL min version is 2.3.0
-					'name' => WPGraphQLRegisterConfig::resolve_graphql_config(
-						[
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
+			WPGraphQLRegisterConfig::resolve_graphql_config(
+				[
+					'description'     => static fn () => __( 'A block used for editing the site', 'wp-graphql-content-blocks' ),
+					'interfaces'      => $this->get_block_interfaces(),
+					'eagerlyLoadType' => true,
+					'fields'          => [
+						'name' => [
 							'type'        => 'String',
 							'description' => static fn () => __( 'The name of the block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
 								return isset( $block['blockName'] ) ? (string) $block['blockName'] : null;
 							},
-						]
-					),
-				],
-			]
+						],
+					],
+				]
+			)
 		);
 	}
 
