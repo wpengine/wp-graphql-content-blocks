@@ -41,6 +41,10 @@
     "semver": "~7.5.2",
     "optionator": "0.9.3",
     "braces": "^3.0.3",
-    "ws": "^8.4.0"
+    "ws": "^8.4.0",
+    "puppeteer": "^24.10",
+    "puppeteer-core": "^24.10",
+    "webpack-dev-server": "^5.2",
+    "@babel/runtime": "7.27.0"
   }
 }
