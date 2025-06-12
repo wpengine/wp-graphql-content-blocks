@@ -14,6 +14,13 @@ use WPGraphQL\Utils\Utils;
  */
 final class WPGraphQLHelpers {
 	/**
+	 * Array of rendered blocks.
+	 *
+	 * @var array
+	 */
+	public static array $rendered_blocks = [];
+
+	/**
 	 * Formats the name of the block for the GraphQL registry
 	 *
 	 * @param string $name The name of the block.
@@ -48,5 +55,35 @@ final class WPGraphQLHelpers {
 		$type_name = lcfirst( ucwords( $block_name, '/' ) );
 
 		return self::format_type_name( $type_name );
+	}
+
+	/**
+	 * Gets the rendered block.
+	 *
+	 * @param mixed|array{blockName: array, attrs: array, innerBlocks: string, innerHTML: string, innerContent: string, clientId: ?string} $block The block being resolved.
+	 */
+	public static function get_rendered_block( $block ): ?string {
+
+		// As the parent method does not have block as an array and might be a breaking change
+		// we are just ensuring this is an array
+		if ( ! is_array( $block ) ) {
+			// @phpstan-ignore-next-line
+			return render_block( $block );
+		}
+
+		$key = $block['clientId'] ?? null;
+		if ( ! is_string( $key ) ) {
+			// Client ID is expected but bail if it doesn't exist
+			return render_block( $block );
+		}
+
+		if ( array_key_exists( $key, self::$rendered_blocks ) ) {
+			return self::$rendered_blocks[ $key ];
+		}
+
+		$content                       = render_block( $block );
+		self::$rendered_blocks[ $key ] = $content;
+
+		return $content;
 	}
 }

@@ -7,6 +7,7 @@
 
 namespace WPGraphQL\ContentBlocks\Field\BlockSupports;
 
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
 use WPGraphQL\ContentBlocks\Utilities\DOMHelpers;
 use WPGraphQL\ContentBlocks\Utilities\WPGraphQLHelpers;
 
@@ -20,22 +21,25 @@ class Anchor {
 	public static function register(): void {
 		register_graphql_interface_type(
 			'BlockWithSupportsAnchor',
-			[
-				'description' => __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
-				'fields'      => [
-					'anchor' => [
-						'type'        => 'string',
-						'description' => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
-						'resolve'     => static function ( $block ) {
-							$rendered_block = wp_unslash( render_block( $block ) );
-							if ( empty( $rendered_block ) ) {
-								return null;
-							}
-							return DOMHelpers::parse_first_node_attribute( $rendered_block, 'id' );
-						},
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
+			WPGraphQLRegisterConfig::resolve_graphql_config(
+				[
+					'description' => static fn () => __( 'Block that supports Anchor field', 'wp-graphql-content-blocks' ),
+					'fields'      => [
+						'anchor' => [
+							'type'        => 'string',
+							'description' => static fn () => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
+							'resolve'     => static function ( $block ) {
+								$rendered_block = wp_unslash( WPGraphQLHelpers::get_rendered_block( $block ) );
+								if ( empty( $rendered_block ) ) {
+									return null;
+								}
+								return DOMHelpers::parse_first_node_attribute( $rendered_block, 'id' );
+							},
+						],
 					],
-				],
-			]
+				]
+			)
 		);
 	}
 

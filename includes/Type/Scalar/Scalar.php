@@ -7,6 +7,8 @@
 
 namespace WPGraphQL\ContentBlocks\Type\Scalar;
 
+use WPGraphQL\ContentBlocks\GraphQL\WPGraphQLRegisterConfig;
+
 /**
  * Class Scalar
  */
@@ -17,21 +19,27 @@ final class Scalar {
 	public function init(): void {
 		register_graphql_scalar(
 			'BlockAttributesObject',
-			[
-				'description' => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
-				'serialize'   => static function ( $value ) {
-					return wp_json_encode( $value );
-				},
-			]
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
+			WPGraphQLRegisterConfig::resolve_graphql_config(
+				[
+					'description' => static fn () => __( 'Generic Object Scalar Type', 'wp-graphql-content-blocks' ),
+					'serialize'   => static function ( $value ) {
+						return wp_json_encode( $value );
+					},
+				]
+			)
 		);
 		register_graphql_scalar(
 			'BlockAttributesArray',
-			[
-				'description' => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
-				'serialize'   => static function ( $value ) {
-					return wp_json_encode( $value );
-				},
-			]
+			// @TODO - Remove when WPGraphQL min version is 2.3.0
+			WPGraphQLRegisterConfig::resolve_graphql_config(
+				[
+					'description' => static fn () => __( 'Generic Array Scalar Type', 'wp-graphql-content-blocks' ),
+					'serialize'   => static function ( $value ) {
+						return wp_json_encode( $value );
+					},
+				]
+			)
 		);
 	}
 

@@ -6,8 +6,7 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.4",
-    "imangazaliev/didom": "^2.0",
-    "cweagans/composer-patches": "^1"
+    "imangazaliev/didom": "^2.0"
   },
   "require-dev": {
     "brain/monkey": "^2.6",
@@ -37,8 +36,7 @@
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true,
-      "phpstan/extension-installer": true,
-      "cweagans/composer-patches": true
+      "phpstan/extension-installer": true
     },
     "platform": {
       "php": "7.4"

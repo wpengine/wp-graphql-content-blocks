@@ -25,59 +25,63 @@ final class BlockAttributeResolver {
 	 * @return mixed
 	 */
 	public static function resolve_block_attribute( $attribute, string $html, $attribute_value ) {
+
+		$source = $attribute['source'] ?? null;
+		// Return at the earliest point to reduce overhead
+		if ( ! $source ) {
+			return self::get_default_attribute_value( $attribute, $attribute_value );
+		}
+
 		$value = null;
 
-		if ( isset( $attribute['source'] ) ) {
-			// @todo parse remaining sources: https://github.com/WordPress/gutenberg/blob/trunk/packages/blocks/src/api/parser/get-block-attributes.js#L198
-			switch ( $attribute['source'] ) {
-				case 'attribute':
-					$value = self::parse_attribute_source( $html, $attribute );
+		// @todo parse remaining sources: https://github.com/WordPress/gutenberg/blob/trunk/packages/blocks/src/api/parser/get-block-attributes.js#L198
+		switch ( $source ) {
+			case 'attribute':
+				$value = self::parse_attribute_source( $html, $attribute );
+				break;
+			case 'html':
+			case 'rich-text':
+				// If there is no selector, the source is the node's innerHTML.
+				if ( ! isset( $attribute['selector'] ) ) {
+					$value = ! empty( $html ) ? DOMHelpers::find_nodes( $html )->innerHTML() : null;
 					break;
-				case 'html':
-				case 'rich-text':
-					// If there is no selector, the source is the node's innerHTML.
-					if ( ! isset( $attribute['selector'] ) ) {
-						$value = ! empty( $html ) ? DOMHelpers::find_nodes( $html )->innerHTML() : null;
-						break;
-					}
-					$value = self::parse_html_source( $html, $attribute );
-					break;
-				case 'text':
-					$value = self::parse_text_source( $html, $attribute );
-					break;
-				case 'query':
-					$value = self::parse_query_source( $html, $attribute, $attribute_value );
-					break;
-				case 'tag':
-					$value = self::parse_tag_source( $html );
-					break;
-				case 'meta':
-					$value = self::parse_meta_source( $attribute );
-					break;
-			}
-
-			// Sanitize the value type.
-			if ( isset( $attribute['type'] ) ) {
-				switch ( $attribute['type'] ) {
-					case 'integer':
-						$value = intval( $value );
-						break;
-					case 'boolean':
-						// Boolean attributes can be an empty string.
-						$value = ( ! is_array( $value ) && isset( $value ) ) || ! empty( $value );
-						break;
 				}
-			}
+				$value = self::parse_html_source( $html, $attribute );
+				break;
+			case 'text':
+				$value = self::parse_text_source( $html, $attribute );
+				break;
+			case 'query':
+				$value = self::parse_query_source( $html, $attribute, $attribute_value );
+				break;
+			case 'tag':
+				$value = self::parse_tag_source( $html );
+				break;
+			case 'meta':
+				$value = self::parse_meta_source( $attribute );
+				break;
 		}
 
-		// Fallback to the attributes or default value if the result is empty.
-		if ( null === $value ) {
-			$default = $attribute['default'] ?? null;
-
-			$value = $attribute_value ?? $default;
+		$type = $attribute['type'] ?? null;
+		if ( ! $type ) {
+			return ( null === $value )
+				? self::get_default_attribute_value( $attribute, $attribute_value )
+				: $value;
 		}
 
-		return $value;
+		switch ( $type ) {
+			case 'integer':
+				$value = intval( $value );
+				break;
+			case 'boolean':
+				// Boolean attributes can be an empty string.
+				$value = ( ! is_array( $value ) && isset( $value ) ) || ! empty( $value );
+				break;
+		}
+
+		return ( null === $value )
+			? self::get_default_attribute_value( $attribute, $attribute_value )
+			: $value;
 	}
 
 	/**
@@ -197,5 +201,19 @@ final class BlockAttributeResolver {
 	 */
 	private static function parse_tag_source( string $html ): ?string {
 		return DOMHelpers::get_first_node_tag_name( $html );
+	}
+
+	/**
+	 * Get fallback value which is either attributes or default value
+	 *
+	 * @param array<string,mixed> $attribute The configuration for the specific attribute.
+	 * @param mixed               $attribute_value The value from the parsed block attributes.
+	 *
+	 * @return mixed
+	 */
+	public static function get_default_attribute_value( $attribute, $attribute_value ) {
+		$default = $attribute['default'] ?? null;
+
+		return $attribute_value ?? $default;
 	}
 }
