@@ -16,11 +16,11 @@ jobs:
       - name: Create Docker Containers
         env:
           PHP_VERSION: 8.2
-          WP_VERSION: 6.8
+          WP_VERSION: 6.9
         working-directory: ./
         run: |
           docker compose build \
-            --build-arg WP_VERSION=6.8 \
+            --build-arg WP_VERSION=6.9 \
             --build-arg PHP_VERSION=8.2
           docker compose up -d
 
