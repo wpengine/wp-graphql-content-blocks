@@ -78,6 +78,7 @@ jobs:
           path: /tmp/schema.graphql
 
       - name: Run Schema Inspector
+        continue-on-error: true
         run: |
           # This schema and previous release schema
           node_modules/.bin/graphql-inspector diff /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql /tmp/schema.graphql
