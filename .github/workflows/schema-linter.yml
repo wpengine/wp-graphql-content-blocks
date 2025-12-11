@@ -38,6 +38,8 @@ jobs:
 
       - name: Setup WordPress
         uses: ./.github/actions/setup-wordpress
+        with:
+          wp-version: '6.8'
 
       - name: Setup GraphQL Schema Linter
         run: npm install -g graphql-schema-linter@^3.0 graphql@^16
@@ -77,11 +79,7 @@ jobs:
           name: schema.graphql
           path: /tmp/schema.graphql
 
-      # The Schema Inspector step is allowed to fail (continue-on-error: true) to avoid blocking the workflow on schema breaking changes.
-      # This is intentional, as schema diffs are currently monitored manually due to ongoing compatibility work with WordPress 6.9.
-      # Please review any breaking changes reported by this step before merging or releasing.
       - name: Run Schema Inspector
-        continue-on-error: true
         run: |
           # This schema and previous release schema
           node_modules/.bin/graphql-inspector diff /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql /tmp/schema.graphql
