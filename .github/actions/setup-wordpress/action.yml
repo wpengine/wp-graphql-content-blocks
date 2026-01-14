@@ -1,6 +1,12 @@
 name: Set up WordPress
 description: Sets up WordPress. Assumes mariadb is available as a service.
 
+inputs:
+  wp-version:
+    description: 'WordPress version to install'
+    required: false
+    default: '6.9'
+
 runs:
   using: 'composite'
   steps:
@@ -23,6 +29,8 @@ runs:
 
     - name: Setup WordPress
       shell: bash
+      env:
+        WP_VERSION: ${{ inputs.wp-version }}
       run: |
         cp .env.dist .env
         composer run install-test-env

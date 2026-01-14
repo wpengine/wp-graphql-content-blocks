@@ -92,9 +92,6 @@ install_db() {
 		fi
 	fi
 
-	# Always disable SSL for local test DB connections (fixes WP 6.8 DB creation issues)
-	EXTRA="$EXTRA --ssl=false"
-
 	# create database
 	if [ $(mysql --user="$DB_USER" --password="$DB_PASS"$EXTRA --execute='show databases;' | grep ^$DB_NAME$) ]
 	then
