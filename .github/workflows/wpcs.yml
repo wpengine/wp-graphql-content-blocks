@@ -3,6 +3,10 @@ name: WordPress Coding Standards
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   wpcs:
     runs-on: ubuntu-22.04
