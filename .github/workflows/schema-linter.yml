@@ -27,10 +27,6 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Cancel previous runs of this workflow (pull requests only)
-        if: ${{ github.event_name == 'pull_request_target' }}
-        uses: styfle/cancel-workflow-action@0.11.0
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
