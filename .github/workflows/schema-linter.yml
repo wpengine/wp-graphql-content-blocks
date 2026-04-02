@@ -18,7 +18,7 @@ jobs:
   run:
     runs-on: ubuntu-22.04
     name: Lint WPGraphQL Schema
-    if: contains(github.event.pull_request.labels.*.name, 'safe to test ✔') || github.repository == github.event.repository.full_name || github.event_name == 'push'
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
 
     services:
       mariadb:
