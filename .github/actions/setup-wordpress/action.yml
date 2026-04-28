@@ -2,6 +2,10 @@ name: Set up WordPress
 description: Sets up WordPress. Assumes mariadb is available as a service.
 
 inputs:
+  php-version:
+    description: 'PHP version to use'
+    required: false
+    default: '8.2'
   wp-version:
     description: 'WordPress version to install'
     required: false
@@ -13,7 +17,7 @@ runs:
     - name: Setup PHP w/ Composer & WP-CLI
       uses: shivammathur/setup-php@v2
       with:
-        php-version: 8.0
+        php-version: ${{ inputs.php-version }}
         extensions: mbstring, intl, bcmath, exif, gd, mysqli, opcache, zip, pdo_mysql
         coverage: none
         tools: composer:v2, wp-cli
@@ -21,7 +25,19 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18.x
+        node-version-file: '.nvmrc'
+
+    - name: Get Composer cache directory
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-no-dev-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-no-dev-
 
     - name: Install dependencies
       shell: bash

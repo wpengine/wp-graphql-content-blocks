@@ -10,11 +10,15 @@ on:
       - develop
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   run:
     runs-on: ubuntu-22.04
     name: Lint WPGraphQL Schema
-    if: contains(github.event.pull_request.labels.*.name, 'safe to test ✔') || github.repository == github.event.repository.full_name || github.event_name == 'push'
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
 
     services:
       mariadb:
@@ -27,10 +31,6 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Cancel previous runs of this workflow (pull requests only)
-        if: ${{ github.event_name == 'pull_request_target' }}
-        uses: styfle/cancel-workflow-action@0.11.0
-
       - name: Checkout
         uses: actions/checkout@v4
         with:

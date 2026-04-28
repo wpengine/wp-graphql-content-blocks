@@ -39,7 +39,7 @@ case "$subcommand" in
             esac
         done
         docker build $BUILD_NO_CACHE \
-                    -t faustwp:${TAG}-wp-${WP_VERSION} \
+                    -t wp-graphql-content-blocks:${TAG}-wp-${WP_VERSION} \
                     --build-arg WP_VERSION=${WP_VERSION} \
                     ./.docker;
         ;;
