@@ -3,7 +3,7 @@
   "private": true,
   "version": "4.8.4",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
