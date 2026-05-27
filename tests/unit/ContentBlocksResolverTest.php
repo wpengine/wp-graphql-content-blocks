@@ -101,10 +101,16 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	public function test_resolve_content_blocks_resolves_reusable_blocks() {
 		$post_model = new Post( get_post( $this->reusable_post_id ) );
 		$actual     = $this->instance->resolve_content_blocks( $post_model, [ 'flat' => true ] );
+	
+		$this->assertNotEmpty( $actual );
+		$this->assertEquals( 'core/synced-pattern', $actual[0]['blockName'] );
+	
+		$this->assertArrayHasKey( 'attrs', $actual[0] );
+		$this->assertArrayHasKey( 'ref', $actual[0]['attrs'] );
+		$this->assertArrayHasKey( 'slug', $actual[0]['attrs'] );
 
-		// There should return only the non-empty blocks
-		$this->assertEquals( 3, count( $actual ) );
-		$this->assertEquals( 'core/columns', $actual[0]['blockName'] );
+		$this->assertEquals( 'core/columns', $actual[1]['blockName'] );
+		$this->assertCount( 4, $actual );
 	}
 
 	public function test_resolve_content_blocks_filters_empty_blocks() {

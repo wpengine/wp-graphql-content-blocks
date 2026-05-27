@@ -68,6 +68,7 @@ final class Registry {
 		$this->register_interface_types();
 		$this->register_scalar_types();
 		$this->register_support_block_types();
+		$this->register_custom_block_types();
 		$this->register_block_types();
 	}
 
@@ -255,6 +256,41 @@ final class Registry {
 				register_graphql_interfaces_to_types( [ 'NodeWith' . Utils::format_type_name( $post_type->graphql_single_name ) . 'EditorBlocks' ], [ $type_name ] );
 			}
 		}//end foreach
+	}
+
+	/**
+	 * Registers custom block types.
+	 *
+	 * The 'core/synced-pattern' block is a reusable synced pattern block and
+	 * is not meant to appear in the block editor selection but is used
+	 * internally for resolving reusable content.
+	 */
+	protected function register_custom_block_types(): void {
+		$registry   = \WP_Block_Type_Registry::get_instance();
+		$block_name = 'core/synced-pattern';
+
+		if ( ! $registry->is_registered( $block_name ) ) {
+			$registry->register(
+				$block_name,
+				[
+					'name'            => $block_name,
+					'title'           => __( 'Synced Pattern', 'wp-graphql-content-blocks' ),
+					'icon'            => null,
+					'category'        => 'theme',
+					'attributes'      => [
+						'ref'  => [
+							'type' => 'number',
+						],
+						'slug' => [
+							'type' => 'string',
+						],
+					],
+					'render_callback' => static function ( $attributes, $content ) {
+						return $content;
+					},
+				]
+			);
+		}
 	}
 
 	/**
