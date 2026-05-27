@@ -1,5 +1,12 @@
 # WPGraphQL Content Blocks
 
+## 4.8.5
+
+### Patch Changes
+
+- 1c3b6df: Patch development-only security advisories by overriding transitive `uuid` (→ ^11.1.1) and `webpack-dev-server` (→ ^5.2.4). These bumps affect build/test tooling only and do not change any code shipped to consumers of the plugin.
+- f52cb9e: Add WordPress 6.9 compatibility and update test matrix to support WordPress 6.9, 6.8 with PHP 8.3, 8.1.
+
 ## 4.8.4
 
 ### Patch Changes
