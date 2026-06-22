@@ -30,7 +30,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@wordpress/jest-console": "^8.22.0",
-    "@wordpress/jest-puppeteer-axe": "^7.22.0",
+    "@wordpress/jest-puppeteer-axe": "^7.48.1",
     "@wordpress/scripts": "^32.4.1",
     "expect-puppeteer": "^11.0.0",
     "puppeteer-testing-library": "^0.6.0",
