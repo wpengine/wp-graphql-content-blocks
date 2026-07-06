@@ -1,5 +1,11 @@
 # WPGraphQL Content Blocks
 
+## 4.8.6
+
+### Patch Changes
+
+- 693ea8a: Security: password-protected posts no longer expose block content through the `editorBlocks` field to unauthenticated GraphQL callers.
+
 ## 4.8.5
 
 ### Patch Changes
