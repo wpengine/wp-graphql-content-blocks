@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.8.1
-Stable tag: 4.8.5
+Stable tag: 4.8.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -26,6 +26,12 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 4.8.6 =
+
+### Patch Changes
+
+- 693ea8a: Security: password-protected posts no longer expose block content through the `editorBlocks` field to unauthenticated GraphQL callers.
+
 = 4.8.5 =
 
 ### Patch Changes
@@ -38,12 +44,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 ### Patch Changes
 
 - 43cef3d: Tested WordPress 6.8.1 and fixed a release issue with the plugin artifact
-
-= 4.8.3 =
-
-### Patch Changes
-
-- bf77481: Updated plugin test suite and readme for WordPress 6.8
-- bb3631c: Adds WPGraphQL version compatibility headers and checks
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
