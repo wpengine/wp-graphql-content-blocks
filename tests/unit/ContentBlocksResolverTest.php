@@ -188,6 +188,30 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	}
 
 	/**
+	 * Tests that an empty array is returned for a password-protected post when no password is supplied.
+	 *
+	 */
+	public function test_returns_empty_array_for_password_protected_post() {
+		$post_id = self::factory()->post->create(
+			[
+				'post_content'  => '<!-- wp:paragraph --><p>Secret</p><!-- /wp:paragraph -->',
+				'post_password' => 'letmein123',
+				'post_status'   => 'publish',
+			]
+		);
+		$post = new Post( get_post( $post_id ) );
+
+		// No password cookie is present, so post_password_required() returns true.
+		$resolved_blocks = $this->instance->resolve_content_blocks( $post, [] );
+
+		$this->assertIsArray( $resolved_blocks );
+		$this->assertEmpty( $resolved_blocks, 'Password-protected post must not expose blocks to unauthenticated callers.' );
+
+		// Cleanup.
+		wp_delete_post( $post_id, true );
+	}
+
+	/**
 	 * Tests that the wpgraphql_content_blocks_resolve_blocks filter is applied.
 	 */
 	public function test_filters_wpgraphql_content_blocks_resolve_blocks() {

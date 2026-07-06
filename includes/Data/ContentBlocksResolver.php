@@ -47,7 +47,14 @@ final class ContentBlocksResolver {
 			// probably have a "Block" Model that handles
 			// determining what fields should/should not be
 			// allowed to be returned?
-			$post    = get_post( $node->databaseId );
+			$post = get_post( $node->databaseId );
+
+			// Respect WordPress password protection: return no blocks when a password
+			// is required and the viewer has not supplied the correct password cookie.
+			if ( ! $post || post_password_required( $post ) ) {
+				return [];
+			}
+
 			$content = ! empty( $post->post_content ) ? $post->post_content : null;
 		}
 
