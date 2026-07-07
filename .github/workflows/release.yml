@@ -69,6 +69,19 @@ jobs:
           tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           overwrite: true
 
+      - name: Generate WPE info.json manifest
+        if: steps.changesets.outputs.published == 'true'
+        run: bash .github/scripts/add-wpe-version-info-file.sh ${{ fromJSON(steps.changesets.outputs.publishedPackages)[0].version }}
+
+      - name: Upload info.json to the release
+        if: steps.changesets.outputs.published == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
+          files: info.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Setup WordPress to generate static schema
         if: steps.changesets.outputs.published == 'true'
         uses: ./.github/actions/setup-wordpress
