@@ -26,7 +26,7 @@ jobs:
     name: WordPress ${{ matrix.wp-nightly && 'Nightly' || matrix.wordpress }}, PHP ${{ matrix.php }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create Docker Containers
         env:
