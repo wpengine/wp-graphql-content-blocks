@@ -5,12 +5,29 @@ inputs:
   version:
     description: 'Plugin version to generate the manifest for (e.g. 4.8.6).'
     required: true
+  slug:
+    description: 'Plugin slug.'
+    default: 'wp-graphql-content-blocks'
+  readme:
+    description: 'Path to readme.txt.'
+    default: 'readme.txt'
+  update_url:
+    description: 'Base URL to fetch the seed manifest from.'
+    default: ''
+  download_base:
+    description: 'Base URL written into download_link and versions entries. Defaults to update_url if not set.'
+    default: ''
 
 runs:
   using: 'composite'
   steps:
     - name: Generate info.json
       shell: bash
+      env:
+        SLUG: ${{ inputs.slug }}
+        README: ${{ inputs.readme }}
+        UPDATE_URL: ${{ inputs.update_url }}
+        DOWNLOAD_BASE_URL: ${{ inputs.download_base }}
       run: bash .github/scripts/generate-info-json.sh "${{ inputs.version }}"
 
     - name: Validate manifest
