@@ -69,7 +69,7 @@ jobs:
           tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           overwrite: true
 
-      - name: Generate WPE info.json manifest
+      - name: Generate info.json manifest
         if: steps.changesets.outputs.published == 'true'
         uses: ./.github/actions/generate-info-json
         with:

@@ -11,7 +11,7 @@ runs:
   steps:
     - name: Generate info.json
       shell: bash
-      run: bash .github/scripts/add-wpe-version-info-file.sh "${{ inputs.version }}"
+      run: bash .github/scripts/generate-info-json.sh "${{ inputs.version }}"
 
     - name: Validate manifest
       shell: bash

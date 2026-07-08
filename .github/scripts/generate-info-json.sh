@@ -2,17 +2,17 @@
 #
 # Refreshes the release-time fields in the plugin's info.json manifest.
 #
-# Downloads the currently published manifest from the WP Engine plugin update
-# service, refreshes the release-time fields from readme.txt (the source of
-# truth), and writes the result to ./info.json in the current working directory
+# Downloads the currently published manifest from the plugin update service,
+# refreshes the release-time fields from readme.txt (the source of truth),
+# and writes the result to ./info.json in the current working directory
 # for upload as a GitHub Release asset.
 #
 # Environment overrides (with defaults for this repo):
-#   SLUG       plugin slug              (default: wp-graphql-content-blocks)
-#   README     path to readme.txt       (default: readme.txt)
-#   UPDATE_URL base WPE updates URL      (default: https://wpe-plugin-updates.wpengine.com/${SLUG})
+#   SLUG       plugin slug             (default: wp-graphql-content-blocks)
+#   README     path to readme.txt      (default: readme.txt)
+#   UPDATE_URL base plugin updates URL (default: https://wpe-plugin-updates.wpengine.com/${SLUG})
 #
-# Usage: bash add-wpe-version-info-file.sh <version>
+# Usage: bash generate-info-json.sh <version>
 
 set -euo pipefail
 
