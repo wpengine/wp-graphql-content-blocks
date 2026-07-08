@@ -20,12 +20,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate info.json
-        run: bash .github/scripts/add-wpe-version-info-file.sh "${{ inputs.version }}"
-
-      - name: Validate manifest
-        run: |
-          jq empty info.json
-          jq '{version, last_updated, download_link, tested, requires, requires_php, versions: (.versions | keys)}' info.json
+        uses: ./.github/actions/generate-info-json
+        with:
+          version: ${{ inputs.version }}
 
       - name: Upload info.json artifact
         uses: actions/upload-artifact@v4

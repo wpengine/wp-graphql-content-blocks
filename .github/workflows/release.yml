@@ -71,7 +71,9 @@ jobs:
 
       - name: Generate WPE info.json manifest
         if: steps.changesets.outputs.published == 'true'
-        run: bash .github/scripts/add-wpe-version-info-file.sh ${{ fromJSON(steps.changesets.outputs.publishedPackages)[0].version }}
+        uses: ./.github/actions/generate-info-json
+        with:
+          version: ${{ fromJSON(steps.changesets.outputs.publishedPackages)[0].version }}
 
       - name: Upload info.json to the release
         if: steps.changesets.outputs.published == 'true'
