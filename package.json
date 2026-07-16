@@ -28,9 +28,9 @@
     "wp-graphql-content-blocks.php"
   ],
   "devDependencies": {
-    "@changesets/cli": "^2.29.7",
-    "@wordpress/jest-console": "^8.22.0",
-    "@wordpress/jest-puppeteer-axe": "^7.22.0",
+    "@changesets/cli": "^2.31.1",
+    "@wordpress/jest-console": "^8.51.0",
+    "@wordpress/jest-puppeteer-axe": "^7.51.0",
     "@wordpress/scripts": "^32.4.1",
     "expect-puppeteer": "^11.0.0",
     "puppeteer-testing-library": "^0.6.0",
