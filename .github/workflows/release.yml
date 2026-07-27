@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -68,6 +68,21 @@ jobs:
           asset_name: wp-graphql-content-blocks.zip
           tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           overwrite: true
+
+      - name: Generate info.json manifest
+        if: steps.changesets.outputs.published == 'true'
+        uses: ./.github/actions/generate-info-json
+        with:
+          version: ${{ fromJSON(steps.changesets.outputs.publishedPackages)[0].version }}
+
+      - name: Upload info.json to the release
+        if: steps.changesets.outputs.published == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
+          files: info.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup WordPress to generate static schema
         if: steps.changesets.outputs.published == 'true'

@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.8.1
-Stable tag: 4.8.4
+Stable tag: 4.8.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -26,23 +26,23 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 4.8.6 =
+
+### Patch Changes
+
+- 693ea8a: Security: password-protected posts no longer expose block content through the `editorBlocks` field to unauthenticated GraphQL callers.
+
+= 4.8.5 =
+
+### Patch Changes
+
+- 1c3b6df: Patch development-only security advisories by overriding transitive `uuid` (→ ^11.1.1) and `webpack-dev-server` (→ ^5.2.4). These bumps affect build/test tooling only and do not change any code shipped to consumers of the plugin.
+- f52cb9e: Add WordPress 6.9 compatibility and update test matrix to support WordPress 6.9, 6.8 with PHP 8.3, 8.1.
+
 = 4.8.4 =
 
 ### Patch Changes
 
 - 43cef3d: Tested WordPress 6.8.1 and fixed a release issue with the plugin artifact
-
-= 4.8.3 =
-
-### Patch Changes
-
-- bf77481: Updated plugin test suite and readme for WordPress 6.8
-- bb3631c: Adds WPGraphQL version compatibility headers and checks
-
-= 4.8.2 =
-
-### Patch Changes
-
-- afd2458: bug: Fixes fatal error on the Site Health page for the info tab. Caused by a naming of the wrong object key in the Semver package.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)

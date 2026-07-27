@@ -1,0 +1,31 @@
+name: info.json dry run
+
+# Manually generate the plugin-update info.json manifest for a given version
+# without publishing a release. Produces the manifest as a workflow artifact so
+# it can be inspected on any branch (e.g. an open PR) before a real release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to generate info.json for (e.g. 4.8.6)'
+        required: true
+
+jobs:
+  dry-run:
+    name: Generate info.json (dry run)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Generate info.json
+        uses: ./.github/actions/generate-info-json
+        with:
+          version: ${{ inputs.version }}
+
+      - name: Upload info.json artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: info-json
+          path: info.json
