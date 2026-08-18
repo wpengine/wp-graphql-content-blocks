@@ -220,7 +220,6 @@ final class DOMHelpers {
 		return $elem;
 	}
 
-
 	/**
 	 * Deprecated methods.
 	 */

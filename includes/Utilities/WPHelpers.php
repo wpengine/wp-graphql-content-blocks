@@ -69,7 +69,7 @@ final class WPHelpers {
 		$post->ID             = $post_id;
 		$post->post_author    = 1;
 		$post->post_date      = current_time( 'mysql' );
-		$post->post_date_gmt  = current_time( 'mysql', 1 );
+		$post->post_date_gmt  = current_time( 'mysql', true );
 		$post->post_title     = '';
 		$post->post_content   = '';
 		$post->post_status    = '';
