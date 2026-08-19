@@ -77,7 +77,7 @@ jobs:
 
       - name: Upload info.json to the release
         if: steps.changesets.outputs.published == 'true'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
           files: info.json
