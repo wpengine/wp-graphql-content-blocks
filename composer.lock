@@ -220,16 +220,16 @@
         },
         {
             "name": "axepress/wp-graphql-stubs",
-            "version": "v2.19.0",
+            "version": "v2.23.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AxeWP/wp-graphql-stubs.git",
-                "reference": "cbd4bd3f56449a6f2159d51f2c7763c1482bed3b"
+                "reference": "af779998bfa1f30dee1e128591ad78da1aa86115"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/cbd4bd3f56449a6f2159d51f2c7763c1482bed3b",
-                "reference": "cbd4bd3f56449a6f2159d51f2c7763c1482bed3b",
+                "url": "https://api.github.com/repos/AxeWP/wp-graphql-stubs/zipball/af779998bfa1f30dee1e128591ad78da1aa86115",
+                "reference": "af779998bfa1f30dee1e128591ad78da1aa86115",
                 "shasum": ""
             },
             "require": {
@@ -261,7 +261,7 @@
             ],
             "support": {
                 "issues": "https://github.com/AxeWP/wp-graphql-stubs/issues",
-                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v2.19.0"
+                "source": "https://github.com/AxeWP/wp-graphql-stubs/tree/v2.23.1"
             },
             "funding": [
                 {
@@ -269,7 +269,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-04T03:27:55+00:00"
+            "time": "2026-09-23T04:33:22+00:00"
         },
         {
             "name": "brain/monkey",
