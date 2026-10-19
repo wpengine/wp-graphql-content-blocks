@@ -18,13 +18,14 @@ final class BlockAttributeResolver {
 	 *
 	 * @internal This method should only be used internally. There are no guarantees for backwards compatibility.
 	 *
-	 * @param array<string,mixed> $attribute The configuration for the specific attribute.
-	 * @param string              $html The block rendered html.
-	 * @param mixed               $attribute_value The value from the parsed block attributes.
+	 * @param array<string,mixed>  $attribute The configuration for the specific attribute.
+	 * @param string               $html The block rendered html.
+	 * @param mixed                $attribute_value The value from the parsed block attributes.
+	 * @param ?array<string,mixed> $attribute_values All parsed block attributes, used by the `attrs` source.
 	 *
 	 * @return mixed
 	 */
-	public static function resolve_block_attribute( $attribute, string $html, $attribute_value ) {
+	public static function resolve_block_attribute( $attribute, string $html, $attribute_value, ?array $attribute_values = null ) {
 
 		$source = $attribute['source'] ?? null;
 		// Return at the earliest point to reduce overhead
@@ -59,6 +60,9 @@ final class BlockAttributeResolver {
 				break;
 			case 'meta':
 				$value = self::parse_meta_source( $attribute );
+				break;
+			case 'attrs':
+				$value = self::parse_attrs_source( $attribute_values, $attribute );
 				break;
 		}
 
@@ -164,7 +168,7 @@ final class BlockAttributeResolver {
 			foreach ( $config['query'] as $q_key => $q_value ) {
 				$attribute_value = $attribute_values[ $q_key ] ?? null;
 
-				$res = self::resolve_block_attribute( $q_value, $source_node->html(), $attribute_value );
+				$res = self::resolve_block_attribute( $q_value, $source_node->html(), $attribute_value, $attribute_values );
 
 				$temp[ $q_key ] = $res;
 			}
@@ -201,6 +205,36 @@ final class BlockAttributeResolver {
 	 */
 	private static function parse_tag_source( string $html ): ?string {
 		return DOMHelpers::get_first_node_tag_name( $html );
+	}
+
+	/**
+	 * Parses a nested path out of the parsed block attributes.
+	 *
+	 * Used for values that block supports serialize into the generic `style`
+	 * object rather than a top-level attribute, such as
+	 * `style.typography.textAlign`.
+	 *
+	 * @param ?array<string,mixed> $attribute_values All parsed block attributes.
+	 * @param array<string,mixed>  $config The value configuration.
+	 *
+	 * @return mixed
+	 */
+	private static function parse_attrs_source( ?array $attribute_values, array $config ) {
+		if ( null === $attribute_values || empty( $config['path'] ) || ! is_array( $config['path'] ) ) {
+			return null;
+		}
+
+		$value = $attribute_values;
+
+		foreach ( $config['path'] as $segment ) {
+			if ( ! is_array( $value ) || ! array_key_exists( $segment, $value ) ) {
+				return null;
+			}
+
+			$value = $value[ $segment ];
+		}
+
+		return $value;
 	}
 
 	/**

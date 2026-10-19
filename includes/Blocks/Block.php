@@ -106,7 +106,10 @@ class Block {
 	 */
 	private function register_block_attributes_as_fields(): void {
 		// Grab any additional block attributes attached into the class itself.
+		// Supports-derived attributes come first so that both the block's own
+		// attributes and the class overrides take precedence over them.
 		$block_attributes = array_merge(
+			BlockSupportsAttributes::get_attributes( $this->block ),
 			$this->block_attributes ?? [],
 			$this->additional_block_attributes ?? [],
 		);
@@ -463,13 +466,16 @@ class Block {
 	private function resolve_block_attributes_recursive( $attribute_values, string $html, array $attribute_configs ): array {
 		$result = [];
 
+		// Blocks saved without attributes parse to null.
+		$attribute_values = is_array( $attribute_values ) ? $attribute_values : null;
+
 		// Clean up the html.
 		$html = trim( $html );
 
 		foreach ( $attribute_configs as $key => $config ) {
 			$attribute_value = $attribute_values[ $key ] ?? null;
 
-			$result[ $key ] = BlockAttributeResolver::resolve_block_attribute( $config, $html, $attribute_value );
+			$result[ $key ] = BlockAttributeResolver::resolve_block_attribute( $config, $html, $attribute_value, $attribute_values );
 		}
 
 		return $result;
