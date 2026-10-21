@@ -2,6 +2,12 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: /
+    # Release-please only releases for visible changelog types. Production
+    # bumps use `deps` so they reach the release PR's Dependencies section;
+    # dev bumps stay `chore` because they don't change what users install.
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
     schedule:
       interval: weekly
     groups:
@@ -11,6 +17,12 @@ updates:
 
   - package-ecosystem: composer
     directory: /
+    # Release-please only releases for visible changelog types. Production
+    # bumps use `deps` so they reach the release PR's Dependencies section;
+    # dev bumps stay `chore` because they don't change what users install.
+    commit-message:
+      prefix: "deps"
+      prefix-development: "chore(deps-dev)"
     schedule:
       interval: weekly
     groups:
@@ -20,6 +32,8 @@ updates:
 
   - package-ecosystem: github-actions
     directory: /
+    commit-message:
+      prefix: "ci"
     schedule:
       interval: weekly
     groups:

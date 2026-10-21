@@ -159,13 +159,15 @@ async function generateReadmeChangelog(readmeTxtFile, changelog) {
 
     // print all lines in current version
     changelogLines.every((line) => {
-      // Version numbers in CHANGELOG.md are h2
+      // Version numbers in CHANGELOG.md are h2. release-please writes them as
+      // "## [1.2.3](compare-url) (date)"; older entries are "## 1.2.3".
       if (line.startsWith("## ")) {
         if (versionCount == 3) {
           return false;
         }
         // Format version number for WordPress
-        line = line.replace("## ", "= ") + " =";
+        const version = line.match(/^## \[?([^\]\s]+)/)[1];
+        line = `= ${version} =`;
         versionCount++;
       }
 
