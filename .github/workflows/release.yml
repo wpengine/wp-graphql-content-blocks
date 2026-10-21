@@ -5,10 +5,62 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write      # For creating releases/tags and pushing to the release PR branch
+  pull-requests: write # For creating the release PR
+
 jobs:
 
   call-workflow-test-plugin:
     uses: ./.github/workflows/test-plugin.yml
+
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-22.04
+    outputs:
+      release-created: ${{ steps.release.outputs.release_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+      pr: ${{ steps.release.outputs.pr }}
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+        with:
+          target-branch: main
+
+  # release-please bumps package.json and package-lock.json but knows nothing
+  # about the plugin header, the version constant, the readme.txt Stable tag,
+  # or the readme.txt changelog. Sync those onto the release PR branch so they
+  # ship together.
+  sync-release-files:
+    name: Sync release files
+    needs: release-please
+    if: needs.release-please.outputs.pr
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout release PR branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ fromJSON(needs.release-please.outputs.pr).headBranchName }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Update plugin header, version constant, Stable tag, and readme.txt changelog
+        run: node bin/versionPlugin.js
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "Release files already in sync"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: sync release files"
+          git push
 
   release:
     services:
@@ -22,11 +74,15 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     name: Release
+    needs: [release-please, call-workflow-test-plugin]
+    if: needs.release-please.outputs.release-created == 'true'
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.release-please.outputs.tag }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -37,20 +93,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Create Release Pull Request or Create GitHub Release
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: npm run release
-          version: npm run version
-          title: "Release Plugin"
-          commit: "Release Plugin"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build plugin zip
+        run: npm run build
 
       - name: Prepare release zip without parent directory
-        if: steps.changesets.outputs.published == 'true'
         run: |
           mkdir -p tmp_release_dir
           unzip -q "@wpengine/wp-graphql-content-blocks.zip" -d tmp_release_dir
@@ -60,46 +106,40 @@ jobs:
           rm -rf tmp_release_dir
 
       - name: Upload plugin zip file
-        if: steps.changesets.outputs.published == 'true'
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "wp-graphql-content-blocks.zip"
           asset_name: wp-graphql-content-blocks.zip
-          tag: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
+          tag: ${{ needs.release-please.outputs.tag }}
           overwrite: true
 
       - name: Generate info.json manifest
-        if: steps.changesets.outputs.published == 'true'
         uses: ./.github/actions/generate-info-json
         with:
-          version: ${{ fromJSON(steps.changesets.outputs.publishedPackages)[0].version }}
+          version: ${{ needs.release-please.outputs.version }}
 
       - name: Upload info.json to the release
-        if: steps.changesets.outputs.published == 'true'
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          tag_name: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version) }}
+          tag_name: ${{ needs.release-please.outputs.tag }}
           files: info.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup WordPress to generate static schema
-        if: steps.changesets.outputs.published == 'true'
         uses: ./.github/actions/setup-wordpress
 
       - name: Generate the static schema
-        if: steps.changesets.outputs.published == 'true'
         run: |
           cd /tmp/wordpress
           # Output: /tmp/schema.graphql
           wp graphql generate-static-schema
 
       - name: Upload schema as release artifact
-        if: steps.changesets.outputs.published == 'true'
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          tag_name: ${{ format('v{0}', fromJSON(steps.changesets.outputs.publishedPackages)[0].version)}}
+          tag_name: ${{ needs.release-please.outputs.tag }}
           files: /tmp/schema.graphql
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

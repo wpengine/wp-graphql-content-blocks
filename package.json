@@ -11,13 +11,10 @@
     "test-e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
     "test-e2e:watch": "npm run test-e2e -- --watch",
     "wp-env": "wp-env",
-    "changeset": "changeset",
     "build": "npm run build:clean-vendor && npm run build:composer-install && npm run build:zip",
     "build:clean-vendor": "rimraf vendor",
     "build:composer-install": "composer install --no-dev",
-    "build:zip": "wp-scripts plugin-zip",
-    "version": "changeset version && node bin/versionPlugin.js",
-    "release": "npm run build && changeset publish"
+    "build:zip": "wp-scripts plugin-zip"
   },
   "files": [
     "includes",
@@ -28,7 +25,6 @@
     "wp-graphql-content-blocks.php"
   ],
   "devDependencies": {
-    "@changesets/cli": "^2.31.1",
     "@wordpress/jest-console": "^9.1.0",
     "@wordpress/jest-puppeteer-axe": "^7.52.0",
     "@wordpress/scripts": "^34.1.0",
