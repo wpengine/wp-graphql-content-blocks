@@ -23,7 +23,7 @@ jobs:
       version: ${{ steps.release.outputs.version }}
       pr: ${{ steps.release.outputs.pr }}
     steps:
-      - uses: googleapis/release-please-action@v5
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
         with:
           target-branch: main
@@ -106,7 +106,7 @@ jobs:
           rm -rf tmp_release_dir
 
       - name: Upload plugin zip file
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # 2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "wp-graphql-content-blocks.zip"
@@ -120,7 +120,7 @@ jobs:
           version: ${{ needs.release-please.outputs.version }}
 
       - name: Upload info.json to the release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           tag_name: ${{ needs.release-please.outputs.tag }}
           files: info.json
@@ -137,7 +137,7 @@ jobs:
           wp graphql generate-static-schema
 
       - name: Upload schema as release artifact
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           tag_name: ${{ needs.release-please.outputs.tag }}
           files: /tmp/schema.graphql
