@@ -13,8 +13,12 @@ concurrency:
 
 jobs:
   sonarqube:
-    # Only run for pushes or same-repo PRs (fork PRs can't access secrets)
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    # Only run for pushes or same-repo PRs. Fork and Dependabot PRs can't access
+    # Actions secrets.
+    if: >-
+      github.event_name == 'push' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]')
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v7
