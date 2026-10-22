@@ -30,6 +30,11 @@ class Anchor {
 							'type'        => 'string',
 							'description' => static fn () => __( 'The anchor field for the block.', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
+								// Dynamic blocks (such as ACF blocks) save the anchor as an attribute and may not render it as an `id`.
+								if ( ! empty( $block['attrs']['anchor'] ) && is_string( $block['attrs']['anchor'] ) ) {
+									return $block['attrs']['anchor'];
+								}
+
 								$rendered_block = wp_unslash( WPGraphQLHelpers::get_rendered_block( $block ) );
 								if ( empty( $rendered_block ) ) {
 									return null;
