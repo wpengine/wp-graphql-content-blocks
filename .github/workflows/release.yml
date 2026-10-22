@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# Serialize runs so overlapping pushes don't race on the release PR branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write      # For creating releases/tags and pushing to the release PR branch
   pull-requests: write # For creating the release PR
