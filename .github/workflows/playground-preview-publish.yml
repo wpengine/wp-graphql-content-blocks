@@ -1,0 +1,219 @@
+name: Playground Preview Publish
+
+# Runs in the base-repo context (via `workflow_run`) so it has write
+# access even for PRs from forks. Downloads the build artifact from the
+# triggering workflow, pushes it to a per-PR `preview-pr-N` branch that
+# raw.githubusercontent.com can serve to the browser, and posts (or
+# updates) the sticky Playground comment on the PR.
+#
+# Security model: every PR-derived input is untrusted.
+#   - The PR is resolved from the `workflow_run` payload, and only the
+#     expected zip is copied out of the artifact by name.
+#   - The blueprint template we encode into the Playground URL comes from
+#     the base ref (this checkout), not from the PR. Only the plugin URL
+#     is rewritten in, and it points at ${{ github.repository }}, so a
+#     fork PR cannot redirect Playground.
+#   - Nothing reads `preview-pr-*`, so the branch is never executed.
+
+on:
+  workflow_run: # zizmor: ignore[dangerous-triggers]
+    workflows: ["Playground Preview"]
+    types: [completed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: write
+
+jobs:
+  publish:
+    if: >
+      github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download release assets from the triggering run
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const fs = require('fs');
+            const list = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+            const found = list.data.artifacts.find(a => a.name === 'release-assets');
+            if (!found) {
+              core.setFailed('Required artifact "release-assets" not found on workflow run.');
+              return;
+            }
+            const dl = await github.rest.actions.downloadArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: found.id,
+              archive_format: 'zip',
+            });
+            fs.writeFileSync(`${process.env.RUNNER_TEMP}/release-assets.zip`, Buffer.from(dl.data));
+
+      - name: Resolve pull request from the triggering run
+        id: meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TRUSTED_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          TRUSTED_HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          TRUSTED_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -euo pipefail
+          # pull_requests is empty for fork PRs; matching repo, branch and SHA keeps another PR at this commit from claiming the run.
+          readarray -t _prs < <(
+            gh api "repos/${GH_REPO}/pulls?state=open&per_page=100" --paginate \
+              --jq '.[] | select(.head.sha == env.TRUSTED_HEAD_SHA and .head.repo.full_name == env.TRUSTED_HEAD_REPO and .head.ref == env.TRUSTED_HEAD_BRANCH) | .number'
+          )
+          PR_NUMBER="${_prs[0]:-}"
+
+          # A merged or superseded head has no comment left to post, and the push
+          # that superseded it is already building a preview of its own.
+          if [[ ! "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::notice::No open pull request at head SHA $TRUSTED_HEAD_SHA; nothing to publish."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          {
+            echo "PR_NUMBER=$PR_NUMBER"
+            echo "HEAD_SHA=$TRUSTED_HEAD_SHA"
+          } >> "$GITHUB_ENV"
+
+      - name: Extract release assets
+        if: ${{ steps.meta.outputs.skipped != 'true' }}
+        run: |
+          set -euo pipefail
+          # PR-built archive: copy exactly the expected entry out by name; never let unzip create files or symlinks.
+          archive="$RUNNER_TEMP/release-assets.zip"
+          if [[ "$(unzip -Z1 "$archive")" != "wp-graphql-content-blocks.zip" ]]; then
+            echo "Refusing to publish: release-assets does not contain exactly the expected file."
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/release-assets"
+          unzip -p "$archive" wp-graphql-content-blocks.zip > "$RUNNER_TEMP/release-assets/wp-graphql-content-blocks.zip"
+          unzip -tq "$RUNNER_TEMP/release-assets/wp-graphql-content-blocks.zip"
+
+      # Playground fetches the zip from the browser. Release assets send no
+      # `Access-Control-Allow-Origin`; raw.githubusercontent.com does.
+      - name: Publish preview assets
+        if: ${{ steps.meta.outputs.skipped != 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          BRANCH="preview-pr-${PR_NUMBER}"
+
+          # Force-pushed from a throwaway repo, so no preview blob reaches the
+          # history everyone clones. The SHA is a path component because raw
+          # caches by path.
+          mkdir -p "preview/${HEAD_SHA}"
+          cp "$RUNNER_TEMP"/release-assets/* "preview/${HEAD_SHA}/"
+
+          cd preview
+          git init -q -b "$BRANCH"
+          git add -A
+          git -c user.name='github-actions[bot]' \
+            -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -qm "Playground preview for PR #${PR_NUMBER} at ${HEAD_SHA}"
+          git push -q --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" "$BRANCH"
+
+      - name: Assemble Playground URL from base-ref blueprint
+        id: playground
+        if: ${{ steps.meta.outputs.skipped != 'true' }}
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Always the base repository, never the PR's head repository.
+          PLUGIN_URL="https://raw.githubusercontent.com/${REPO}/preview-pr-${PR_NUMBER}/${HEAD_SHA}/wp-graphql-content-blocks.zip"
+
+          # raw's CDN can lag the push by a few seconds.
+          for _ in $(seq 30); do
+            if curl -sf -o /dev/null "$PLUGIN_URL"; then
+              break
+            fi
+            sleep 2
+          done
+          curl -sf -o /dev/null "$PLUGIN_URL" \
+            || { echo "Preview assets never appeared at $PLUGIN_URL"; exit 1; }
+
+          BLUEPRINT=$(jq --arg plugin "$PLUGIN_URL" '
+            .steps |= map(
+              if .step == "installPlugin" and (.pluginData.resource == "url") and (.pluginData.url | endswith("/wp-graphql-content-blocks.zip")) then
+                .pluginData.url = $plugin
+              else . end
+            )
+          ' blueprint.json)
+
+          echo "url=https://playground.wordpress.net/#$(printf '%s' "$BLUEPRINT" | base64 -w0)" >> "$GITHUB_OUTPUT"
+
+      - name: Post or update sticky comment
+        if: ${{ steps.meta.outputs.skipped != 'true' }}
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PR_NUMBER: ${{ env.PR_NUMBER }}
+          HEAD_SHA: ${{ env.HEAD_SHA }}
+          PLAYGROUND_URL: ${{ steps.playground.outputs.url }}
+        with:
+          script: |
+            const marker = '<!-- wp-graphql-content-blocks:playground-preview -->';
+            const url = process.env.PLAYGROUND_URL;
+            const fullSha = process.env.HEAD_SHA;
+            const sha = fullSha.slice(0, 7);
+            const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${fullSha}`;
+            const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            const badge = 'https://img.shields.io/badge/Launch-3858E9?style=for-the-badge&logo=wordpress&logoColor=white';
+
+            const body = [
+              marker,
+              '### 🛝 WordPress Playground',
+              '',
+              // In <samp> because GitHub chips `code` and the `tt` its own
+              // autolinker emits, which the timeline's sha links are not.
+              `Built from <a href="${commitUrl}"><samp>${sha}</samp></a>`,
+              '',
+              `[![Launch WordPress Playground](${badge})](${url})`,
+              '',
+              'Opens GraphiQL with WPGraphQL and this build active. The "Content Blocks Demo" post has core blocks to query through `editorBlocks`.',
+              '',
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
