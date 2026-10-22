@@ -6,6 +6,12 @@
 
 WordPress plugin that extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
+## WordPress Playground
+
+[![Launch WordPress Playground](https://img.shields.io/badge/Launch-3858E9?style=for-the-badge&logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/wpengine/wp-graphql-content-blocks/main/blueprint.json)
+
+Boots WordPress with WPGraphQL and a build of `main`, then opens GraphiQL. The "Content Blocks Demo" post has core blocks to query through `editorBlocks`. Pull requests get their own Playground link in a comment.
+
 ## How to Install
 
 This plugin is an extension of [`wp-graphql`](https://www.wpgraphql.com/), so make sure you have it installed first.
