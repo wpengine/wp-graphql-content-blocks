@@ -7,9 +7,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-e2e": "wp-scripts test-e2e",
-    "test-e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
-    "test-e2e:watch": "npm run test-e2e -- --watch",
     "wp-env": "wp-env",
     "build": "npm run build:clean-vendor && npm run build:composer-install && npm run build:zip",
     "build:clean-vendor": "rimraf vendor",
@@ -25,11 +22,7 @@
     "wp-graphql-content-blocks.php"
   ],
   "devDependencies": {
-    "@wordpress/jest-console": "^9.1.0",
-    "@wordpress/jest-puppeteer-axe": "^7.52.0",
     "@wordpress/scripts": "^37.0.0",
-    "expect-puppeteer": "^11.0.0",
-    "puppeteer-testing-library": "^0.6.0",
     "rimraf": "^6.1.3"
   },
   "overrides": {
