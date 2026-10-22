@@ -568,4 +568,81 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		$this->assertEquals( 'core/paragraph', $resolved_flat_blocks[1]['blockName'] );
 		$this->assertEquals( 'core/heading', $resolved_flat_blocks[2]['blockName'] );
 	}
+
+	/**
+	 * @see https://github.com/wpengine/wp-graphql-content-blocks/issues/505
+	 */
+	public function test_client_ids_are_deterministic_and_unique() {
+		// Identical siblings and identical nested blocks must still get distinct IDs.
+		$post_content = '
+			<!-- wp:group -->
+			<div class="wp-block-group"><!-- wp:paragraph --><p>Same</p><!-- /wp:paragraph --></div>
+			<!-- /wp:group -->
+			<!-- wp:group -->
+			<div class="wp-block-group"><!-- wp:paragraph --><p>Same</p><!-- /wp:paragraph --></div>
+			<!-- /wp:group -->
+			<!-- wp:block {"ref":' . $this->reusable_block_id . '} /-->
+			<!-- wp:block {"ref":' . $this->reusable_block_id . '} /-->
+		';
+
+		$post_id       = wp_insert_post(
+			[
+				'post_title'   => 'Client IDs',
+				'post_content' => $post_content,
+				'post_status'  => 'publish',
+			]
+		);
+		$other_post_id = wp_insert_post(
+			[
+				'post_title'   => 'Client IDs, same content',
+				'post_content' => $post_content,
+				'post_status'  => 'publish',
+			]
+		);
+
+		$client_ids = static function ( array $blocks ): array {
+			return array_column( $blocks, 'clientId' );
+		};
+
+		$first  = $this->instance->resolve_content_blocks( new Post( get_post( $post_id ) ), [ 'flat' => true ] );
+		$second = $this->instance->resolve_content_blocks( new Post( get_post( $post_id ) ), [ 'flat' => true ] );
+		$other  = $this->instance->resolve_content_blocks( new Post( get_post( $other_post_id ) ), [ 'flat' => true ] );
+
+		// The same content resolves to the same IDs on every request.
+		$this->assertSame( $client_ids( $first ), $client_ids( $second ) );
+
+		// IDs are unique within a post, including identical blocks and repeated reusable blocks.
+		$this->assertCount( count( $first ), array_unique( $client_ids( $first ) ) );
+
+		// The same content in another post gets different IDs.
+		$this->assertEmpty( array_intersect( $client_ids( $first ), $client_ids( $other ) ) );
+
+		// Every parentClientId points at a block in the same response.
+		foreach ( $first as $block ) {
+			if ( isset( $block['parentClientId'] ) ) {
+				$this->assertContains( $block['parentClientId'], $client_ids( $first ) );
+			}
+		}
+
+		// Editing a block changes its ID and leaves blocks before it alone.
+		wp_update_post(
+			[
+				'ID'           => $post_id,
+				'post_content' => str_replace( '<p>Same</p><!-- /wp:paragraph --></div>
+			<!-- /wp:group -->
+			<!-- wp:block', '<p>Changed</p><!-- /wp:paragraph --></div>
+			<!-- /wp:group -->
+			<!-- wp:block', $post_content ),
+			]
+		);
+		$edited = $this->instance->resolve_content_blocks( new Post( get_post( $post_id ) ), [ 'flat' => true ] );
+
+		$this->assertSame( $first[0]['clientId'], $edited[0]['clientId'] );
+		$this->assertSame( $first[1]['clientId'], $edited[1]['clientId'] );
+		$this->assertSame( $first[2]['clientId'], $edited[2]['clientId'] );
+		$this->assertNotSame( $first[3]['clientId'], $edited[3]['clientId'] );
+
+		wp_delete_post( $post_id, true );
+		wp_delete_post( $other_post_id, true );
+	}
 }
