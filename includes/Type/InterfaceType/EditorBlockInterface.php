@@ -82,7 +82,7 @@ final class EditorBlockInterface {
 							'type'        => 'String',
 							'description' => static fn () => __( 'The id of the Block', 'wp-graphql-content-blocks' ),
 							'resolve'     => static function ( $block ) {
-								return isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
+								return isset( $block['clientId'] ) ? $block['clientId'] : ContentBlocksResolver::generate_client_id( $block );
 							},
 						],
 						'parentClientId'          => [
