@@ -140,4 +140,56 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		$this->assertEquals( 'CoreParagraph', $node['editorBlocks'][3]['type'] );
 		$this->assertEquals( 'example-inner', $node['editorBlocks'][3]['anchor'] );
 	}
+
+	/**
+	 * Dynamic blocks (such as ACF blocks) save the anchor as an attribute and
+	 * may not render it as an `id`.
+	 *
+	 * @see https://github.com/wpengine/wp-graphql-content-blocks/issues/268
+	 */
+	public function test_anchor_resolves_from_dynamic_block_attributes() {
+		register_block_type(
+			'test/dynamic-anchor',
+			[
+				'supports'        => [ 'anchor' => true ],
+				'attributes'      => [ 'anchor' => [ 'type' => 'string' ] ],
+				'render_callback' => static fn () => '<div class="no-id">Rendered without an id</div>',
+			]
+		);
+		\WPGraphQL::clear_schema();
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => '<!-- wp:test/dynamic-anchor {"anchor":"dynamic-anchor"} /--><!-- wp:test/dynamic-anchor /-->',
+			]
+		);
+
+		$query  = '
+		query GetPost( $id: ID! ) {
+			post( id: $id, idType: DATABASE_ID ) {
+				editorBlocks {
+					name
+					... on BlockWithSupportsAnchor {
+						anchor
+					}
+				}
+			}
+		}';
+		$actual = graphql(
+			[
+				'query'     => $query,
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
+
+		unregister_block_type( 'test/dynamic-anchor' );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, json_encode( $actual ) );
+		$blocks = $actual['data']['post']['editorBlocks'];
+
+		$this->assertEquals( 'test/dynamic-anchor', $blocks[0]['name'] );
+		$this->assertEquals( 'dynamic-anchor', $blocks[0]['anchor'] );
+		$this->assertNull( $blocks[1]['anchor'] );
+	}
 }
