@@ -1,0 +1,82 @@
+name: Playground Main Build
+
+# Builds `wp-graphql-content-blocks.zip` from `main` and force-pushes it to
+# the `preview-main` branch, which is what `blueprint.json` installs. Without
+# this the README badge would boot the last release instead of `main`.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+# Queued, not cancelled: the last push to finish is the one that wins.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.3'
+          tools: composer
+
+      - run: composer install --no-dev --no-interaction --no-scripts
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+      - run: npm ci
+
+      - name: Build wp-graphql-content-blocks.zip
+        run: |
+          set -euo pipefail
+          npm run build:zip
+          mkdir -p build
+          unzip -q "@wpengine/wp-graphql-content-blocks.zip" -d build
+          (cd build/@wpengine && zip -qr ../wp-graphql-content-blocks.zip wp-graphql-content-blocks/)
+
+      # Same guard as the PR preview: a `files` list that drifts out of sync
+      # with what the plugin loads installs fine and then fatals.
+      - name: Smoke-test the build
+        run: |
+          set -euo pipefail
+          test -f build/@wpengine/wp-graphql-content-blocks/wp-graphql-content-blocks.php
+          test -f build/@wpengine/wp-graphql-content-blocks/vendor/autoload.php
+          find build/@wpengine/wp-graphql-content-blocks -name '*.php' -print0 \
+            | xargs -0 -n1 -P 4 php -l > /dev/null
+
+      - name: Publish to the preview-main branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          # Force-pushed from a throwaway repo so no zip reaches the history
+          # everyone clones. The path is fixed because the blueprint commits
+          # to it; raw serves it with a five-minute cache.
+          mkdir -p preview
+          cp build/wp-graphql-content-blocks.zip preview/
+
+          cd preview
+          git init -q -b preview-main
+          git add -A
+          git -c user.name='github-actions[bot]' \
+            -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -qm "Playground build of ${SHA}"
+          git push -q --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" preview-main
