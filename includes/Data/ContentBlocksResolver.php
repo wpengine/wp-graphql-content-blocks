@@ -71,8 +71,11 @@ final class ContentBlocksResolver {
 			return [];
 		}
 
+		// Seed client IDs with the node so the same content in two posts gets different IDs.
+		$seed = $node instanceof Post ? (string) $node->databaseId : '';
+
 		// Parse the blocks from HTML comments to an array of blocks.
-		$parsed_blocks = self::parse_blocks( $content );
+		$parsed_blocks = self::parse_blocks( $content, $seed );
 		if ( empty( $parsed_blocks ) ) {
 			return [];
 		}
@@ -102,13 +105,14 @@ final class ContentBlocksResolver {
 	 * Get blocks from html string.
 	 *
 	 * @param string $content Content to parse.
+	 * @param string $seed    Seed for the blocks' client IDs.
 	 *
 	 * @return array<string,mixed> List of blocks.
 	 */
-	private static function parse_blocks( $content ): array {
+	private static function parse_blocks( $content, string $seed = '' ): array {
 		$blocks = parse_blocks( $content );
 
-		return self::handle_do_blocks( $blocks );
+		return self::handle_do_blocks( $blocks, $seed );
 	}
 
 	/**
@@ -117,13 +121,14 @@ final class ContentBlocksResolver {
 	 * This mirrors the `do_blocks` function in WordPress which is responsible for hydrating certain block attributes and supports, but without the forced rendering.
 	 *
 	 * @param array<string,mixed>[] $blocks Blocks data.
+	 * @param string                $seed   Seed for the blocks' client IDs, such as the parent block's client ID.
 	 *
 	 * @return array<string,mixed>[] The processed blocks.
 	 */
-	private static function handle_do_blocks( array $blocks ): array {
+	private static function handle_do_blocks( array $blocks, string $seed = '' ): array {
 		$parsed = [];
-		foreach ( $blocks as $block ) {
-			$block_data = self::handle_do_block( $block );
+		foreach ( $blocks as $index => $block ) {
+			$block_data = self::handle_do_block( $block, $seed . '/' . $index );
 
 			if ( $block_data ) {
 				$parsed[] = $block_data;
@@ -138,10 +143,11 @@ final class ContentBlocksResolver {
 	 * Process a block, getting all extra fields.
 	 *
 	 * @param array<string,mixed> $block Block data.
+	 * @param string              $seed  Seed for the block's client ID, unique to its position.
 	 *
 	 * @return ?array<string,mixed> The processed block.
 	 */
-	private static function handle_do_block( array $block ): ?array {
+	private static function handle_do_block( array $block, string $seed = '' ): ?array {
 		if ( self::is_block_empty( $block ) ) {
 			return null;
 		}
@@ -151,8 +157,8 @@ final class ContentBlocksResolver {
 			$block['blockName'] = 'core/freeform';
 		}
 
-		// Assign a unique clientId to the block.
-		$block['clientId'] = uniqid();
+		// Assign a clientId that stays the same while the content does.
+		$block['clientId'] = self::generate_client_id( $block, $seed );
 
 		// @todo apply more hydrations.
 		$block = self::populate_template_part_inner_blocks( $block );
@@ -163,7 +169,7 @@ final class ContentBlocksResolver {
 
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
-			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'] );
+			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'], $block['clientId'] );
 		}
 
 		return $block;
@@ -210,7 +216,7 @@ final class ContentBlocksResolver {
 
 		$matching_templates = get_block_templates( [ 'slug__in' => [ $block['attrs']['slug'] ] ], 'wp_template_part' );
 
-		$template_blocks = ! empty( $matching_templates[0]->content ) ? self::parse_blocks( $matching_templates[0]->content ) : null;
+		$template_blocks = ! empty( $matching_templates[0]->content ) ? self::parse_blocks( $matching_templates[0]->content, $block['clientId'] ) : null;
 
 		if ( empty( $template_blocks ) ) {
 			return $block;
@@ -239,7 +245,7 @@ final class ContentBlocksResolver {
 			return $block;
 		}
 
-		$parsed_blocks = ! empty( $post->post_content ) ? self::parse_blocks( $post->post_content ) : null;
+		$parsed_blocks = ! empty( $post->post_content ) ? self::parse_blocks( $post->post_content, $block['clientId'] ) : null;
 
 		if ( empty( $parsed_blocks ) ) {
 			return $block;
@@ -296,7 +302,7 @@ final class ContentBlocksResolver {
 			return $block;
 		}
 
-		$parsed_blocks = ! empty( $reusable_block->post_content ) ? self::parse_blocks( $reusable_block->post_content ) : null;
+		$parsed_blocks = ! empty( $reusable_block->post_content ) ? self::parse_blocks( $reusable_block->post_content, $block['clientId'] ) : null;
 
 		if ( empty( $parsed_blocks ) ) {
 			return $block;
@@ -340,8 +346,8 @@ final class ContentBlocksResolver {
 	 */
 	private static function flatten_block_list( $blocks ): array {
 		$result = [];
-		foreach ( $blocks as $block ) {
-			$result = array_merge( $result, self::flatten_inner_blocks( $block ) );
+		foreach ( $blocks as $index => $block ) {
+			$result = array_merge( $result, self::flatten_inner_blocks( $block, '/' . $index ) );
 		}
 		return $result;
 	}
@@ -350,25 +356,45 @@ final class ContentBlocksResolver {
 	 * Flattens a block and its inner blocks into a single while attaching unique clientId's
 	 *
 	 * @param array<string,mixed> $block A parsed block.
+	 * @param string              $seed  Seed for the block's client ID if it doesn't already have one.
 	 *
 	 * @return array<string,mixed> The flattened block.
 	 */
-	private static function flatten_inner_blocks( $block ): array {
+	private static function flatten_inner_blocks( $block, string $seed = '' ): array {
 		$result = [];
 
-		// Assign a unique clientId to the block if it doesn't already have one.
-		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : uniqid();
+		// Assign a clientId to the block if it doesn't already have one.
+		$block['clientId'] = isset( $block['clientId'] ) ? $block['clientId'] : self::generate_client_id( $block, $seed );
 		array_push( $result, $block );
 
-		foreach ( $block['innerBlocks'] as $child ) {
+		foreach ( $block['innerBlocks'] as $index => $child ) {
 			$child['parentClientId'] = $block['clientId'];
 
 			// Flatten the child, and merge with the result.
-			$result = array_merge( $result, self::flatten_inner_blocks( $child ) );
+			$result = array_merge( $result, self::flatten_inner_blocks( $child, $block['clientId'] . '/' . $index ) );
 		}
 
 		/** @var array<string,mixed> $result */
 		return $result;
+	}
+
+	/**
+	 * Generates a client ID for a block.
+	 *
+	 * The ID is derived from the seed (the node and the block's position) and the block's own content,
+	 * so the same query against unchanged content returns the same IDs.
+	 *
+	 * @param array<string,mixed> $block A parsed block.
+	 * @param string              $seed  A seed that is unique to the block's position, such as its parent's client ID and index.
+	 *
+	 * @return string A 13-character hex ID, the same length as `uniqid()`.
+	 */
+	public static function generate_client_id( array $block, string $seed = '' ): string {
+		$name    = isset( $block['blockName'] ) && is_string( $block['blockName'] ) ? $block['blockName'] : '';
+		$attrs   = isset( $block['attrs'] ) ? wp_json_encode( $block['attrs'] ) : '';
+		$content = isset( $block['innerHTML'] ) && is_string( $block['innerHTML'] ) ? $block['innerHTML'] : '';
+
+		return substr( md5( $seed . '|' . $name . '|' . $attrs . '|' . $content ), 0, 13 );
 	}
 
 	/**
