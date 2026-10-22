@@ -7,9 +7,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-e2e": "wp-scripts test-e2e",
-    "test-e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
-    "test-e2e:watch": "npm run test-e2e -- --watch",
     "wp-env": "wp-env",
     "build": "npm run build:clean-vendor && npm run build:composer-install && npm run build:zip",
     "build:clean-vendor": "rimraf vendor",
