@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 6.8.1
-Stable tag: 4.8.7
+Stable tag: 4.8.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -26,6 +26,25 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 
 == Changelog ==
 
+= 4.8.8 =
+
+
+### Bug Fixes
+
+* resolve block anchors from saved attributes ([#527](https://github.com/wpengine/wp-graphql-content-blocks/issues/527)) ([8a7a40b](https://github.com/wpengine/wp-graphql-content-blocks/commit/8a7a40bfe464d1e8470e2410d31c364447193d61))
+* return stable block clientId values for unchanged content ([#528](https://github.com/wpengine/wp-graphql-content-blocks/issues/528)) ([1c2dcfe](https://github.com/wpengine/wp-graphql-content-blocks/commit/1c2dcfeb202bd71f8ae55aaa9c28106d5c7c01a8))
+
+
+### Dependencies
+
+* bump markdown-it and @wordpress/scripts ([#513](https://github.com/wpengine/wp-graphql-content-blocks/issues/513)) ([f8e7f17](https://github.com/wpengine/wp-graphql-content-blocks/commit/f8e7f176a3ae97d630cc065500459641f2124c1f))
+
+
+### Build System
+
+* **deps-dev:** bump follow-redirects from 1.16.0 to 1.16.1 ([#512](https://github.com/wpengine/wp-graphql-content-blocks/issues/512)) ([57ebd83](https://github.com/wpengine/wp-graphql-content-blocks/commit/57ebd83a002d0b825b67a40e780857912b266046))
+* **deps-dev:** bump launch-editor from 2.14.1 to 2.14.2 ([#518](https://github.com/wpengine/wp-graphql-content-blocks/issues/518)) ([2182a18](https://github.com/wpengine/wp-graphql-content-blocks/commit/2182a18a24168314b81a1e51466a2a81137cb65a))
+
 = 4.8.7 =
 
 ### Patch Changes
@@ -37,12 +56,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 ### Patch Changes
 
 - 693ea8a: Security: password-protected posts no longer expose block content through the `editorBlocks` field to unauthenticated GraphQL callers.
-
-= 4.8.5 =
-
-### Patch Changes
-
-- 1c3b6df: Patch development-only security advisories by overriding transitive `uuid` (→ ^11.1.1) and `webpack-dev-server` (→ ^5.2.4). These bumps affect build/test tooling only and do not change any code shipped to consumers of the plugin.
-- f52cb9e: Add WordPress 6.9 compatibility and update test matrix to support WordPress 6.9, 6.8 with PHP 8.3, 8.1.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
