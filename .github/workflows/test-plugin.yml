@@ -6,9 +6,12 @@ on:
     paths-ignore:
       - '**/*.md'
 
+# A literal group name: under `workflow_call`, `github.workflow` is the caller's
+# name, so the default group would match the caller's own and deadlock it.
+# Only pull request runs are cancelled; a release must not lose its tests.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: test-plugin-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test_plugin:
