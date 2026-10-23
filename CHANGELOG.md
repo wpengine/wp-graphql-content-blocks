@@ -1,5 +1,12 @@
 # WPGraphQL Content Blocks
 
+## [4.8.9](https://github.com/wpengine/wp-graphql-content-blocks/compare/v4.8.8...v4.8.9) (2026-10-23)
+
+
+### Bug Fixes
+
+* resolve block anchors on WordPress 7.0 and later ([#534](https://github.com/wpengine/wp-graphql-content-blocks/issues/534)) ([521be14](https://github.com/wpengine/wp-graphql-content-blocks/commit/521be14d41d99ac894fe7166be402668d5f32393))
+
 ## [4.8.8](https://github.com/wpengine/wp-graphql-content-blocks/compare/v4.8.7...v4.8.8) (2026-10-22)
 
 

@@ -1,7 +1,7 @@
 {
   "name": "@wpengine/wp-graphql-content-blocks",
   "private": true,
-  "version": "4.8.8",
+  "version": "4.8.9",
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
