@@ -1,0 +1,63 @@
+name: Test Plugin (Gutenberg)
+
+# Runs the unit tests with the latest Gutenberg plugin active, to catch block
+# changes before they reach a WordPress release. Kept out of `test-plugin.yml`
+# so a Gutenberg breakage never blocks the Release workflow, which calls it.
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: test-plugin-gutenberg-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test_plugin_gutenberg:
+    runs-on: ubuntu-22.04
+    name: WordPress 7.1 + Gutenberg, PHP 8.3
+    env:
+      PHP_VERSION: '8.3'
+      WP_VERSION: '7.1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Create Docker Containers
+        env:
+          DOCKER_BUILDKIT: 1
+          COMPOSE_DOCKER_CLI_BUILD: 1
+        run: |
+          docker compose build \
+            --build-arg WP_VERSION="$WP_VERSION" \
+            --build-arg PHP_VERSION="$PHP_VERSION"
+          docker compose up -d
+
+      - name: Wait for db
+        run: |
+          while ! mysqladmin ping --host=127.0.0.1 --port=33066 --password="$MYSQL_ROOT_PASSWORD" --silent; do
+            sleep 1
+          done
+
+      - name: Setup testing framework
+        run: docker exec "$(docker compose ps -q wordpress)" init-testing-environment.sh
+
+      - name: Install and activate WP GraphQL
+        run: docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks "$(docker compose ps -q wordpress)" wp plugin install wp-graphql --activate --allow-root
+
+      # The test bootstrap loads it when WP_TESTS_LOAD_GUTENBERG is set.
+      - name: Install Gutenberg
+        run: docker exec --workdir=/var/www/html/wp-content/plugins/wp-graphql-content-blocks "$(docker compose ps -q wordpress)" wp plugin install gutenberg --allow-root
+
+      - name: Install Dependencies
+        run: docker exec -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks "$(docker compose ps -q wordpress)" composer install
+
+      - name: Run unit tests
+        run: docker exec -e WP_TESTS_LOAD_GUTENBERG=1 -w /var/www/html/wp-content/plugins/wp-graphql-content-blocks "$(docker compose ps -q wordpress)" composer test
