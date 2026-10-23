@@ -37,6 +37,8 @@
       "minimatch": "^3.1.4"
     },
     "adm-zip": "^0.6.1",
-    "linkify-it": "^5.0.2"
+    "linkify-it": "^5.0.2",
+    "smol-toml": "^1.9.0",
+    "katex": "^0.18.2"
   }
 }
