@@ -238,7 +238,7 @@ final class CoreQuoteTest extends PluginTestCase {
 					]
 				),
 				'textColor'       => 'vivid-red', // Previously untested.
-				'value'           => '<p>Sample Quote</p>', // Previously untested.
+				'value'           => $this->sample_quote_paragraph(), // Previously untested.
 			],
 			$block['attributes'],
 		);
@@ -326,7 +326,7 @@ final class CoreQuoteTest extends PluginTestCase {
 		// Verify the attributes.
 		$this->assertEquals(
 			[
-				'value'           => '<p>Sample Quote</p>',
+				'value'           => $this->sample_quote_paragraph(),
 				'layout'          => wp_json_encode( // Previously untested.
 					[
 						'type'     => 'flex',
@@ -419,7 +419,7 @@ final class CoreQuoteTest extends PluginTestCase {
 		// Verify the attributes.
 		$this->assertEquals(
 			[
-				'value'           => '<p>Sample Quote</p>',
+				'value'           => $this->sample_quote_paragraph(),
 				'layout'          => wp_json_encode(
 					[
 						'type'     => 'flex',
@@ -430,5 +430,12 @@ final class CoreQuoteTest extends PluginTestCase {
 			],
 			$block['attributes'],
 		);
+	}
+
+	/**
+	 * The quote's inner paragraph, with the class that WordPress 7.0 adds to paragraphs.
+	 */
+	private function sample_quote_paragraph(): string {
+		return is_wp_version_compatible( '7.0' ) ? '<p class="wp-block-paragraph">Sample Quote</p>' : '<p>Sample Quote</p>';
 	}
 }
