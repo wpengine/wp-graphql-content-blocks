@@ -4,7 +4,7 @@
 		"php": "8.3",
 		"wp": "latest"
 	},
-	"landingPage": "/wp-admin/admin.php?page=graphiql-ide",
+	"landingPage": "/wp-admin/admin.php?page=graphiql-ide&query=I4VwpgTgngBAwgewHYBcyoEIBsEGMDWAzgCJgC2CMA3gFAwwAOChKAFAJYAmAXDAES5kaVAFoARjgKERncgj4AaGFwAqUBmF4BlADIBVAOIBKanXowU7FFjBn6YTlYQRseIqwBmWAIYpeKCHATWnNzJG8yW1D6XCx2dBQASU47cwZvCAS4OITk1PoAOiKYZBhXAgB1KwALLRAGJggUQgBBJFxq51No8292zoh8mABfIaKCkqR4ZzAACTBvRyQAc26emF8A9jEQNEI19ZhBVASh0JsANzAsM97+51vRnqfo8cnpzIAFDO9liG8GNUDtFNhBtrswPsQocjkJTocXqFEeY3qVEJkMLsUKVoT1QeC9sCeiAIDcYRYwAAPFCPIbIl6jUZAA",
 	"login": true,
 	"steps": [
 		{
