@@ -1,0 +1,61 @@
+name: Bug report
+description: Report a bug in WPGraphQL Content Blocks
+labels: ['[Type] Bug', 'Needs Triage']
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Thanks for reporting a bug! For questions, use the [Headless WordPress
+        Discord](https://faustjs.org/discord) instead.
+  - type: textarea
+    attributes:
+      label: Description
+      description: What happened, and what did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: >-
+        Steps that reproduce the bug on a clean site. Include the block markup
+        from the code editor and the GraphQL query you ran.
+      placeholder: |
+        1. Add a Heading block with text alignment set to center
+        2. Run the query below
+        3. See `textAlign: null` instead of `"center"`
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: GraphQL query and response
+      render: graphql
+  - type: input
+    attributes:
+      label: WPGraphQL Content Blocks version
+      placeholder: e.g. 4.8.8
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: WPGraphQL version
+      placeholder: e.g. 2.25.0
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: WordPress version
+      placeholder: e.g. 6.9
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: >-
+        Anything else that helps: error logs, screenshots, the PHP version,
+        other plugins that register blocks (such as ACF), hosting platform.
+  - type: checkboxes
+    attributes:
+      label: Existing issues
+      options:
+        - label: I searched [existing issues](https://github.com/wpengine/wp-graphql-content-blocks/issues) and didn't find a match.
+          required: true
