@@ -1,6 +1,6 @@
 name: Bug report
 description: Report a bug in WPGraphQL Content Blocks
-labels: ['type: bug']
+labels: ['[Type] Bug', 'Needs Triage']
 body:
   - type: markdown
     attributes:
