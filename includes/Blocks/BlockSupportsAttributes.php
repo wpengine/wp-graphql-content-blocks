@@ -27,11 +27,25 @@ final class BlockSupportsAttributes {
 	 *
 	 * Each entry is keyed by the attribute name to expose. `support` is the
 	 * path to the flag within `WP_Block_Type::$supports`, and `config` is the
-	 * attribute definition handed to the resolver.
+	 * attribute definition handed to the resolver. When `replaces_unsourced` is
+	 * set, the config also replaces a declared attribute that has no `source`.
 	 *
-	 * @var array<string,array{support:string[],config:array<string,mixed>}>
+	 * @var array<string,array{support:string[],config:array<string,mixed>,replaces_unsourced?:bool}>
 	 */
 	private const SUPPORTS_ATTRIBUTES = [
+		// WordPress 7.0 registers `anchor` server-side with no source, but the
+		// editor still saves it as the `id` of the block's root element. Dynamic
+		// blocks save it in the block comment, which the resolver falls back to.
+		'anchor'    => [
+			'support'            => [ 'anchor' ],
+			'config'             => [
+				'type'      => 'string',
+				'source'    => 'attribute',
+				'selector'  => 'body > *',
+				'attribute' => 'id',
+			],
+			'replaces_unsourced' => true,
+		],
 		'textAlign' => [
 			'support' => [ 'typography', 'textAlign' ],
 			'config'  => [
@@ -77,6 +91,45 @@ final class BlockSupportsAttributes {
 		}
 
 		return $derived;
+	}
+
+	/**
+	 * Gets the attribute configs that replace unsourced attributes the block type declares.
+	 *
+	 * These take precedence over the block type's own attributes, unlike `get_attributes()`.
+	 *
+	 * @param \WP_Block_Type $block_type The block type.
+	 *
+	 * @return array<string,array<string,mixed>> The replacement attribute configs.
+	 */
+	public static function get_replacements( WP_Block_Type $block_type ): array {
+		$supports = $block_type->supports;
+
+		if ( empty( $supports ) || ! is_array( $supports ) ) {
+			return [];
+		}
+
+		$declared     = is_array( $block_type->attributes ) ? $block_type->attributes : [];
+		$replacements = [];
+
+		foreach ( self::SUPPORTS_ATTRIBUTES as $attribute_name => $definition ) {
+			if ( empty( $definition['replaces_unsourced'] ) || ! isset( $declared[ $attribute_name ] ) ) {
+				continue;
+			}
+
+			// A declared source is the block's own definition, so leave it alone.
+			if ( isset( $declared[ $attribute_name ]['source'] ) ) {
+				continue;
+			}
+
+			if ( ! self::has_support( $supports, $definition['support'] ) ) {
+				continue;
+			}
+
+			$replacements[ $attribute_name ] = $definition['config'];
+		}
+
+		return $replacements;
 	}
 
 	/**

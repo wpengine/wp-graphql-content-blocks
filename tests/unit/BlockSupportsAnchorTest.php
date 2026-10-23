@@ -2,6 +2,7 @@
 
 namespace WPGraphQL\ContentBlocks\Unit;
 
+use WPGraphQL\ContentBlocks\Blocks\BlockSupportsAttributes;
 use WPGraphQL\ContentBlocks\Field\BlockSupports\Anchor;
 
 final class BlockSupportsAnchorTest extends PluginTestCase {
@@ -191,5 +192,141 @@ final class BlockSupportsAnchorTest extends PluginTestCase {
 		$this->assertEquals( 'test/dynamic-anchor', $blocks[0]['name'] );
 		$this->assertEquals( 'dynamic-anchor', $blocks[0]['anchor'] );
 		$this->assertNull( $blocks[1]['anchor'] );
+	}
+
+	/**
+	 * `attributes.anchor` reads the root element's `id`, so a block never picks up an inner block's anchor.
+	 *
+	 * WordPress 7.0 registers `anchor` server-side with no source, which made this return null.
+	 */
+	public function test_anchor_attribute_resolves_from_root_element_id() {
+		$query  = '
+		query GetPost( $id: ID! ) {
+			post( id: $id, idType: DATABASE_ID ) {
+				editorBlocks {
+					name
+					... on CoreParagraph {
+						attributes {
+							anchor
+						}
+					}
+					... on CoreGroup {
+						attributes {
+							anchor
+						}
+					}
+				}
+			}
+		}';
+		$actual = graphql(
+			[
+				'query'     => $query,
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
+
+		$this->assertArrayNotHasKey( 'errors', $actual, json_encode( $actual ) );
+		$blocks = $actual['data']['post']['editorBlocks'];
+
+		$this->assertEquals( 'example', $blocks[0]['attributes']['anchor'] );
+		$this->assertNull( $blocks[1]['attributes']['anchor'] );
+
+		// The group has no anchor of its own, even though its inner paragraph does.
+		$this->assertEquals( 'core/group', $blocks[2]['name'] );
+		$this->assertNull( $blocks[2]['attributes']['anchor'] );
+		$this->assertEquals( 'example-inner', $blocks[3]['attributes']['anchor'] );
+	}
+
+	/**
+	 * Dynamic blocks save the anchor in the block comment, which `attributes.anchor` falls back to.
+	 */
+	public function test_anchor_attribute_falls_back_to_saved_attribute() {
+		register_block_type(
+			'test/dynamic-anchor-attribute',
+			[
+				'supports'        => [ 'anchor' => true ],
+				'attributes'      => [ 'anchor' => [ 'type' => 'string' ] ],
+				'render_callback' => static fn () => '<div class="no-id">Rendered without an id</div>',
+			]
+		);
+		\WPGraphQL::clear_schema();
+
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => '<!-- wp:test/dynamic-anchor-attribute {"anchor":"saved-anchor"} /-->',
+			]
+		);
+
+		$query  = '
+		query GetPost( $id: ID! ) {
+			post( id: $id, idType: DATABASE_ID ) {
+				editorBlocks {
+					... on TestDynamicAnchorAttribute {
+						attributes {
+							anchor
+						}
+					}
+				}
+			}
+		}';
+		$actual = graphql(
+			[
+				'query'     => $query,
+				'variables' => [ 'id' => $this->post_id ],
+			]
+		);
+
+		unregister_block_type( 'test/dynamic-anchor-attribute' );
+
+		$this->assertArrayNotHasKey( 'errors', $actual, json_encode( $actual ) );
+		$this->assertEquals( 'saved-anchor', $actual['data']['post']['editorBlocks'][0]['attributes']['anchor'] );
+	}
+
+	/**
+	 * Only an unsourced `anchor` declaration, the shape WordPress 7.0 registers, is replaced.
+	 */
+	public function test_anchor_replaces_only_unsourced_declarations() {
+		$unsourced = new \WP_Block_Type(
+			'test/unsourced-anchor',
+			[
+				'supports'   => [ 'anchor' => true ],
+				'attributes' => [ 'anchor' => [ 'type' => 'string' ] ],
+			]
+		);
+		$sourced   = new \WP_Block_Type(
+			'test/sourced-anchor',
+			[
+				'supports'   => [ 'anchor' => true ],
+				'attributes' => [
+					'anchor' => [
+						'type'      => 'string',
+						'source'    => 'attribute',
+						'selector'  => 'a',
+						'attribute' => 'name',
+					],
+				],
+			]
+		);
+		$undeclared = new \WP_Block_Type(
+			'test/undeclared-anchor',
+			[
+				'supports' => [ 'anchor' => true ],
+			]
+		);
+		$unsupported = new \WP_Block_Type(
+			'test/unsupported-anchor',
+			[
+				'attributes' => [ 'anchor' => [ 'type' => 'string' ] ],
+			]
+		);
+
+		$this->assertSame( 'body > *', BlockSupportsAttributes::get_replacements( $unsourced )['anchor']['selector'] );
+		$this->assertArrayNotHasKey( 'anchor', BlockSupportsAttributes::get_replacements( $sourced ) );
+		$this->assertArrayNotHasKey( 'anchor', BlockSupportsAttributes::get_replacements( $unsupported ) );
+
+		// A block that supports anchors without declaring the attribute gets it from `get_attributes()` instead.
+		$this->assertArrayNotHasKey( 'anchor', BlockSupportsAttributes::get_replacements( $undeclared ) );
+		$this->assertSame( 'id', BlockSupportsAttributes::get_attributes( $undeclared )['anchor']['attribute'] );
 	}
 }

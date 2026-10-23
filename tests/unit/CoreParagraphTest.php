@@ -154,7 +154,7 @@ final class CoreParagraphTest extends PluginTestCase {
 				'backgroundColor' => 'pale-cyan-blue', // previously untested
 				'className'       => null,
 				'content'         => 'This is a test paragraph with various attributes.', // previously untested
-				'cssClassName'    => 'has-text-align-center has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-helvetica-arial-font-family', // previously untested
+				'cssClassName'    => $this->with_paragraph_class( 'has-text-align-center has-vivid-red-color has-pale-cyan-blue-background-color has-text-color has-background has-large-font-size has-helvetica-arial-font-family' ), // previously untested
 				'dropCap'         => false,
 				'direction'       => null,
 				'fontFamily'      => 'helvetica-arial', // previously untested
@@ -222,7 +222,7 @@ final class CoreParagraphTest extends PluginTestCase {
 				'backgroundColor' => null,
 				'className'       => null,
 				'content'         => 'This is a paragraph with drop cap and custom styles.',
-				'cssClassName'    => 'has-drop-cap',
+				'cssClassName'    => $this->with_paragraph_class( 'has-drop-cap' ),
 				'dropCap'         => true, // previously untested
 				'direction'       => null,
 				'fontFamily'      => null,
@@ -306,7 +306,7 @@ final class CoreParagraphTest extends PluginTestCase {
 				'backgroundColor' => null,
 				'className'       => null,
 				'content'         => 'This is a right-aligned RTL paragraph with a gradient background.',
-				'cssClassName'    => 'has-text-align-right has-vivid-cyan-blue-to-vivid-purple-gradient-background',
+				'cssClassName'    => $this->with_paragraph_class( 'has-text-align-right has-vivid-cyan-blue-to-vivid-purple-gradient-background' ),
 				'dropCap'         => false,
 				'direction'       => 'rtl', // previously untested
 				'fontFamily'      => null,
@@ -374,7 +374,7 @@ final class CoreParagraphTest extends PluginTestCase {
 				'backgroundColor' => null,
 				'className'       => 'custom-class', // previously untested
 				'content'         => 'This is a paragraph with additional attributes.',
-				'cssClassName'    => 'custom-class',
+				'cssClassName'    => $this->with_paragraph_class( 'custom-class' ),
 				'dropCap'         => false,
 				'direction'       => null,
 				'fontFamily'      => null,
@@ -387,5 +387,14 @@ final class CoreParagraphTest extends PluginTestCase {
 			],
 			$attributes
 		);
+	}
+
+	/**
+	 * Appends the `wp-block-paragraph` class that WordPress 7.0 adds to paragraphs.
+	 *
+	 * @param string $classes The classes expected before WordPress 7.0.
+	 */
+	private function with_paragraph_class( string $classes ): string {
+		return is_wp_version_compatible( '7.0' ) ? $classes . ' wp-block-paragraph' : $classes;
 	}
 }

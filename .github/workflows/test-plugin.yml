@@ -22,6 +22,13 @@ jobs:
         wordpress: [ '6.9', '6.8', '6.7', '6.6' ]
         wp-nightly: [ false ]
         include:
+          # WordPress 7.x images aren't built for PHP 8.1, so these sit outside the grid.
+          - php: '8.3'
+            wordpress: '7.1'
+            wp-nightly: false
+          - php: '8.3'
+            wordpress: '7.0'
+            wp-nightly: false
           - php: '8.2'
             wordpress: '6.9'
             wp-nightly: true
