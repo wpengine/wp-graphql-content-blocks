@@ -107,10 +107,12 @@ class Block {
 	private function register_block_attributes_as_fields(): void {
 		// Grab any additional block attributes attached into the class itself.
 		// Supports-derived attributes come first so that both the block's own
-		// attributes and the class overrides take precedence over them.
+		// attributes and the class overrides take precedence over them. Replacements
+		// for unsourced attributes go after the block's own, but class overrides still win.
 		$block_attributes = array_merge(
 			BlockSupportsAttributes::get_attributes( $this->block ),
 			$this->block_attributes ?? [],
+			BlockSupportsAttributes::get_replacements( $this->block ),
 			$this->additional_block_attributes ?? [],
 		);
 
