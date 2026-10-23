@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest a new feature or an improvement
+labels: ['type: feature']
+body:
+  - type: textarea
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed solution
+      description: >-
+        How should it work? A sketch of the GraphQL query or schema you'd
+        expect helps most.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Alternatives considered
+      description: Workarounds or other approaches you've tried.
+  - type: checkboxes
+    attributes:
+      label: Existing issues
+      options:
+        - label: I searched [existing issues](https://github.com/wpengine/wp-graphql-content-blocks/issues) and didn't find a match.
+          required: true
