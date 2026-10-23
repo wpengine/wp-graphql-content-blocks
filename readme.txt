@@ -3,7 +3,7 @@ Contributors: blakewpe, chriswiegman, joefusco, matthewguywright, TeresaGobble, 
 Tags: faustjs, faust, headless, decoupled, gutenberg
 Requires at least: 5.7
 Tested up to: 7.1
-Stable tag: 4.8.8
+Stable tag: 4.8.9
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,6 +25,13 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 == Screenshots ==
 
 == Changelog ==
+
+= 4.8.9 =
+
+
+### Bug Fixes
+
+* resolve block anchors on WordPress 7.0 and later ([#534](https://github.com/wpengine/wp-graphql-content-blocks/issues/534)) ([521be14](https://github.com/wpengine/wp-graphql-content-blocks/commit/521be14d41d99ac894fe7166be402668d5f32393))
 
 = 4.8.8 =
 
@@ -50,11 +57,5 @@ Extends WPGraphQL to support querying (Gutenberg) Blocks as data.
 ### Patch Changes
 
 - 9d9751b: Fixed `textAlign` disappearing from `CoreHeading` and `CoreButton` on WordPress 7.0, where text alignment moved from a block attribute to a block support. Any block with `supports.typography.textAlign`, including `CoreParagraph`, now exposes `textAlign`, read from `style.typography.textAlign` and falling back to the top-level attribute for content saved before WordPress 7.0.
-
-= 4.8.6 =
-
-### Patch Changes
-
-- 693ea8a: Security: password-protected posts no longer expose block content through the `editorBlocks` field to unauthenticated GraphQL callers.
 
 [View the full changelog](https://github.com/wpengine/wp-graphql-content-blocks/blob/main/CHANGELOG.md)
