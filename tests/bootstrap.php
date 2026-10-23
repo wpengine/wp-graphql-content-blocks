@@ -23,7 +23,11 @@ require_once $_tests_dir . '/includes/functions.php';
 
 tests_add_filter( 'wp_loaded', '_output_wp_version' );
 function _output_wp_version() {
-	echo 'Running on WordPress ' . esc_html( get_bloginfo( 'version' ) ) . "...\n";
+	echo 'Running on WordPress ' . esc_html( get_bloginfo( 'version' ) );
+	if ( defined( 'GUTENBERG_VERSION' ) ) {
+		echo ' with Gutenberg ' . esc_html( GUTENBERG_VERSION );
+	}
+	echo "...\n";
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
@@ -39,6 +43,11 @@ function _manually_load_plugin() {
 
 	// Load WP-GraphQL
 	require_once WP_TEST_PLUGINS_DIR . '/wp-graphql/wp-graphql.php';
+
+	// Load the Gutenberg plugin when asked to, to test against unreleased block changes.
+	if ( getenv( 'WP_TESTS_LOAD_GUTENBERG' ) ) {
+		require_once WP_TEST_PLUGINS_DIR . '/gutenberg/gutenberg.php';
+	}
 }
 
 require $_tests_dir . '/includes/bootstrap.php';
