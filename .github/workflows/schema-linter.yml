@@ -41,8 +41,9 @@ jobs:
         with:
           wp-version: '6.9'
 
-      - name: Setup GraphQL Schema Linter
-        run: npm install -g graphql-schema-linter@^3.0 graphql@^16
+      # Installed globally: a local install in the repo root would also install the plugin's devDependencies.
+      - name: Setup GraphQL Schema Linter and Inspector
+        run: npm install -g graphql-schema-linter@^3.0 graphql@^16 @graphql-inspector/cli @graphql-inspector/config
 
       - name: Generate the Static Schema
         run: |
@@ -59,8 +60,12 @@ jobs:
           graphql-schema-linter /tmp/schema.graphql || true
 
       - name: Get Latest tag
-        uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
       - name: Test Schema for breaking changes
         run: |
@@ -69,11 +74,6 @@ jobs:
       - name: Get Previous Released Schema
         run: curl 'https://github.com/wpengine/wp-graphql-content-blocks/releases/download/${{ steps.get-latest-tag.outputs.tag }}/schema.graphql' -L  --output /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql
 
-      # https://github.com/marketplace/actions/graphql-inspector
-      - name: Install Schema Inspector
-        run: |
-          npm install @graphql-inspector/config @graphql-inspector/cli graphql
-      
       - uses: actions/upload-artifact@v7
         with:
           name: schema.graphql
@@ -86,4 +86,4 @@ jobs:
         continue-on-error: true
         run: |
           # This schema and previous release schema
-          node_modules/.bin/graphql-inspector diff /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql /tmp/schema.graphql
+          graphql-inspector diff /tmp/${{ steps.get-latest-tag.outputs.tag }}.graphql /tmp/schema.graphql

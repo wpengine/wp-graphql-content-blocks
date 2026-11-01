@@ -38,6 +38,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # Backgrounded so the MySQL pull and first boot overlap the image build.
+      - name: Start database
+        run: nohup docker compose up -d db > /tmp/db-up.log 2>&1 &
+
       - name: Create Docker Containers
         env:
           PHP_VERSION: ${{ matrix.php }}
@@ -49,7 +53,12 @@ jobs:
           docker compose build \
             --build-arg WP_VERSION=${{ matrix.wordpress }} \
             --build-arg PHP_VERSION=${{ matrix.php }}
-          docker compose up -d
+          # The wordpress service links to db, so it can't start before the db container exists.
+          if ! timeout 120 bash -c 'until [ -n "$(docker compose ps -q db)" ]; do sleep 1; done'; then
+            cat /tmp/db-up.log
+            exit 1
+          fi
+          docker compose up -d --no-deps wordpress
 
       - name: Wait for db
         run: |
