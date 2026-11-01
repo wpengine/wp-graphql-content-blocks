@@ -63,7 +63,9 @@ jobs:
         id: get-latest-tag
         env:
           GH_TOKEN: ${{ github.token }}
-        run: echo "tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)" >> "$GITHUB_OUTPUT"
+        run: |
+          tag=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
       - name: Test Schema for breaking changes
         run: |
