@@ -74,8 +74,11 @@ final class ContentBlocksResolver {
 		// Seed client IDs with the node so the same content in two posts gets different IDs.
 		$seed = $node instanceof Post ? (string) $node->databaseId : '';
 
+		// The post the blocks belong to, for blocks that need it (post content, post terms).
+		$post_id = $node instanceof Post ? (int) $node->databaseId : 0;
+
 		// Parse the blocks from HTML comments to an array of blocks.
-		$parsed_blocks = self::parse_blocks( $content, $seed );
+		$parsed_blocks = self::parse_blocks( $content, $seed, $post_id );
 		if ( empty( $parsed_blocks ) ) {
 			return [];
 		}
@@ -106,13 +109,14 @@ final class ContentBlocksResolver {
 	 *
 	 * @param string $content Content to parse.
 	 * @param string $seed    Seed for the blocks' client IDs.
+	 * @param int    $post_id The ID of the post the blocks belong to, or 0 if they don't belong to one.
 	 *
 	 * @return array<string,mixed> List of blocks.
 	 */
-	private static function parse_blocks( $content, string $seed = '' ): array {
+	private static function parse_blocks( $content, string $seed = '', int $post_id = 0 ): array {
 		$blocks = parse_blocks( $content );
 
-		return self::handle_do_blocks( $blocks, $seed );
+		return self::handle_do_blocks( $blocks, $seed, $post_id );
 	}
 
 	/**
@@ -122,13 +126,14 @@ final class ContentBlocksResolver {
 	 *
 	 * @param array<string,mixed>[] $blocks Blocks data.
 	 * @param string                $seed   Seed for the blocks' client IDs, such as the parent block's client ID.
+	 * @param int                   $post_id The ID of the post the blocks belong to, or 0 if they don't belong to one.
 	 *
 	 * @return array<string,mixed>[] The processed blocks.
 	 */
-	private static function handle_do_blocks( array $blocks, string $seed = '' ): array {
+	private static function handle_do_blocks( array $blocks, string $seed = '', int $post_id = 0 ): array {
 		$parsed = [];
 		foreach ( $blocks as $index => $block ) {
-			$block_data = self::handle_do_block( $block, $seed . '/' . $index );
+			$block_data = self::handle_do_block( $block, $seed . '/' . $index, $post_id );
 
 			if ( $block_data ) {
 				$parsed[] = $block_data;
@@ -144,10 +149,11 @@ final class ContentBlocksResolver {
 	 *
 	 * @param array<string,mixed> $block Block data.
 	 * @param string              $seed  Seed for the block's client ID, unique to its position.
+	 * @param int                 $post_id The ID of the post the block belongs to, or 0 if it doesn't belong to one.
 	 *
 	 * @return ?array<string,mixed> The processed block.
 	 */
-	private static function handle_do_block( array $block, string $seed = '' ): ?array {
+	private static function handle_do_block( array $block, string $seed = '', int $post_id = 0 ): ?array {
 		if ( self::is_block_empty( $block ) ) {
 			return null;
 		}
@@ -160,16 +166,24 @@ final class ContentBlocksResolver {
 		// Assign a clientId that stays the same while the content does.
 		$block['clientId'] = self::generate_client_id( $block, $seed );
 
+		// Record the post the block belongs to, so resolvers don't depend on the global post. A block that already has
+		// one keeps it, such as a post's blocks inside a template's post content block.
+		if ( ! empty( $block['postId'] ) ) {
+			$post_id = (int) $block['postId'];
+		} elseif ( $post_id ) {
+			$block['postId'] = $post_id;
+		}
+
 		// @todo apply more hydrations.
-		$block = self::populate_template_part_inner_blocks( $block );
-		$block = self::populate_post_content_inner_blocks( $block );
-		$block = self::populate_reusable_blocks( $block );
+		$block = self::populate_template_part_inner_blocks( $block, $post_id );
+		$block = self::populate_post_content_inner_blocks( $block, $post_id );
+		$block = self::populate_reusable_blocks( $block, $post_id );
 		$block = self::populate_pattern_inner_blocks( $block );
 		$block = self::populate_navigation_blocks( $block );
 
 		// Prepare innerBlocks.
 		if ( ! empty( $block['innerBlocks'] ) ) {
-			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'], $block['clientId'] );
+			$block['innerBlocks'] = self::handle_do_blocks( $block['innerBlocks'], $block['clientId'], $post_id );
 		}
 
 		return $block;
@@ -200,11 +214,12 @@ final class ContentBlocksResolver {
 	/**
 	 * Populates the innerBlocks of a template part block with the blocks from the template part.
 	 *
-	 * @param array<string,mixed> $block The block to populate.
+	 * @param array<string,mixed> $block   The block to populate.
+	 * @param int                 $post_id The ID of the post the block belongs to, or 0 if it doesn't belong to one.
 	 *
 	 * @return array<string,mixed> The populated block.
 	 */
-	private static function populate_template_part_inner_blocks( array $block ): array {
+	private static function populate_template_part_inner_blocks( array $block, int $post_id = 0 ): array {
 		// Bail if not WP 5.8 or later.
 		if ( ! function_exists( 'get_block_templates' ) ) {
 			return $block;
@@ -216,7 +231,7 @@ final class ContentBlocksResolver {
 
 		$matching_templates = get_block_templates( [ 'slug__in' => [ $block['attrs']['slug'] ] ], 'wp_template_part' );
 
-		$template_blocks = ! empty( $matching_templates[0]->content ) ? self::parse_blocks( $matching_templates[0]->content, $block['clientId'] ) : null;
+		$template_blocks = ! empty( $matching_templates[0]->content ) ? self::parse_blocks( $matching_templates[0]->content, $block['clientId'], $post_id ) : null;
 
 		if ( empty( $template_blocks ) ) {
 			return $block;
@@ -230,22 +245,27 @@ final class ContentBlocksResolver {
 	/**
 	 * Populates the innerBlocks of a core/post-content block with the blocks from the post content.
 	 *
-	 * @param array<string,mixed> $block The block to populate.
+	 * The block shows the post being displayed (the global post), which isn't necessarily the post the block belongs to,
+	 * such as for a template.
+	 *
+	 * @param array<string,mixed> $block   The block to populate.
+	 * @param int                 $post_id The ID of the post the block belongs to, or 0 if it doesn't belong to one.
 	 *
 	 * @return array<string,mixed> The populated block.
 	 */
-	private static function populate_post_content_inner_blocks( array $block ): array {
+	private static function populate_post_content_inner_blocks( array $block, int $post_id = 0 ): array {
 		if ( 'core/post-content' !== $block['blockName'] ) {
 			return $block;
 		}
 
 		$post = get_post();
 
-		if ( ! $post ) {
+		// Don't put a post's content inside itself, which would recurse without end.
+		if ( ! $post || $post->ID === $post_id ) {
 			return $block;
 		}
 
-		$parsed_blocks = ! empty( $post->post_content ) ? self::parse_blocks( $post->post_content, $block['clientId'] ) : null;
+		$parsed_blocks = ! empty( $post->post_content ) ? self::parse_blocks( $post->post_content, $block['clientId'], $post->ID ) : null;
 
 		if ( empty( $parsed_blocks ) ) {
 			return $block;
@@ -287,11 +307,12 @@ final class ContentBlocksResolver {
 	/**
 	 * Populates reusable blocks with the blocks from the reusable ref ID.
 	 *
-	 * @param array<string,mixed> $block The block to populate.
+	 * @param array<string,mixed> $block   The block to populate.
+	 * @param int                 $post_id The ID of the post the block belongs to, or 0 if it doesn't belong to one.
 	 *
 	 * @return array<string,mixed> The populated block.
 	 */
-	private static function populate_reusable_blocks( array $block ): array {
+	private static function populate_reusable_blocks( array $block, int $post_id = 0 ): array {
 		if ( 'core/block' !== $block['blockName'] || ! isset( $block['attrs']['ref'] ) ) {
 			return $block;
 		}
@@ -302,7 +323,7 @@ final class ContentBlocksResolver {
 			return $block;
 		}
 
-		$parsed_blocks = ! empty( $reusable_block->post_content ) ? self::parse_blocks( $reusable_block->post_content, $block['clientId'] ) : null;
+		$parsed_blocks = ! empty( $reusable_block->post_content ) ? self::parse_blocks( $reusable_block->post_content, $block['clientId'], $post_id ) : null;
 
 		if ( empty( $parsed_blocks ) ) {
 			return $block;

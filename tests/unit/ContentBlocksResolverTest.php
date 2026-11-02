@@ -452,6 +452,75 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	}
 
 	/**
+	 * Tests that a post content block doesn't put a post's content inside itself.
+	 */
+	public function test_post_content_block_does_not_nest_its_own_post() {
+		$post_id = wp_insert_post(
+			[
+				'post_title'   => 'Post Content Inside Itself',
+				'post_content' => '<!-- wp:paragraph --><p>Before</p><!-- /wp:paragraph --><!-- wp:post-content /-->',
+				'post_status'  => 'publish',
+			]
+		);
+
+		// The post being displayed is the post the block belongs to.
+		$GLOBALS['post'] = get_post( $post_id );
+
+		$resolved_blocks = $this->instance->resolve_content_blocks( new Post( get_post( $post_id ) ), [ 'flat' => false ] );
+
+		$this->assertCount( 2, $resolved_blocks );
+		$this->assertEquals( 'core/post-content', $resolved_blocks[1]['blockName'] );
+		$this->assertEmpty( $resolved_blocks[1]['innerBlocks'] );
+	}
+
+	/**
+	 * Tests that a post's blocks inside another post's post content block keep the post they belong to.
+	 */
+	public function test_post_content_inner_blocks_record_the_displayed_post() {
+		$template_id = wp_insert_post(
+			[
+				'post_title'   => 'Template-like Post',
+				'post_content' => '<!-- wp:post-content /-->',
+				'post_status'  => 'publish',
+			]
+		);
+		wp_update_post(
+			[
+				'ID'           => $this->post_id,
+				'post_content' => '<!-- wp:group --><div class="wp-block-group"><!-- wp:post-terms {"term":"category"} /--></div><!-- /wp:group -->',
+			]
+		);
+
+		// The post being displayed isn't the post the post content block belongs to. This is set once the node has
+		// been read, since WPGraphQL may set the node up as the global post.
+		add_filter(
+			'wpgraphql_content_blocks_resolver_content',
+			function ( $content ) {
+				$GLOBALS['post'] = get_post( $this->post_id );
+
+				return $content;
+			}
+		);
+
+		$resolved_blocks = $this->instance->resolve_content_blocks( new Post( get_post( $template_id ) ), [ 'flat' => true ] );
+
+		$this->assertSame( [ 'core/post-content', 'core/group', 'core/post-terms' ], array_column( $resolved_blocks, 'blockName' ) );
+		$this->assertSame( [ $template_id, $this->post_id, $this->post_id ], array_column( $resolved_blocks, 'postId' ) );
+	}
+
+	/**
+	 * Tests that every block records the post it belongs to, including inner and reusable blocks.
+	 */
+	public function test_blocks_record_their_post() {
+		$resolved_blocks = $this->instance->resolve_content_blocks( new Post( get_post( $this->reusable_post_id ) ), [ 'flat' => true ] );
+
+		$this->assertNotEmpty( $resolved_blocks );
+		foreach ( $resolved_blocks as $block ) {
+			$this->assertSame( $this->reusable_post_id, $block['postId'], $block['blockName'] );
+		}
+	}
+
+	/**
 	 * Tests that pattern inner blocks are resolved correctly.
 	 */
 	public function test_resolve_content_blocks_resolves_pattern_inner_blocks() {
