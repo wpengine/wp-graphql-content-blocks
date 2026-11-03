@@ -71,11 +71,11 @@ final class ContentBlocksResolver {
 			return [];
 		}
 
-		// Seed client IDs with the node so the same content in two posts gets different IDs.
-		$seed = $node instanceof Post ? (string) $node->databaseId : '';
-
-		// The post the blocks belong to, for blocks that need it (post content, post terms).
+		// The post the blocks belong to, recorded on each block for resolvers such as post terms.
 		$post_id = $node instanceof Post ? (int) $node->databaseId : 0;
+
+		// Seed client IDs with the node so the same content in two posts gets different IDs.
+		$seed = $post_id ? (string) $post_id : '';
 
 		// Parse the blocks from HTML comments to an array of blocks.
 		$parsed_blocks = self::parse_blocks( $content, $seed, $post_id );
@@ -124,8 +124,8 @@ final class ContentBlocksResolver {
 	 *
 	 * This mirrors the `do_blocks` function in WordPress which is responsible for hydrating certain block attributes and supports, but without the forced rendering.
 	 *
-	 * @param array<string,mixed>[] $blocks Blocks data.
-	 * @param string                $seed   Seed for the blocks' client IDs, such as the parent block's client ID.
+	 * @param array<string,mixed>[] $blocks  Blocks data.
+	 * @param string                $seed    Seed for the blocks' client IDs, such as the parent block's client ID.
 	 * @param int                   $post_id The ID of the post the blocks belong to, or 0 if they don't belong to one.
 	 *
 	 * @return array<string,mixed>[] The processed blocks.
@@ -147,8 +147,8 @@ final class ContentBlocksResolver {
 	/**
 	 * Process a block, getting all extra fields.
 	 *
-	 * @param array<string,mixed> $block Block data.
-	 * @param string              $seed  Seed for the block's client ID, unique to its position.
+	 * @param array<string,mixed> $block   Block data.
+	 * @param string              $seed    Seed for the block's client ID, unique to its position.
 	 * @param int                 $post_id The ID of the post the block belongs to, or 0 if it doesn't belong to one.
 	 *
 	 * @return ?array<string,mixed> The processed block.
