@@ -148,12 +148,14 @@ final class CorePostTermsTest extends PluginTestCase {
 		$other_post_id = $this->factory()->post->create( [ 'post_category' => [ $other_term_id ] ] );
 
 		// Leave another post as the global post after the blocks resolve, as a loop in another field might.
-		$leave_other_post = static function ( $blocks ) use ( $other_post_id ) {
-			$GLOBALS['post'] = get_post( $other_post_id );
+		add_filter(
+			'wpgraphql_content_blocks_resolve_blocks',
+			static function ( $blocks ) use ( $other_post_id ) {
+				$GLOBALS['post'] = get_post( $other_post_id );
 
-			return $blocks;
-		};
-		add_filter( 'wpgraphql_content_blocks_resolve_blocks', $leave_other_post );
+				return $blocks;
+			}
+		);
 
 		$query  = '
 			query TestPostTermsPost($id: ID!) {
@@ -171,9 +173,6 @@ final class CorePostTermsTest extends PluginTestCase {
 			}
 		';
 		$actual = graphql( compact( 'query' ) + [ 'variables' => [ 'id' => $this->post_id ] ] );
-
-		remove_filter( 'wpgraphql_content_blocks_resolve_blocks', $leave_other_post );
-		wp_delete_post( $other_post_id, true );
 
 		$this->assertArrayNotHasKey( 'errors', $actual );
 		$this->assertSame(

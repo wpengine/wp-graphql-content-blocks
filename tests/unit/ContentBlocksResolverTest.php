@@ -464,7 +464,14 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 		);
 
 		// The post being displayed is the post the block belongs to.
-		$GLOBALS['post'] = get_post( $post_id );
+		add_filter(
+			'wpgraphql_content_blocks_resolver_content',
+			static function ( $content ) use ( $post_id ) {
+				$GLOBALS['post'] = get_post( $post_id );
+
+				return $content;
+			}
+		);
 
 		$resolved_blocks = $this->instance->resolve_content_blocks( new Post( get_post( $post_id ) ), [ 'flat' => false ] );
 
@@ -479,7 +486,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 	public function test_post_content_inner_blocks_record_the_displayed_post() {
 		$template_id = wp_insert_post(
 			[
-				'post_title'   => 'Template-like Post',
+				'post_title'   => 'Post Showing Another Post',
 				'post_content' => '<!-- wp:post-content /-->',
 				'post_status'  => 'publish',
 			]
