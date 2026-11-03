@@ -76,8 +76,6 @@ class CorePostTerms extends Block {
 							return null;
 						}
 
-						// Use the post the block belongs to, falling back to the global post for blocks that
-						// weren't resolved from one.
 						$post_id = ! empty( $block['postId'] ) ? (int) $block['postId'] : get_the_ID();
 						if ( ! $post_id ) {
 							return null;

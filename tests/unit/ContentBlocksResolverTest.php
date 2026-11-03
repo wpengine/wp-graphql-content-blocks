@@ -463,7 +463,6 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 			]
 		);
 
-		// The post being displayed is the post the block belongs to.
 		add_filter(
 			'wpgraphql_content_blocks_resolver_content',
 			static function ( $content ) use ( $post_id ) {
@@ -498,8 +497,7 @@ final class ContentBlocksResolverTest extends PluginTestCase {
 			]
 		);
 
-		// The post being displayed isn't the post the post content block belongs to. This is set once the node has
-		// been read, since WPGraphQL may set the node up as the global post.
+		// Set after the node is read, since reading it can set the global post.
 		add_filter(
 			'wpgraphql_content_blocks_resolver_content',
 			function ( $content ) {

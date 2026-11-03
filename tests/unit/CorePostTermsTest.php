@@ -147,7 +147,6 @@ final class CorePostTermsTest extends PluginTestCase {
 
 		$other_post_id = $this->factory()->post->create( [ 'post_category' => [ $other_term_id ] ] );
 
-		// Leave another post as the global post after the blocks resolve, as a loop in another field might.
 		add_filter(
 			'wpgraphql_content_blocks_resolve_blocks',
 			static function ( $blocks ) use ( $other_post_id ) {

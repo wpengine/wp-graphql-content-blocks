@@ -71,7 +71,6 @@ final class ContentBlocksResolver {
 			return [];
 		}
 
-		// The post the blocks belong to, recorded on each block for resolvers such as post terms.
 		$post_id = $node instanceof Post ? (int) $node->databaseId : 0;
 
 		// Seed client IDs with the node so the same content in two posts gets different IDs.
@@ -166,8 +165,7 @@ final class ContentBlocksResolver {
 		// Assign a clientId that stays the same while the content does.
 		$block['clientId'] = self::generate_client_id( $block, $seed );
 
-		// Record the post the block belongs to, so resolvers don't depend on the global post. A block that already has
-		// one keeps it, such as a post's blocks inside a template's post content block.
+		// A post's blocks inside another post's post content block keep their own post.
 		if ( ! empty( $block['postId'] ) ) {
 			$post_id = (int) $block['postId'];
 		} elseif ( $post_id ) {
@@ -245,8 +243,7 @@ final class ContentBlocksResolver {
 	/**
 	 * Populates the innerBlocks of a core/post-content block with the blocks from the post content.
 	 *
-	 * The block shows the post being displayed (the global post), which isn't necessarily the post the block belongs to,
-	 * such as for a template.
+	 * The block shows the post being displayed (the global post), not the post the block belongs to.
 	 *
 	 * @param array<string,mixed> $block   The block to populate.
 	 * @param int                 $post_id The ID of the post the block belongs to, or 0 if it doesn't belong to one.
@@ -260,7 +257,6 @@ final class ContentBlocksResolver {
 
 		$post = get_post();
 
-		// Don't put a post's content inside itself, which would recurse without end.
 		if ( ! $post || $post->ID === $post_id ) {
 			return $block;
 		}
