@@ -131,28 +131,33 @@ final class CorePostTermsTest extends PluginTestCase {
 	}
 
 	/**
-	 * Test that the terms come from the block's post, even when the global post is another post.
+	 * Test that terms come from the post whose content is expanded by a post-content block.
 	 */
-	public function test_terms_come_from_the_blocks_post(): void {
+	public function test_terms_come_from_expanded_post_content(): void {
 		$own_term_id   = $this->factory()->category->create( [ 'name' => 'Own Category' ] );
 		$other_term_id = $this->factory()->category->create( [ 'name' => 'Other Category' ] );
 
 		wp_update_post(
 			[
 				'ID'           => $this->post_id,
-				'post_content' => '<!-- wp:post-terms {"term":"category"} /-->',
+				'post_content' => '<!-- wp:post-content /-->',
 			]
 		);
 		wp_set_post_categories( $this->post_id, [ $own_term_id ] );
 
-		$other_post_id = $this->factory()->post->create( [ 'post_category' => [ $other_term_id ] ] );
+		$other_post_id = $this->factory()->post->create(
+			[
+				'post_category' => [ $other_term_id ],
+				'post_content'  => '<!-- wp:post-terms {"term":"category"} /-->',
+			]
+		);
 
 		add_filter(
-			'wpgraphql_content_blocks_resolve_blocks',
-			static function ( $blocks ) use ( $other_post_id ) {
+			'wpgraphql_content_blocks_resolver_content',
+			static function ( $content ) use ( $other_post_id ) {
 				$GLOBALS['post'] = get_post( $other_post_id );
 
-				return $blocks;
+				return $content;
 			}
 		);
 
