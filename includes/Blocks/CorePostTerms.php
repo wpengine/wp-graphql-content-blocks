@@ -76,7 +76,7 @@ class CorePostTerms extends Block {
 							return null;
 						}
 
-						$post_id = get_the_ID();
+						$post_id = ! empty( $block['postId'] ) ? (int) $block['postId'] : get_the_ID();
 						if ( ! $post_id ) {
 							return null;
 						}
