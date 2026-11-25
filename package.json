@@ -22,7 +22,7 @@
     "wp-graphql-content-blocks.php"
   ],
   "devDependencies": {
-    "@wordpress/scripts": "^37.1.0",
+    "@wordpress/scripts": "^37.2.0",
     "rimraf": "^6.1.4"
   },
   "overrides": {
